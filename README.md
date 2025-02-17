@@ -1,3 +1,3 @@
 # pokexchange-project
 
-## Main Features of the project <ul><li><a href="./features.md">Here</a></li></ul>
+## Main Features of the project <span><a href="./features.md">Here</a></span>
