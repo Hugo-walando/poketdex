@@ -2,15 +2,16 @@
 
 ### **1️⃣ Structure des branches Git**
 
-📌 **Branche principale :**  
-✅ `main` → **Branche unique**, toujours stable et prête à être déployée.
+📌 **Branches principales :**  
+✅ `main` → **Branche stable**, toujours prête à être déployée en production.  
+✅ `staging` → **Branche de préproduction**, utilisée pour tester avant de fusionner dans `main`.
 
 📌 **Branches temporaires (créées puis supprimées après fusion) :**  
 🔹 `feature/authentication` → Développement de l’auth Firebase  
 🔹 `feature/trades-system` → Développement du système d’échange  
 🔹 `bugfix/trade-api` → Correction d’un bug dans les échanges
 
-🔹 **Les branches durent quelques heures à 1-2 jours maximum avant d’être fusionnées dans `main`.**
+🔹 **Les branches durent quelques heures à 1-2 jours maximum avant d’être fusionnées dans `staging`.**
 
 ---
 
@@ -18,11 +19,11 @@
 
 💡 **Comment travailler efficacement avec Trunk-Based Development ?**
 
-🔹 **1. Se positionner sur `main` avant de commencer une nouvelle tâche**
+🔹 **1. Se positionner sur `staging` avant de commencer une nouvelle tâche**
 
 ```bash
-git checkout main
-git pull origin main  # S’assurer d’avoir le dernier code
+git checkout staging
+git pull origin staging  # S’assurer d’avoir le dernier code
 ```
 
 🔹 **2. Créer une branche temporaire spécifique à la fonctionnalité**
@@ -44,11 +45,21 @@ git commit -m "feat: Ajout de l'authentification Firebase"
 git push origin feature/authentication
 ```
 
-🔹 **5. Faire une revue rapide et fusionner immédiatement dans `main`**
+🔹 **5. Faire une revue rapide et fusionner dans `staging`**
+
+```bash
+git checkout staging
+git merge feature/authentication
+git push origin staging
+```
+
+🔥 **Tester l’application sur `staging` avant de merger dans `main`**
+
+🔹 **6. Une fois validé sur `staging`, fusionner dans `main`**
 
 ```bash
 git checkout main
-git merge feature/authentication
+git merge staging
 git push origin main
 ```
 
@@ -63,16 +74,18 @@ git branch -d feature/authentication
 ### **3️⃣ Bonnes pratiques pour éviter le chaos 🚀**
 
 ✅ **Toujours travailler sur des branches courtes (max 1-2 jours)**  
-✅ **Tester son code avant de fusionner sur `main`**  
+✅ **Toujours tester sur `staging` avant de merger dans `main`**  
+✅ **CI/CD sur `staging`** pour exécuter les tests automatiquement  
 ✅ **Faire une revue rapide du code par un coéquipier avant merge**  
-✅ **Éviter les conflits en faisant `git pull origin main` avant de commencer une tâche**  
+✅ **Éviter les conflits en faisant `git pull origin staging` avant de commencer une tâche**  
 ✅ **Pas de branches longues comme en GitFlow → Tout doit être fusionné rapidement**
 
 ---
 
 ### **📌 Récapitulatif**
 
-🎯 **On travaille directement sur `main` avec des branches courtes (`feature/*`, `bugfix/*`).**  
-🎯 **Fusion rapide → pas de branches longues, pas de `dev`, tout va directement dans `main`.**
+🎯 **On travaille directement sur `staging` avec des branches courtes (`feature/*`, `bugfix/*`).**  
+🎯 **Tout est testé sur `staging`, puis fusionné dans `main` seulement après validation.**  
+🎯 **CI/CD activé sur `staging` pour éviter de casser la production.**
 
-📌 **Tout est prêt pour bosser proprement ! 🚀**
+📌 **Tout est prêt pour bosser proprement avec un environnement de test sécurisé ! 🚀**
