@@ -11,9 +11,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.68.0
         version: 5.68.0(react@19.0.0)
-      autoprefixer:
-        specifier: ^10.4.21
-        version: 10.4.21(postcss@8.5.3)
       axios:
         specifier: ^1.8.3
         version: 1.8.3
@@ -26,9 +23,6 @@ importers:
       next-auth:
         specifier: ^4.24.11
         version: 4.24.11(next@15.2.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      postcss:
-        specifier: ^8.5.3
-        version: 8.5.3
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -46,7 +40,7 @@ importers:
         specifier: ^3
         version: 3.3.0
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: ^4.0.14
         version: 4.0.14
       '@types/node':
         specifier: ^20
@@ -57,12 +51,18 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.0.4(@types/react@19.0.10)
+      autoprefixer:
+        specifier: ^10.4.21
+        version: 10.4.21(postcss@8.5.3)
       eslint:
         specifier: ^9
         version: 9.22.0(jiti@2.4.2)
       eslint-config-next:
         specifier: 15.2.2
         version: 15.2.2(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)
+      postcss:
+        specifier: ^8.5.3
+        version: 8.5.3
       tailwindcss:
         specifier: ^4.0.14
         version: 4.0.14
