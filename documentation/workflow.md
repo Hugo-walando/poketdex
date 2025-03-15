@@ -73,7 +73,6 @@ git branch -d feature/authentication
 ### **📌 Récapitulatif**
 
 🎯 **On travaille directement sur `main` avec des branches courtes (`feature/*`, `bugfix/*`).**  
-🎯 **Fusion rapide → pas de branches longues, pas de `dev`, tout va directement dans `main`.**  
-🎯 **CI/CD prévu** → Un commit sur `main` peut déclencher un déploiement automatique.
+🎯 **Fusion rapide → pas de branches longues, pas de `dev`, tout va directement dans `main`.**
 
 📌 **Tout est prêt pour bosser proprement ! 🚀**
