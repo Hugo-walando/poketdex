@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+  --color-whitebackground: #F2F4F8;
+  --color-redalert: #F25656;
+  --color-primarygreen: #02DD85;
+  --color-grayblue: #A2B0BC;
+  --color-darkblue: #081932;
+  --color-darkgray: #8F9396;
+}
+
+body {
+  @apply bg-whitebackground
+}
