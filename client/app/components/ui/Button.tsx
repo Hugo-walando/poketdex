@@ -19,10 +19,11 @@ export default function Button({
       className={cn(
         'px-10 py-2 rounded-full font-sans text-lg shadow-btn font-semibold transition-all duration-200',
         variant === 'primary' &&
-          'text-white border-solid border-2 border-white  bg-primarygreen hover:bg-opacity-80',
-        variant === 'secondary' && 'bg-white text-darkgray hover:bg-opacity-80',
+          'text-white border-solid border-2 border-white bg-primarygreen hover:bg-white hover:text-primarygreen hover:cursor-pointer',
+        variant === 'secondary' &&
+          'bg-white text-darkgray hover:cursor-pointer hover:bg-gray-200 ',
         variant === 'danger' &&
-          'bg-white text-redalert border-2 border-redalert outline-2 outline-white border-solid hover:bg-opacity-80',
+          'bg-white text-redalert border-2 border-redalert outline-2 outline-white border-solid hover:bg-redalert hover:text-white hover:cursor-pointer',
         fullWidth && 'w-full',
         className,
       )}
