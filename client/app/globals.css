@@ -12,3 +12,11 @@
 body {
   @apply bg-whitebackground
 }
+
+.big-text-dark {
+  @apply text-2xl text-darkblue font-semibold
+}
+
+.big-text-grey {
+  @apply text-2xl text-darkgray font-semibold
+}
