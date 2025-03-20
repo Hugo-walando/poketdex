@@ -13,10 +13,45 @@ body {
   @apply bg-whitebackground
 }
 
-.big-text-dark {
+
+/* Text Styles */
+
+.text-dark-3xl {
+  @apply text-3xl text-darkblue font-semibold
+}
+
+.text-gray-3xl {
+  @apply text-3xl text-darkgray font-semibold
+}
+
+.text-dark-2xl {
   @apply text-2xl text-darkblue font-semibold
 }
 
-.big-text-grey {
+.text-gray-2xl {
   @apply text-2xl text-darkgray font-semibold
+}
+
+.text-dark-xl {
+  @apply text-xl text-darkblue font-semibold
+}
+
+.text-gray-xl {
+  @apply text-xl text-darkgray font-semibold
+}
+
+.text-dark-base {
+  @apply text-base text-darkblue font-semibold
+}
+
+.text-gray-base {
+  @apply text-sm text-grayblue font-semibold
+}
+
+.text-dark-sm {
+  @apply text-sm text-darkblue font-semibold
+}
+
+.text-gray-sm {
+  @apply text-sm text-grayblue font-semibold
 }
