@@ -7,6 +7,7 @@
   --color-grayblue: #A2B0BC;
   --color-darkblue: #081932;
   --color-darkgray: #8F9396;
+  --shadow-base: 0px 4px 7px rgb(3, 20, 33, 0.25);
 }
 
 body {
@@ -55,3 +56,12 @@ body {
 .text-gray-sm {
   @apply text-sm text-grayblue font-semibold
 }
+
+/* Mix */
+
+
+/* Input Styles */
+
+/* Container Styles */
+
+/* Button Styles */
