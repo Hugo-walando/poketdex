@@ -8,6 +8,7 @@
   --color-darkblue: #081932;
   --color-darkgray: #8F9396;
   --shadow-base: 0px 4px 7px rgb(3, 20, 33, 0.25);
+  --shadow-btn: 0px 0px 8px rgb(3, 20, 33, 0.25);
 }
 
 body {
@@ -58,7 +59,6 @@ body {
 }
 
 /* Mix */
-
 
 /* Input Styles */
 
