@@ -13,11 +13,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className, ...props }, ref) => {
     return (
       <div className='flex flex-col gap-1'>
-        {label && <label className='text-dark-sm font-semibold'>{label}</label>}
+        {label && <label className='text-dark-xl '>{label}</label>}
         <input
           ref={ref}
           className={cn(
-            'px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primarygreen text-darkblue placeholder:text-grayblue',
+            'px-4 py-2 bg-whitebackground inset-shadow-field rounded-full focus:outline-none focus:ring-2 focus:ring-primarygreen text-dark-xl placeholder:text-gray-xl',
             error && 'border-redalert ring-redalert',
             className,
           )}

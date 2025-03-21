@@ -10,7 +10,7 @@
   --color-bluegray: #7D8E9D;
   --shadow-base: 0px 4px 7px rgb(3, 20, 33, 0.25);
   --shadow-btn: 0px 0px 8px rgb(3, 20, 33, 0.25);
-  --inset-shadow-field: 0.7px 0.7px 4.5px rgb(3, 20, 33, 0.05);
+  --inset-shadow-field: inset 0.7px 0.7px 4.5px rgb(3, 20, 33, 0.25);
 }
 
 body {
@@ -41,7 +41,7 @@ body {
 }
 
 .text-gray-xl {
-  @apply text-xl text-darkgray font-semibold font-sans
+  @apply text-xl text-darkgray font-bold font-sans
 }
 
 .text-dark-base {
