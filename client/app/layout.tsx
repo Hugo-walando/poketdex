@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/layout/NavBar';
+import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 
 export const metadata: Metadata = {
   title: 'PokeXchange',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const poppins = Poppins({
-  weight: ['400', '600', '700'],
+  weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-poppins',
 });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang='en' className={poppins.className}>
       <body>
-        {/* <Navbar /> */}
-        {children}
+        <MaxWidthWrapper>
+          <Navbar />
+          {children}
+        </MaxWidthWrapper>
       </body>
     </html>
   );

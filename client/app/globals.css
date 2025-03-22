@@ -28,6 +28,10 @@ body {
   @apply text-3xl text-darkgray font-semibold font-sans
 }
 
+.text-green-3xl {
+  @apply text-3xl text-primarygreen font-semibold font-sans
+}
+
 .text-dark-2xl {
   @apply text-2xl text-darkblue font-semibold font-sans
 }
@@ -36,12 +40,20 @@ body {
   @apply text-2xl text-darkgray font-semibold font-sans
 }
 
+.text-green-2xl {
+  @apply text-2xl text-primarygreen font-semibold font-sans
+}
+
 .text-dark-xl {
   @apply text-xl text-darkblue font-semibold font-sans
 }
 
 .text-gray-xl {
-  @apply text-xl text-darkgray font-bold font-sans
+  @apply text-xl text-darkgray font-semibold font-sans
+}
+
+.text-green-xl {
+  @apply text-xl text-primarygreen font-semibold font-sans
 }
 
 .text-dark-base {
@@ -49,7 +61,11 @@ body {
 }
 
 .text-gray-base {
-  @apply text-sm text-grayblue font-semibold font-sans
+  @apply text-sm text-darkgray font-semibold font-sans
+}
+
+.text-green-base {
+  @apply text-base text-primarygreen font-semibold font-sans
 }
 
 .text-dark-sm {
@@ -57,12 +73,18 @@ body {
 }
 
 .text-gray-sm {
-  @apply text-sm text-grayblue font-semibold font-sans
+  @apply text-sm text-darkgray font-semibold font-sans
+}
+
+.text-green-sm {
+  @apply text-sm text-primarygreen font-semibold font-sans
 }
 
 .text-light-base {
   @apply text-base text-bluegray font-semibold font-sans
 }
+
+
 
 /* Mix */
 

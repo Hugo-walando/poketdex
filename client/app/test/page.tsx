@@ -1,5 +1,11 @@
-import HomeIcon from '@/public/icons/Home.svg';
+'use client';
+
+import { HomeIcon } from '../components/svgs';
 
 export default function Test() {
-  return <HomeIcon className='w-6 h-6 text-primarygreen' />;
+  return (
+    <div>
+      <HomeIcon />
+    </div>
+  );
 }

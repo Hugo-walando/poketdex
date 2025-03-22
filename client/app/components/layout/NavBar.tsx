@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import HomeIcon from '@/public/icons/Home.svg';
-import CardIcon from '@/public/icons/Card.svg';
-import TradeIcon from '@/public/icons/Exchange.svg';
+// import HomeIcon from '@/public/icons/Home.svg';
+// import CardIcon from '@/public/icons/Card.svg';
+// import TradeIcon from '@/public/icons/Exchange.svg';
 import { cn } from '@/app/utils/cn';
 
 // Mock temporaire (à remplacer avec données réelles plus tard)
@@ -16,17 +16,21 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', icon: <HomeIcon className='w-6 h-6' />, label: 'Accueil' },
+    {
+      href: '/',
+      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
+      label: 'Accueil',
+    },
     {
       href: '/card',
-      icon: <CardIcon className='w-6 h-6' />,
+      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
       label: 'Mes cartes',
     },
     {
       href: '/trades',
       icon: (
         <div className='relative'>
-          <TradeIcon className='w-6 h-6' />
+          <div className='w-6 h-6 bg-primarygreen'></div>
           {hasPendingTrade && (
             <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full' />
           )}
@@ -37,18 +41,14 @@ export default function Navbar() {
     {
       href: '/profile',
       icon: <div className='w-6 h-6 rounded-full bg-primarygreen'></div>,
-      label: 'Profil',
+      label: '',
     },
   ];
 
   return (
     <>
       {/* 🖥️ Desktop */}
-      <nav className='hidden md:flex justify-between items-center px-6 py-4 shadow-sm'>
-        <Link href='/'>
-          <span className='text-dark-xl font-bold'>Pokexchange</span>
-        </Link>
-
+      <nav className='hidden md:flex justify-between items-center px-6 py-4 shadow-base bg-white mt-10 rounded-2xl'>
         <div className='flex gap-6'>
           {navItems.map((item) => (
             <Link
@@ -59,7 +59,13 @@ export default function Navbar() {
                 pathname === item.href && 'text-primarygreen',
               )}
             >
-              {item.label}
+              <span
+                className={cn(
+                  pathname === item.href ? 'text-green-xl' : 'text-gray-xl',
+                )}
+              >
+                {item.label}
+              </span>
             </Link>
           ))}
         </div>
@@ -81,7 +87,7 @@ export default function Navbar() {
       </nav>
 
       {/* 📱 Mobile */}
-      <nav className='md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-inner z-50'>
+      <nav className='md:hidden absolute bottom-0 w-full bg-white border-gray-200 flex justify-around items-center py-6 shadow-inner z-50'>
         {navItems.map((item) => (
           <Link
             key={item.href}
