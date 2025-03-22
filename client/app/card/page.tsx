@@ -131,10 +131,10 @@ export default function CardPage() {
   return (
     <div
       className='
-      grid gap-6 p-4 grid-cols-[repeat(auto-fit,_minmax(140px,_1fr))]'
+      grid gap-2 p-4 justify-center lg:grid-cols-8 grid-cols-[repeat(auto-fit,_minmax(110px,_1fr))]'
     >
       {mockCards.map((card) => (
-        <div key={card.id} className=''>
+        <div key={card.id} className='justify-self-center'>
           <Image
             src={card.img_url}
             alt={card.name}
@@ -143,13 +143,13 @@ export default function CardPage() {
             className='shadow-base'
           />
 
-          <CardSelector
+          {/* <CardSelector
             cardId={card.id}
             ownedCards={ownedCards}
             wishlist={wishlist}
             toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
             toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
-          />
+          /> */}
         </div>
       ))}
     </div>
