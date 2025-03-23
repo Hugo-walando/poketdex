@@ -4,16 +4,46 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
+import SetFilterDropdown from '../components/ui/SetFilterDropDown';
 
 interface Card {
   id: string;
   name: string;
   img_url: string;
   rarity: number;
+  set_id: string;
   official_id: string;
   created_at: string;
   updated_at: string;
 }
+
+interface Set {
+  id: string;
+  name: string;
+  color: string;
+  img_url: string;
+}
+
+const mockSets: Set[] = [
+  {
+    id: '1',
+    name: 'Puissance Génétique',
+    color: '#FFD700',
+    img_url: '/testimgs/PuissanceGénétique.png',
+  },
+  {
+    id: '2',
+    name: 'Ile Fabuleuse',
+    color: '#FF006E',
+    img_url: '/testimgs/IleFabuleuse.png',
+  },
+  {
+    id: '3',
+    name: 'Choc Spacio Temporel',
+    color: '#00C2FF',
+    img_url: '/testimgs/ChocSpacioTemporel.png',
+  },
+];
 
 const mockCards: Card[] = [
   {
@@ -21,6 +51,7 @@ const mockCards: Card[] = [
     name: 'Pikachu',
     img_url: '/testimgs/PikachuEx.png',
     rarity: 4,
+    set_id: '1',
     official_id: '113/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -30,6 +61,7 @@ const mockCards: Card[] = [
     name: 'Dracaufeu',
     img_url: '/testimgs/DracaufeuEx.png',
     rarity: 4,
+    set_id: '1',
     official_id: '034/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -39,6 +71,7 @@ const mockCards: Card[] = [
     name: 'Palkia',
     img_url: '/testimgs/PalkiaEx.png',
     rarity: 4,
+    set_id: '3',
     official_id: '123/178',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -48,6 +81,7 @@ const mockCards: Card[] = [
     name: 'Amonistar',
     img_url: '/testimgs/Amonistar.png',
     rarity: 3,
+    set_id: '3',
     official_id: '012/178',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -57,6 +91,7 @@ const mockCards: Card[] = [
     name: 'Arcanin',
     img_url: '/testimgs/Arcanin.png',
     rarity: 3,
+    set_id: '1',
     official_id: '014/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -66,6 +101,7 @@ const mockCards: Card[] = [
     name: 'Bulbizarre',
     img_url: '/testimgs/Bulbizarre.png',
     rarity: 1,
+    set_id: '1',
     official_id: '001/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -75,6 +111,7 @@ const mockCards: Card[] = [
     name: 'Herbizarre',
     img_url: '/testimgs/Herbizarre.png',
     rarity: 2,
+    set_id: '1',
     official_id: '002/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -84,6 +121,7 @@ const mockCards: Card[] = [
     name: 'Chimpanfeu',
     img_url: '/testimgs/Chimpanfeu.png',
     rarity: 2,
+    set_id: '1',
     official_id: '024/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -93,6 +131,7 @@ const mockCards: Card[] = [
     name: 'Drakarmin',
     img_url: '/testimgs/Drakarmin.png',
     rarity: 2,
+    set_id: '1',
     official_id: '114/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -102,6 +141,7 @@ const mockCards: Card[] = [
     name: 'Magnezone',
     img_url: '/testimgs/Magnezone.png',
     rarity: 3,
+    set_id: '1',
     official_id: '068/226',
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
@@ -115,6 +155,7 @@ export default function CardPage() {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSet, setSelectedSet] = useState<string | null>(null);
 
   const toggleCard = (
     cardId: string,
@@ -130,8 +171,10 @@ export default function CardPage() {
 
   const filteredCards = mockCards.filter(
     (card) =>
-      card.name.toLowerCase().includes(searchQuery) ||
-      card.official_id.toLowerCase().includes(searchQuery),
+      (searchQuery === '' ||
+        card.name.toLowerCase().includes(searchQuery) ||
+        card.official_id.toLowerCase().includes(searchQuery)) &&
+      (selectedSet === null || card.set_id === selectedSet),
   );
 
   useEffect(() => {
@@ -164,10 +207,16 @@ export default function CardPage() {
 
   return (
     <>
-      <div className='w-[600px] my-10'>
-        <SearchBar
-          placeholder='Rechercher une carte...'
-          onSearch={(query) => setSearchQuery(query.toLowerCase())}
+      <div className='my-10 flex gap-6'>
+        <div className='w-[600px] '>
+          <SearchBar
+            placeholder='Rechercher une carte...'
+            onSearch={(query) => setSearchQuery(query.toLowerCase())}
+          />
+        </div>
+        <SetFilterDropdown
+          selectedSet={selectedSet}
+          onSelectSet={setSelectedSet}
         />
       </div>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
