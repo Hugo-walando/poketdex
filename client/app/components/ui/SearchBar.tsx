@@ -26,7 +26,7 @@ export default function SearchBar({
         placeholder={placeholder}
         value={query}
         onChange={handleChange}
-        className='w-full p-6 rounded-xl focus:outline-none text-dark-xl placeholder:text-gray-xl shadow-base'
+        className='w-full p-6 rounded-xl focus:outline-none text-dark-xl placeholder:text-gray-xl bg-white shadow-base'
       />
       <button
         type='submit'

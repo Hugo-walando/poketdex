@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
+import SearchBar from '../components/ui/SearchBar';
 
 interface Card {
   id: string;
@@ -113,6 +114,7 @@ export default function CardPage() {
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleCard = (
     cardId: string,
@@ -125,6 +127,12 @@ export default function CardPage() {
       setList([...list, cardId]);
     }
   };
+
+  const filteredCards = mockCards.filter(
+    (card) =>
+      card.name.toLowerCase().includes(searchQuery) ||
+      card.official_id.toLowerCase().includes(searchQuery),
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -155,17 +163,24 @@ export default function CardPage() {
     );
 
   return (
-    <div className='w-full max-w-[1400px] mx-auto p-2 md:p-4'>
-      <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-        {mockCards.map((card) => (
-          <div key={card.id} className='justify-self-center'>
-            <Image
-              src={card.img_url}
-              alt={card.name}
-              width={0}
-              height={0}
-              sizes='100vw'
-              className=' w-[120px]
+    <>
+      <div className='w-[600px] my-10'>
+        <SearchBar
+          placeholder='Rechercher une carte...'
+          onSearch={(query) => setSearchQuery(query.toLowerCase())}
+        />
+      </div>
+      <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
+        <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+          {filteredCards.map((card) => (
+            <div key={card.id} className='justify-self-center'>
+              <Image
+                src={card.img_url}
+                alt={card.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className=' w-[120px]
                           sm:w-[130px]
                           md:w-[150px]
                           lg:w-[170px]
@@ -175,18 +190,19 @@ export default function CardPage() {
                           shadow-base
                           mx-auto
                           '
-            />
+              />
 
-            <CardSelector
-              cardId={card.id}
-              ownedCards={ownedCards}
-              wishlist={wishlist}
-              toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
-              toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
-            />
-          </div>
-        ))}
+              <CardSelector
+                cardId={card.id}
+                ownedCards={ownedCards}
+                wishlist={wishlist}
+                toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
+                toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
