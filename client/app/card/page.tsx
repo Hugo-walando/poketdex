@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import CardSelector from '../components/ui/CardSelector';
+import Image from 'next/image';
+import CardSelector from '@/app/components/ui/CardSelector';
 
 interface Card {
   id: string;
@@ -108,13 +108,11 @@ const mockCards: Card[] = [
 ];
 
 export default function CardPage() {
+  const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
+
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
-
-  useEffect(() => {
-    console.log('Cartes en double :', ownedCards);
-    console.log('Cartes voulu :', wishlist);
-  }, [ownedCards, wishlist]);
+  const [loading, setLoading] = useState(true);
 
   const toggleCard = (
     cardId: string,
@@ -128,30 +126,57 @@ export default function CardPage() {
     }
   };
 
-  return (
-    <div
-      className='
-      grid gap-2 p-4 justify-center lg:grid-cols-8 grid-cols-[repeat(auto-fit,_minmax(110px,_1fr))]'
-    >
-      {mockCards.map((card) => (
-        <div key={card.id} className='justify-self-center'>
-          <Image
-            src={card.img_url}
-            alt={card.name}
-            width={150}
-            height={200}
-            className='shadow-base'
-          />
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Simulation avec un délai (à remplacer par fetch réel)
+        await new Promise((res) => setTimeout(res, 800));
 
-          {/* <CardSelector
-            cardId={card.id}
-            ownedCards={ownedCards}
-            wishlist={wishlist}
-            toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
-            toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
-          /> */}
-        </div>
-      ))}
+        const mockWishlist = ['1'];
+        const mockDuplicates = ['2'];
+
+        setWishlist(mockWishlist);
+        setOwnedCards(mockDuplicates);
+      } catch (err) {
+        console.error('Erreur lors du chargement des données utilisateur', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  if (loading)
+    return (
+      <div className='p-4 text-center text-gray-xl'>
+        Chargement des cartes ...
+      </div>
+    );
+
+  return (
+    <div className='w-full max-w-[1400px] mx-auto p-4'>
+      <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(120px,_1fr))] xl:grid-cols-8'>
+        {mockCards.map((card) => (
+          <div key={card.id} className='justify-self-center'>
+            <Image
+              src={card.img_url}
+              alt={card.name}
+              width={150}
+              height={200}
+              className='shadow-base'
+            />
+
+            <CardSelector
+              cardId={card.id}
+              ownedCards={ownedCards}
+              wishlist={wishlist}
+              toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
+              toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
