@@ -24,9 +24,7 @@ export default function CardSelector({
             ? 'bg-primarygreen text-white border-primarygreen'
             : 'border-grayblue text-grayblue'
         }`}
-      >
-        {ownedCards.includes(cardId) ? 'Yes' : 'Yes'}
-      </button>
+      ></button>
 
       <button
         onClick={() => toggleWishlist(cardId)}
@@ -35,9 +33,7 @@ export default function CardSelector({
             ? 'bg-primarygreen text-white border-primarygreen'
             : 'border-grayblue text-grayblue'
         }`}
-      >
-        {wishlist.includes(cardId) ? 'Want' : 'Want'}
-      </button>
+      ></button>
     </div>
   );
 }

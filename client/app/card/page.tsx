@@ -155,16 +155,26 @@ export default function CardPage() {
     );
 
   return (
-    <div className='w-full max-w-[1400px] mx-auto p-4'>
-      <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(120px,_1fr))] xl:grid-cols-8'>
+    <div className='w-full max-w-[1400px] mx-auto p-2 md:p-4'>
+      <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
         {mockCards.map((card) => (
           <div key={card.id} className='justify-self-center'>
             <Image
               src={card.img_url}
               alt={card.name}
-              width={150}
-              height={200}
-              className='shadow-base'
+              width={0}
+              height={0}
+              sizes='100vw'
+              className=' w-[120px]
+                          sm:w-[130px]
+                          md:w-[150px]
+                          lg:w-[170px]
+                          xl:w-[190px]
+                          2xl:w-[210px]
+                          h-auto
+                          shadow-base
+                          mx-auto
+                          '
             />
 
             <CardSelector
