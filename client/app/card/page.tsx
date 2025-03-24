@@ -6,6 +6,7 @@ import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
 import SetFilterDropdown from '../components/ui/SetFilterDropDown';
 import RarityFilter from '../components/ui/RarityFilter';
+import ResetFilters from '../components/ui/ResetFilters';
 
 interface Card {
   id: string;
@@ -159,6 +160,18 @@ export default function CardPage() {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
+  // Reset Filters
+  const hasActiveFilters =
+    searchQuery.length > 0 ||
+    selectedSets.length > 0 ||
+    selectedRarities.length > 0;
+
+  const resetAllFilters = () => {
+    setSearchQuery('');
+    setSelectedSets([]);
+    setSelectedRarities([]);
+  };
+
   const toggleCard = (
     cardId: string,
     list: string[],
@@ -187,6 +200,7 @@ export default function CardPage() {
     );
   };
 
+  // Filter
   const filteredCards = mockCards.filter(
     (card) =>
       (searchQuery === '' ||
@@ -241,6 +255,11 @@ export default function CardPage() {
           <RarityFilter
             selectedRarities={selectedRarities}
             onToggleRarity={toggleRarity}
+          />
+
+          <ResetFilters
+            onClick={resetAllFilters}
+            disabled={!hasActiveFilters}
           />
         </div>
       </div>
