@@ -47,15 +47,20 @@ export default function RarityFilter({
               key={rarity}
               onClick={() => {
                 onToggleRarity(rarity);
-                setOpen(false);
               }}
-              className='w-full p-1 rounded hover:bg-gray-100 flex items-center justify-center'
+              className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer
+                ${
+                  selectedRarities.includes(rarity)
+                    ? 'bg-darkgray inset-shadow-field'
+                    : 'bg-white'
+                }
+              `}
             >
               <Image
                 src={rarityIcons[rarity]}
                 alt={`Rareté ${rarity}`}
-                width={100}
-                height={100}
+                width={20}
+                height={20}
                 quality={100}
                 className='object-contain h-auto  '
               />

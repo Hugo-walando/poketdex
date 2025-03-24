@@ -33,13 +33,13 @@ const mockSets: Set[] = [
 ];
 
 interface SetFilterDropdownProps {
-  selectedSet: string | null;
-  onSelectSet: (setId: string | null) => void;
+  selectedSets: string[];
+  onToggleSet: (setId: string) => void;
 }
 
 export default function SetFilterDropdown({
-  selectedSet,
-  onSelectSet,
+  selectedSets,
+  onToggleSet,
 }: SetFilterDropdownProps) {
   const [open, setOpen] = useState(false);
   const [sets, setSets] = useState<Set[]>(mockSets); // initialisé avec mock
@@ -47,7 +47,8 @@ export default function SetFilterDropdown({
   const toggleDropdown = () => setOpen((prev) => !prev);
 
   useEffect(() => {
-    // Préparation pour la future intégration API
+    // Pour l'API plus tard
+
     const fetchSets = async () => {
       try {
         const res = await fetch('/api/sets');
@@ -69,33 +70,34 @@ export default function SetFilterDropdown({
         onClick={toggleDropdown}
         className='flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-base text-gray-xl hover:cursor-pointer'
       >
-        {selectedSet
-          ? mockSets.find((s) => s.id === selectedSet)?.name || 'Extension'
-          : 'Extension'}
+        Extension
         <ChevronDown className='w-6 h-6' />
       </button>
 
       {open && (
         <div className='absolute z-10 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'>
-          {sets.map((set) => (
-            <button
-              key={set.id}
-              onClick={() => {
-                onSelectSet(set.id);
-                setOpen(false);
-              }}
-              className='w-full p-1 rounded hover:bg-gray-100 flex items-center justify-center'
-            >
-              <Image
-                src={set.img_url}
-                alt={set.name}
-                width={100}
-                height={100}
-                quality={100}
-                className='object-contain h-auto  '
-              />
-            </button>
-          ))}
+          {sets.map((set) => {
+            const isSelected = selectedSets.includes(set.id);
+            return (
+              <button
+                key={set.id}
+                onClick={() => {
+                  onToggleSet(set.id);
+                }}
+                className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer
+                ${isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'}`}
+              >
+                <Image
+                  src={set.img_url}
+                  alt={set.name}
+                  width={100}
+                  height={100}
+                  quality={100}
+                  className='object-contain h-auto  '
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
 import SetFilterDropdown from '../components/ui/SetFilterDropDown';
+import RarityFilter from '../components/ui/RarityFilter';
 
 interface Card {
   id: string;
@@ -155,7 +156,8 @@ export default function CardPage() {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSet, setSelectedSet] = useState<string | null>(null);
+  const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
   const toggleCard = (
     cardId: string,
@@ -169,12 +171,29 @@ export default function CardPage() {
     }
   };
 
+  const toggleSet = (setId: string) => {
+    setSelectedSets((prev) =>
+      prev.includes(setId)
+        ? prev.filter((id) => id !== setId)
+        : [...prev, setId],
+    );
+  };
+
+  const toggleRarity = (rarity: number) => {
+    setSelectedRarities((prev) =>
+      prev.includes(rarity)
+        ? prev.filter((r) => r !== rarity)
+        : [...prev, rarity],
+    );
+  };
+
   const filteredCards = mockCards.filter(
     (card) =>
       (searchQuery === '' ||
         card.name.toLowerCase().includes(searchQuery) ||
         card.official_id.toLowerCase().includes(searchQuery)) &&
-      (selectedSet === null || card.set_id === selectedSet),
+      (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
+      (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );
 
   useEffect(() => {
@@ -215,9 +234,14 @@ export default function CardPage() {
           />
         </div>
         <SetFilterDropdown
-          selectedSet={selectedSet}
-          onSelectSet={setSelectedSet}
+          selectedSets={selectedSets}
+          onToggleSet={toggleSet}
         />
+        <RarityFilter
+          selectedRarities={selectedRarities}
+          onToggleRarity={toggleRarity}
+        />
+        ,
       </div>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
