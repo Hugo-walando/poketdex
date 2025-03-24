@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Set {
   id: string;
@@ -16,19 +16,19 @@ const mockSets: Set[] = [
     id: '1',
     name: 'Puissance Génétique',
     color: '#FFD700',
-    img_url: '/testimgs/PuissanceGénétique.png',
+    img_url: '/testimgs/sets/PuissanceGénétique.png',
   },
   {
     id: '2',
     name: 'Ile Fabuleuse',
     color: '#FF006E',
-    img_url: '/testimgs/IleFabuleuse.png',
+    img_url: '/testimgs/sets/IleFabuleuse.png',
   },
   {
     id: '3',
     name: 'Choc Spacio Temporel',
     color: '#00C2FF',
-    img_url: '/testimgs/ChocSpacioTemporel.png',
+    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
   },
 ];
 
@@ -73,7 +73,11 @@ export default function SetFilterDropdown({
         className='flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-base text-gray-xl hover:cursor-pointer'
       >
         Extension
-        <ChevronDown className='w-6 h-6' />
+        {open ? (
+          <ChevronUp className='w-6 h-6' />
+        ) : (
+          <ChevronDown className='w-6 h-6' />
+        )}
       </button>
       {hasSelected && (
         <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
@@ -95,10 +99,11 @@ export default function SetFilterDropdown({
                 <Image
                   src={set.img_url}
                   alt={set.name}
-                  width={100}
-                  height={100}
+                  width={0}
+                  height={0}
+                  sizes='100vw'
                   quality={100}
-                  className='object-contain h-auto  '
+                  className='object-contain h-[50px] w-auto  '
                 />
               </button>
             );

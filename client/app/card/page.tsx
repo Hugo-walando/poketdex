@@ -30,19 +30,19 @@ const mockSets: Set[] = [
     id: '1',
     name: 'Puissance Génétique',
     color: '#FFD700',
-    img_url: '/testimgs/PuissanceGénétique.png',
+    img_url: '/testimgs/sets/PuissanceGénétique.png',
   },
   {
     id: '2',
     name: 'Ile Fabuleuse',
     color: '#FF006E',
-    img_url: '/testimgs/IleFabuleuse.png',
+    img_url: '/testimgs/sets/IleFabuleuse.png',
   },
   {
     id: '3',
     name: 'Choc Spacio Temporel',
     color: '#00C2FF',
-    img_url: '/testimgs/ChocSpacioTemporel.png',
+    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
   },
 ];
 
@@ -50,7 +50,7 @@ const mockCards: Card[] = [
   {
     id: '1',
     name: 'Pikachu',
-    img_url: '/testimgs/PikachuEx.png',
+    img_url: '/testimgs/cards/PikachuEx.png',
     rarity: 4,
     set_id: '1',
     official_id: '113/226',
@@ -60,7 +60,7 @@ const mockCards: Card[] = [
   {
     id: '2',
     name: 'Dracaufeu',
-    img_url: '/testimgs/DracaufeuEx.png',
+    img_url: '/testimgs/cards/DracaufeuEx.png',
     rarity: 4,
     set_id: '1',
     official_id: '034/226',
@@ -70,7 +70,7 @@ const mockCards: Card[] = [
   {
     id: '3',
     name: 'Palkia',
-    img_url: '/testimgs/PalkiaEx.png',
+    img_url: '/testimgs/cards/PalkiaEx.png',
     rarity: 4,
     set_id: '3',
     official_id: '123/178',
@@ -80,7 +80,7 @@ const mockCards: Card[] = [
   {
     id: '4',
     name: 'Amonistar',
-    img_url: '/testimgs/Amonistar.png',
+    img_url: '/testimgs/cards/Amonistar.png',
     rarity: 3,
     set_id: '3',
     official_id: '012/178',
@@ -90,7 +90,7 @@ const mockCards: Card[] = [
   {
     id: '5',
     name: 'Arcanin',
-    img_url: '/testimgs/Arcanin.png',
+    img_url: '/testimgs/cards/Arcanin.png',
     rarity: 3,
     set_id: '1',
     official_id: '014/226',
@@ -100,7 +100,7 @@ const mockCards: Card[] = [
   {
     id: '6',
     name: 'Bulbizarre',
-    img_url: '/testimgs/Bulbizarre.png',
+    img_url: '/testimgs/cards/Bulbizarre.png',
     rarity: 1,
     set_id: '1',
     official_id: '001/226',
@@ -110,7 +110,7 @@ const mockCards: Card[] = [
   {
     id: '7',
     name: 'Herbizarre',
-    img_url: '/testimgs/Herbizarre.png',
+    img_url: '/testimgs/cards/Herbizarre.png',
     rarity: 2,
     set_id: '1',
     official_id: '002/226',
@@ -120,7 +120,7 @@ const mockCards: Card[] = [
   {
     id: '8',
     name: 'Chimpanfeu',
-    img_url: '/testimgs/Chimpanfeu.png',
+    img_url: '/testimgs/cards/Chimpanfeu.png',
     rarity: 2,
     set_id: '1',
     official_id: '024/226',
@@ -130,7 +130,7 @@ const mockCards: Card[] = [
   {
     id: '9',
     name: 'Drakarmin',
-    img_url: '/testimgs/Drakarmin.png',
+    img_url: '/testimgs/cards/Drakarmin.png',
     rarity: 2,
     set_id: '1',
     official_id: '114/226',
@@ -140,7 +140,7 @@ const mockCards: Card[] = [
   {
     id: '10',
     name: 'Magnezone',
-    img_url: '/testimgs/Magnezone.png',
+    img_url: '/testimgs/cards/Magnezone.png',
     rarity: 3,
     set_id: '1',
     official_id: '068/226',
@@ -241,7 +241,6 @@ export default function CardPage() {
           selectedRarities={selectedRarities}
           onToggleRarity={toggleRarity}
         />
-        ,
       </div>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
