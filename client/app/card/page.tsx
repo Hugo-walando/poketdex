@@ -226,21 +226,23 @@ export default function CardPage() {
 
   return (
     <>
-      <div className='my-10 flex gap-6'>
-        <div className='w-[600px] '>
+      <div className='my-10 md:flex gap-6'>
+        <div className='w-full md:w-[600px] mx-auto md:mx-0 '>
           <SearchBar
             placeholder='Rechercher une carte...'
             onSearch={(query) => setSearchQuery(query.toLowerCase())}
           />
         </div>
-        <SetFilterDropdown
-          selectedSets={selectedSets}
-          onToggleSet={toggleSet}
-        />
-        <RarityFilter
-          selectedRarities={selectedRarities}
-          onToggleRarity={toggleRarity}
-        />
+        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 justify-between sm:justify-start flex '>
+          <SetFilterDropdown
+            selectedSets={selectedSets}
+            onToggleSet={toggleSet}
+          />
+          <RarityFilter
+            selectedRarities={selectedRarities}
+            onToggleRarity={toggleRarity}
+          />
+        </div>
       </div>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
