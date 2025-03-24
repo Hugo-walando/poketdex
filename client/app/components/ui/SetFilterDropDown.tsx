@@ -44,6 +44,8 @@ export default function SetFilterDropdown({
   const [open, setOpen] = useState(false);
   const [sets, setSets] = useState<Set[]>(mockSets); // initialisé avec mock
 
+  const hasSelected = selectedSets.length > 0;
+
   const toggleDropdown = () => setOpen((prev) => !prev);
 
   useEffect(() => {
@@ -73,6 +75,9 @@ export default function SetFilterDropdown({
         Extension
         <ChevronDown className='w-6 h-6' />
       </button>
+      {hasSelected && (
+        <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
+      )}
 
       {open && (
         <div className='absolute z-10 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'>
