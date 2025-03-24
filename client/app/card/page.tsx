@@ -18,33 +18,33 @@ interface Card {
   updated_at: string;
 }
 
-interface Set {
-  id: string;
-  name: string;
-  color: string;
-  img_url: string;
-}
+// interface Set {
+//   id: string;
+//   name: string;
+//   color: string;
+//   img_url: string;
+// }
 
-const mockSets: Set[] = [
-  {
-    id: '1',
-    name: 'Puissance Génétique',
-    color: '#FFD700',
-    img_url: '/testimgs/sets/PuissanceGénétique.png',
-  },
-  {
-    id: '2',
-    name: 'Ile Fabuleuse',
-    color: '#FF006E',
-    img_url: '/testimgs/sets/IleFabuleuse.png',
-  },
-  {
-    id: '3',
-    name: 'Choc Spacio Temporel',
-    color: '#00C2FF',
-    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
-  },
-];
+// const mockSets: Set[] = [
+//   {
+//     id: '1',
+//     name: 'Puissance Génétique',
+//     color: '#FFD700',
+//     img_url: '/testimgs/sets/PuissanceGénétique.png',
+//   },
+//   {
+//     id: '2',
+//     name: 'Ile Fabuleuse',
+//     color: '#FF006E',
+//     img_url: '/testimgs/sets/IleFabuleuse.png',
+//   },
+//   {
+//     id: '3',
+//     name: 'Choc Spacio Temporel',
+//     color: '#00C2FF',
+//     img_url: '/testimgs/sets/ChocSpacioTemporel.png',
+//   },
+// ];
 
 const mockCards: Card[] = [
   {

@@ -59,7 +59,7 @@ export default function SetFilterDropdown({
         const data = await res.json();
         setSets(data);
       } catch (err) {
-        console.warn('Utilisation du mockSet (API non disponible)');
+        console.warn(err, 'Utilisation du mockSet (API non disponible)');
       }
     };
 
