@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// import HomeIcon from '@/public/icons/Home.svg';
-// import CardIcon from '@/public/icons/Card.svg';
-// import TradeIcon from '@/public/icons/Exchange.svg';
 import { cn } from '@/app/utils/cn';
+import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
 
 // Mock temporaire (à remplacer avec données réelles plus tard)
 const isAuthenticated = true;
@@ -18,7 +16,7 @@ export default function Navbar() {
   const navItems = [
     {
       href: '/',
-      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
+      icon: <HomeIcon className={cn('w-6 h-6')} />,
       label: 'Accueil',
     },
     {
@@ -49,25 +47,28 @@ export default function Navbar() {
     <>
       {/* 🖥️ Desktop */}
       <nav className='hidden md:flex justify-between items-center px-6 py-4 shadow-base bg-white mt-10 rounded-2xl'>
-        <div className='flex gap-6'>
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2',
-                pathname === item.href && 'text-primarygreen',
-              )}
-            >
-              <span
-                className={cn(
-                  pathname === item.href ? 'text-green-xl' : 'text-gray-xl',
-                )}
+        <div className='flex gap-16'>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn('flex items-center ')}
               >
-                {item.label}
-              </span>
-            </Link>
-          ))}
+                <span
+                  className={cn(
+                    'flex items-center gap-2',
+                    isActive ? 'text-green-xl' : 'text-gray-xl',
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
 
         {isAuthenticated ? (
