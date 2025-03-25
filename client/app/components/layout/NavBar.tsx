@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/app/utils/cn';
 import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
 import CardIcon from '../svgs/CardIcon';
+import TradeIcon from '../svgs/TradeIcon';
 
 // Mock temporaire (à remplacer avec données réelles plus tard)
 const isAuthenticated = true;
@@ -29,7 +30,7 @@ export default function Navbar() {
       href: '/trades',
       icon: (
         <div className='relative'>
-          <CardIcon className={cn('w-6 h-6')} />
+          <TradeIcon className={cn('w-6 h-6')} />
           {hasPendingTrade && (
             <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full' />
           )}
