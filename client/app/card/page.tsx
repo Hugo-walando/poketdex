@@ -209,7 +209,7 @@ export default function CardPage() {
     (card) =>
       (searchQuery === '' ||
         card.name.toLowerCase().includes(searchQuery) ||
-        card.official_id.toLowerCase().includes(searchQuery)) &&
+        String(card.official_id).padStart(3, '0').includes(searchQuery)) &&
       (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
       (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );
