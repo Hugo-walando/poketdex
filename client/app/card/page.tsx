@@ -7,25 +7,8 @@ import SearchBar from '../components/ui/SearchBar';
 import SetFilterDropdown from '../components/ui/SetFilterDropDown';
 import RarityFilter from '../components/ui/RarityFilter';
 import ResetFilters from '../components/ui/ResetFilters';
-
-interface Card {
-  id: string;
-  name: string;
-  img_url: string;
-  rarity: number;
-  set_id: string;
-  official_id: number;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Set {
-  id: string;
-  name: string;
-  color: string;
-  card_count: number;
-  img_url: string;
-}
+import { matchCard } from '../utils/matchCards';
+import { Card, Set } from '../types';
 
 const mockSets: Set[] = [
   {
@@ -205,11 +188,14 @@ export default function CardPage() {
   };
 
   // Filter
+  const setMap = mockSets.reduce((acc, set) => {
+    acc[set.id] = set;
+    return acc;
+  }, {} as Record<string, Set>);
+
   const filteredCards = mockCards.filter(
     (card) =>
-      (searchQuery === '' ||
-        card.name.toLowerCase().includes(searchQuery) ||
-        String(card.official_id).padStart(3, '0').includes(searchQuery)) &&
+      matchCard(card, setMap[card.set_id], searchQuery) &&
       (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
       (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );

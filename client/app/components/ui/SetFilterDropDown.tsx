@@ -3,13 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
-interface Set {
-  id: string;
-  name: string;
-  color: string;
-  img_url: string;
-}
+import { Set } from '@/app/types';
 
 const mockSets: Set[] = [
   {
@@ -17,18 +11,21 @@ const mockSets: Set[] = [
     name: 'Puissance Génétique',
     color: '#FFD700',
     img_url: '/testimgs/sets/PuissanceGénétique.png',
+    card_count: 226,
   },
   {
     id: '2',
     name: 'Ile Fabuleuse',
     color: '#FF006E',
     img_url: '/testimgs/sets/IleFabuleuse.png',
+    card_count: 86,
   },
   {
     id: '3',
     name: 'Choc Spacio Temporel',
     color: '#00C2FF',
     img_url: '/testimgs/sets/ChocSpacioTemporel.png',
+    card_count: 178,
   },
 ];
 
