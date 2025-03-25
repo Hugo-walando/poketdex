@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/app/utils/cn';
 import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
+import CardIcon from '../svgs/CardIcon';
 
 // Mock temporaire (à remplacer avec données réelles plus tard)
 const isAuthenticated = true;
@@ -21,7 +22,7 @@ export default function Navbar() {
     },
     {
       href: '/card',
-      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
+      icon: <CardIcon className={cn('w-6 h-6')} />,
       label: 'Mes cartes',
     },
     {

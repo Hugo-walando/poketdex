@@ -1,6 +1,6 @@
 interface HomeIconProps {
   className?: string;
-  color?: string; // Optionnel si tu veux encore passer un `fill` personnalisé
+  color?: string;
 }
 
 const HomeIcon = ({ className = '', color }: HomeIconProps) => {
