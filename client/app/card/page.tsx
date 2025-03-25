@@ -14,7 +14,7 @@ interface Card {
   img_url: string;
   rarity: number;
   set_id: string;
-  official_id: string;
+  official_id: number;
   created_at: string;
   updated_at: string;
 }
@@ -23,6 +23,7 @@ interface Set {
   id: string;
   name: string;
   color: string;
+  card_count: number;
   img_url: string;
 }
 
@@ -31,18 +32,21 @@ const mockSets: Set[] = [
     id: '1',
     name: 'Puissance Génétique',
     color: '#FFD700',
+    card_count: 226,
     img_url: '/testimgs/sets/PuissanceGénétique.png',
   },
   {
     id: '2',
     name: 'Ile Fabuleuse',
     color: '#FF006E',
+    card_count: 86,
     img_url: '/testimgs/sets/IleFabuleuse.png',
   },
   {
     id: '3',
     name: 'Choc Spacio Temporel',
     color: '#00C2FF',
+    card_count: 178,
     img_url: '/testimgs/sets/ChocSpacioTemporel.png',
   },
 ];
@@ -54,7 +58,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/PikachuEx.png',
     rarity: 4,
     set_id: '1',
-    official_id: '113/226',
+    official_id: 113,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -64,7 +68,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/DracaufeuEx.png',
     rarity: 4,
     set_id: '1',
-    official_id: '034/226',
+    official_id: 34,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -74,7 +78,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/PalkiaEx.png',
     rarity: 4,
     set_id: '3',
-    official_id: '123/178',
+    official_id: 123,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -84,7 +88,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Amonistar.png',
     rarity: 3,
     set_id: '3',
-    official_id: '012/178',
+    official_id: 12,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -94,7 +98,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Arcanin.png',
     rarity: 3,
     set_id: '1',
-    official_id: '014/226',
+    official_id: 14,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -104,7 +108,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Bulbizarre.png',
     rarity: 1,
     set_id: '1',
-    official_id: '001/226',
+    official_id: 1,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -114,7 +118,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Herbizarre.png',
     rarity: 2,
     set_id: '1',
-    official_id: '002/226',
+    official_id: 2,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -124,7 +128,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Chimpanfeu.png',
     rarity: 2,
     set_id: '1',
-    official_id: '024/226',
+    official_id: 24,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -134,7 +138,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Drakarmin.png',
     rarity: 2,
     set_id: '1',
-    official_id: '114/226',
+    official_id: 114,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -144,7 +148,7 @@ const mockCards: Card[] = [
     img_url: '/testimgs/cards/Magnezone.png',
     rarity: 3,
     set_id: '1',
-    official_id: '068/226',
+    official_id: 68,
     created_at: '2024-03-01',
     updated_at: '2024-03-01',
   },
@@ -210,7 +214,11 @@ export default function CardPage() {
       (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );
 
-  const cardsGroupedBySet: Record<string, Card[]> = filteredCards.reduce(
+  const cardsSorted = [...filteredCards].sort(
+    (a, b) => a.official_id - b.official_id,
+  );
+
+  const cardsGroupedBySet: Record<string, Card[]> = cardsSorted.reduce(
     (acc, card) => {
       if (!acc[card.set_id]) acc[card.set_id] = [];
       acc[card.set_id].push(card);
