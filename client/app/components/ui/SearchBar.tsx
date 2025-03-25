@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import CardSeachIcon from '../svgs/CardSearchIcon';
 
 interface SearchBarProps {
   placeholder?: string;
@@ -31,7 +32,9 @@ export default function SearchBar({
       <button
         type='submit'
         className='h-10 w-10 rounded-xl hover:cursor-pointer bg-primarygreen absolute right-4 top-1/2 transform -translate-y-1/2'
-      ></button>
+      >
+        <CardSeachIcon className='w-8 h-8 text-white' />
+      </button>
     </div>
   );
 }
