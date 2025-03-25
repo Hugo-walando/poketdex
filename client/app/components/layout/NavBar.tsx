@@ -29,18 +29,13 @@ export default function Navbar() {
       href: '/trades',
       icon: (
         <div className='relative'>
-          <div className='w-6 h-6 bg-primarygreen'></div>
+          <CardIcon className={cn('w-6 h-6')} />
           {hasPendingTrade && (
             <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full' />
           )}
         </div>
       ),
       label: 'Échanges',
-    },
-    {
-      href: '/profile',
-      icon: <div className='w-6 h-6 rounded-full bg-primarygreen'></div>,
-      label: '',
     },
   ];
 
