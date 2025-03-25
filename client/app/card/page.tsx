@@ -19,33 +19,33 @@ interface Card {
   updated_at: string;
 }
 
-// interface Set {
-//   id: string;
-//   name: string;
-//   color: string;
-//   img_url: string;
-// }
+interface Set {
+  id: string;
+  name: string;
+  color: string;
+  img_url: string;
+}
 
-// const mockSets: Set[] = [
-//   {
-//     id: '1',
-//     name: 'Puissance Génétique',
-//     color: '#FFD700',
-//     img_url: '/testimgs/sets/PuissanceGénétique.png',
-//   },
-//   {
-//     id: '2',
-//     name: 'Ile Fabuleuse',
-//     color: '#FF006E',
-//     img_url: '/testimgs/sets/IleFabuleuse.png',
-//   },
-//   {
-//     id: '3',
-//     name: 'Choc Spacio Temporel',
-//     color: '#00C2FF',
-//     img_url: '/testimgs/sets/ChocSpacioTemporel.png',
-//   },
-// ];
+const mockSets: Set[] = [
+  {
+    id: '1',
+    name: 'Puissance Génétique',
+    color: '#FFD700',
+    img_url: '/testimgs/sets/PuissanceGénétique.png',
+  },
+  {
+    id: '2',
+    name: 'Ile Fabuleuse',
+    color: '#FF006E',
+    img_url: '/testimgs/sets/IleFabuleuse.png',
+  },
+  {
+    id: '3',
+    name: 'Choc Spacio Temporel',
+    color: '#00C2FF',
+    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
+  },
+];
 
 const mockCards: Card[] = [
   {
@@ -210,6 +210,15 @@ export default function CardPage() {
       (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );
 
+  const cardsGroupedBySet: Record<string, Card[]> = filteredCards.reduce(
+    (acc, card) => {
+      if (!acc[card.set_id]) acc[card.set_id] = [];
+      acc[card.set_id].push(card);
+      return acc;
+    },
+    {} as Record<string, Card[]>,
+  );
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -264,16 +273,31 @@ export default function CardPage() {
         </div>
       </div>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
-        <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-          {filteredCards.map((card) => (
-            <div key={card.id} className='justify-self-center'>
-              <Image
-                src={card.img_url}
-                alt={card.name}
-                width={0}
-                height={0}
-                sizes='100vw'
-                className=' w-[120px]
+        {mockSets.map((set) => {
+          const cards = cardsGroupedBySet[set.id];
+          if (!cards || cards.length === 0) return null;
+          return (
+            <section key={set.id} className='mb-12'>
+              <div className='flex items-center bg-white rounded-xl p-6 shadow-base gap-3 mb-6 w-max'>
+                <Image
+                  src={set.img_url}
+                  alt={set.name}
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  className='w-auto h-[60px]'
+                />
+              </div>
+              <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+                {cards.map((card) => (
+                  <div key={card.id} className='justify-self-center'>
+                    <Image
+                      src={card.img_url}
+                      alt={card.name}
+                      width={0}
+                      height={0}
+                      sizes='100vw'
+                      className=' w-[120px]
                           sm:w-[130px]
                           md:w-[150px]
                           lg:w-[170px]
@@ -283,18 +307,25 @@ export default function CardPage() {
                           shadow-base
                           mx-auto
                           '
-              />
+                    />
 
-              <CardSelector
-                cardId={card.id}
-                ownedCards={ownedCards}
-                wishlist={wishlist}
-                toggleOwned={(id) => toggleCard(id, ownedCards, setOwnedCards)}
-                toggleWishlist={(id) => toggleCard(id, wishlist, setWishlist)}
-              />
-            </div>
-          ))}
-        </div>
+                    <CardSelector
+                      cardId={card.id}
+                      ownedCards={ownedCards}
+                      wishlist={wishlist}
+                      toggleOwned={(id) =>
+                        toggleCard(id, ownedCards, setOwnedCards)
+                      }
+                      toggleWishlist={(id) =>
+                        toggleCard(id, wishlist, setWishlist)
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </>
   );
