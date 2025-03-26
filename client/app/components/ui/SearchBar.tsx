@@ -29,12 +29,12 @@ export default function SearchBar({
         onChange={handleChange}
         className='w-full p-6 rounded-xl focus:outline-none text-dark-xl placeholder:text-gray-xl bg-white shadow-base'
       />
-      <button
+      <CardSeachIcon className='pl-1 mt-1 w-10 h-10 text-darkgray absolute right-4 top-1/2 transform -translate-y-1/2 ' />
+      {/* <button
         type='submit'
-        className='h-10 w-10 rounded-xl hover:cursor-pointer bg-primarygreen absolute right-4 top-1/2 transform -translate-y-1/2'
-      >
-        <CardSeachIcon className='w-8 h-8 text-white' />
-      </button>
+        className='h-10 w-10 rounded-xl hover:cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center justify-center'
+      > */}
+      {/* </button> */}
     </div>
   );
 }
