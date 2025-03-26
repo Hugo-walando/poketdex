@@ -26,6 +26,18 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     setListedCards(mockListedCards); // pour l’instant on simule
   }, []);
 
+  // Reset Filters
+  const hasActiveFilters =
+    searchQuery.length > 0 ||
+    selectedSets.length > 0 ||
+    selectedRarities.length > 0;
+
+  const resetAllFilters = () => {
+    setSearchQuery('');
+    setSelectedSets([]);
+    setSelectedRarities([]);
+  };
+
   const filteredListedCards = listedCards.filter((item) => {
     const card = item.card;
 
@@ -70,7 +82,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
             )
           }
         />
-        <ResetFilters onClick={() => {}} />
+        <ResetFilters onClick={resetAllFilters} disabled={!hasActiveFilters} />
       </div>
 
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
