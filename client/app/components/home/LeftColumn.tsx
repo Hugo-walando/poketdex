@@ -7,6 +7,7 @@ import type { ListedCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
 import { useEffect, useState } from 'react';
 import { mockListedCards } from '@/app/data/mockListedCards';
+import ListedCardItem from './ListedCardItem';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -32,10 +33,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       </div>
 
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
-        <div
-          className='w-full h-[180px] bg-gray-100 rounded-lg shadow-base hover:cursor-pointer'
-          onClick={() => onCardClick(mockListedCards[0])}
-        />
         {listedCards.map((item) => (
           <ListedCardItem
             key={item.duplicate_id}
