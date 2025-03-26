@@ -9,6 +9,7 @@ import RarityFilter from '../components/ui/RarityFilter';
 import ResetFilters from '../components/ui/ResetFilters';
 import { matchCard } from '../utils/matchCards';
 import { Card, Set } from '../types';
+import FiltersWrapper from '../components/layout/FiltersWrapper';
 
 const mockSets: Set[] = [
   {
@@ -243,7 +244,7 @@ export default function CardPage() {
 
   return (
     <>
-      <div className='my-10 md:flex gap-6'>
+      <FiltersWrapper className='my-10 md:flex gap-6'>
         <div className='w-full md:w-[600px] mx-auto md:mx-0 '>
           <SearchBar
             placeholder='Rechercher une carte...'
@@ -265,7 +266,7 @@ export default function CardPage() {
             disabled={!hasActiveFilters}
           />
         </div>
-      </div>
+      </FiltersWrapper>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         {mockSets.map((set) => {
           const cards = cardsGroupedBySet[set.id];
