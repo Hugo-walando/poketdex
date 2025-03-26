@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -38,6 +38,7 @@ export default function RarityFilter({
         onClick={toggleDropdown}
         className='flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-base text-gray-xl hover:cursor-pointer'
       >
+        <StarIcon className='w-5 h-5 text-darkgray fill-darkgray' />
         Rareté
         {open ? (
           <ChevronUp className='w-6 h-6' />
