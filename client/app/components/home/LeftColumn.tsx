@@ -15,6 +15,9 @@ interface LeftColumnProps {
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [listedCards, setListedCards] = useState<ListedCard[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
   useEffect(() => {
     // Plus tard un fetch ici
@@ -23,23 +26,67 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     setListedCards(mockListedCards); // pour l’instant on simule
   }, []);
 
+  const filteredListedCards = listedCards.filter((item) => {
+    const card = item.card;
+
+    const matchSearch =
+      searchQuery === '' ||
+      card.name.toLowerCase().includes(searchQuery) ||
+      card.official_id.toString().includes(searchQuery);
+
+    const matchSet =
+      selectedSets.length === 0 || selectedSets.includes(card.set_id);
+
+    const matchRarity =
+      selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
+
+    return matchSearch && matchSet && matchRarity;
+  });
+
   return (
     <div className='w-full md:w-6/10 my-10 gap-6'>
-      <SearchBar placeholder='Rechercher une carte...' onSearch={() => {}} />
+      <SearchBar
+        placeholder='Rechercher une carte...'
+        onSearch={(query) => setSearchQuery(query.toLowerCase())}
+      />
       <div className='w-full my-6 flex gap-4'>
-        <SetFilterDropdown selectedSets={[]} onToggleSet={() => {}} />
-        <RarityFilter selectedRarities={[]} onToggleRarity={() => {}} />
+        <SetFilterDropdown
+          selectedSets={selectedSets}
+          onToggleSet={(setId) =>
+            setSelectedSets((prev) =>
+              prev.includes(setId)
+                ? prev.filter((id) => id !== setId)
+                : [...prev, setId],
+            )
+          }
+        />
+        <RarityFilter
+          selectedRarities={selectedRarities}
+          onToggleRarity={(rarity) =>
+            setSelectedRarities((prev) =>
+              prev.includes(rarity)
+                ? prev.filter((r) => r !== rarity)
+                : [...prev, rarity],
+            )
+          }
+        />
         <ResetFilters onClick={() => {}} />
       </div>
 
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
-        {listedCards.map((item) => (
-          <ListedCardItem
-            key={item.duplicate_id}
-            data={item}
-            onClick={() => onCardClick(item)}
-          />
-        ))}
+        {filteredListedCards.length === 0 ? (
+          <p className='text-gray-xl col-span-full text-center mt-10'>
+            Aucune carte trouvée avec ces filtres.
+          </p>
+        ) : (
+          filteredListedCards.map((item) => (
+            <ListedCardItem
+              key={item.duplicate_id}
+              data={item}
+              onClick={() => onCardClick(item)}
+            />
+          ))
+        )}
       </div>
     </div>
   );
