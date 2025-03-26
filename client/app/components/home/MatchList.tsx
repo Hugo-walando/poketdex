@@ -21,7 +21,7 @@ export default function MatchList() {
       <h2 className='text-dark-xl mb-4'>Matchs automatiques</h2>
 
       {mockMatches.length === 0 ? (
-        <p className='text-gray-xl text-center'>Aucun match pour l'instant</p>
+        <p className='text-gray-xl text-center'>Aucun match pour l`instant</p>
       ) : (
         <div className='flex flex-col gap-4'>
           {mockMatches.map((match) => (

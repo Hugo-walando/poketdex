@@ -34,13 +34,17 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </button>
       </div>
 
-      <Image
-        src={card.card.img_url}
-        alt={card.card.name}
-        width={200}
-        height={260}
-        className='mx-auto rounded-xl shadow-base mb-4'
-      />
+      <div className='w-full gap-3 flex justify-center'>
+        <Image
+          src={card.card.img_url}
+          alt={card.card.name}
+          width={0}
+          height={0}
+          sizes='100vw'
+          className=' rounded-xl w-40 h-auto shadow-base mb-4'
+        />
+        <div className='text-gray-xl'>{card.card.official_id}</div>
+      </div>
 
       <div className='text-center text-dark-xl font-bold mb-2'>
         {card.card.name}
