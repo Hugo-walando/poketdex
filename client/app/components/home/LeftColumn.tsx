@@ -5,7 +5,7 @@ import SetFilterDropdown from '../ui/SetFilterDropDown';
 import RarityFilter from '../ui/RarityFilter';
 import type { ListedCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
