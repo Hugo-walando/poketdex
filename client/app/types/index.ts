@@ -17,3 +17,20 @@ export interface Set {
   card_count: number;
   created_at?: string;
 }
+
+export interface ListedCard {
+  duplicate_id: string;
+  user: {
+    id: string;
+    username: string;
+    profile_picture: string;
+  };
+  card: {
+    id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_id: string;
+    official_id: number;
+  };
+}
