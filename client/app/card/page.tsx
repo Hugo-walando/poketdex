@@ -66,7 +66,7 @@ export default function CardPage() {
   };
 
   // Filter
-  const setMap = mockSets.reduce((acc, set) => {
+  const setMap = Sets.reduce((acc, set) => {
     acc[set.id] = set;
     return acc;
   }, {} as Record<string, Set>);
