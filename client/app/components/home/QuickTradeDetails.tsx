@@ -1,14 +1,38 @@
 'use client';
 
-import { ListedCard } from '@/app/types';
+import { mockSets } from '@/app/data/mockSets';
+import { ListedCard, Set } from '@/app/types';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface Props {
   card: ListedCard;
   onClose: () => void;
 }
 
+const rarityIcons: Record<number, string> = {
+  1: '/testimgs/rarities/1.png',
+  2: '/testimgs/rarities/2.png',
+  3: '/testimgs/rarities/3.png',
+  4: '/testimgs/rarities/4.png',
+  5: '/testimgs/rarities/5.png',
+  6: '/testimgs/rarities/6.png',
+  7: '/testimgs/rarities/7.png',
+  8: '/testimgs/rarities/8.png',
+};
+
 export default function QuickTradeDetails({ card, onClose }: Props) {
+  const [Sets, setSets] = useState<Set[]>([]);
+
+  useEffect(() => {
+    // Plus tard un fetch ici
+    // fetch('/api/sets').then(...)
+
+    setSets(mockSets); // pour l’instant on simule
+  }, []);
+
+  const cardSet = Sets.find((s) => s.id === card.card.set_id);
+
   const wishlistMock = [
     {
       id: '101',
@@ -43,14 +67,27 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           sizes='100vw'
           className=' rounded-xl w-40 h-auto shadow-base mb-4'
         />
-        <div className='text-gray-xl'>{card.card.official_id}</div>
-      </div>
-
-      <div className='text-center text-dark-xl font-bold mb-2'>
-        {card.card.name}
-      </div>
-      <div className='text-center text-gray-base mb-4'>
-        ID : {card.card.official_id}
+        <div className='text-gray-xl'>
+          {card.card.official_id}
+          {cardSet && (
+            <Image
+              src={cardSet.img_url}
+              alt={cardSet.name}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className=' h-10 w-auto'
+            />
+          )}
+          <Image
+            src={rarityIcons[card.card.rarity]}
+            alt={`Rareté ${card.card.rarity}`}
+            width={0}
+            height={0}
+            sizes='100vw'
+            className='mt-2 w-auto h-10'
+          />
+        </div>
       </div>
 
       <div className='flex items-center justify-center gap-2'>
