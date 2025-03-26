@@ -43,7 +43,7 @@ export default function Navbar() {
   return (
     <>
       {/* 🖥️ Desktop */}
-      <nav className='hidden md:flex justify-between items-center px-6 py-4 shadow-base bg-white mt-10 rounded-2xl'>
+      <nav className='hidden md:flex justify-between items-center px-10 py-4 shadow-base bg-white mt-10 rounded-2xl'>
         <div className='flex gap-16'>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
