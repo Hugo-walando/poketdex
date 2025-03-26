@@ -10,137 +10,14 @@ import ResetFilters from '../components/ui/ResetFilters';
 import { matchCard } from '../utils/matchCards';
 import { Card, Set } from '../types';
 import FiltersWrapper from '../components/layout/FiltersWrapper';
-
-const mockSets: Set[] = [
-  {
-    id: '1',
-    name: 'Puissance Génétique',
-    color: '#FFD700',
-    card_count: 226,
-    img_url: '/testimgs/sets/PuissanceGénétique.png',
-  },
-  {
-    id: '2',
-    name: 'Ile Fabuleuse',
-    color: '#FF006E',
-    card_count: 86,
-    img_url: '/testimgs/sets/IleFabuleuse.png',
-  },
-  {
-    id: '3',
-    name: 'Choc Spacio Temporel',
-    color: '#00C2FF',
-    card_count: 178,
-    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
-  },
-];
-
-const mockCards: Card[] = [
-  {
-    id: '1',
-    name: 'Pikachu',
-    img_url: '/testimgs/cards/PikachuEx.png',
-    rarity: 4,
-    set_id: '1',
-    official_id: 113,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '2',
-    name: 'Dracaufeu',
-    img_url: '/testimgs/cards/DracaufeuEx.png',
-    rarity: 4,
-    set_id: '1',
-    official_id: 34,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '3',
-    name: 'Palkia',
-    img_url: '/testimgs/cards/PalkiaEx.png',
-    rarity: 4,
-    set_id: '3',
-    official_id: 123,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '4',
-    name: 'Amonistar',
-    img_url: '/testimgs/cards/Amonistar.png',
-    rarity: 3,
-    set_id: '3',
-    official_id: 12,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '5',
-    name: 'Arcanin',
-    img_url: '/testimgs/cards/Arcanin.png',
-    rarity: 3,
-    set_id: '1',
-    official_id: 14,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '6',
-    name: 'Bulbizarre',
-    img_url: '/testimgs/cards/Bulbizarre.png',
-    rarity: 1,
-    set_id: '1',
-    official_id: 1,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '7',
-    name: 'Herbizarre',
-    img_url: '/testimgs/cards/Herbizarre.png',
-    rarity: 2,
-    set_id: '1',
-    official_id: 2,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '8',
-    name: 'Chimpanfeu',
-    img_url: '/testimgs/cards/Chimpanfeu.png',
-    rarity: 2,
-    set_id: '1',
-    official_id: 24,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '9',
-    name: 'Drakarmin',
-    img_url: '/testimgs/cards/Drakarmin.png',
-    rarity: 2,
-    set_id: '1',
-    official_id: 114,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-  {
-    id: '10',
-    name: 'Magnezone',
-    img_url: '/testimgs/cards/Magnezone.png',
-    rarity: 3,
-    set_id: '1',
-    official_id: 68,
-    created_at: '2024-03-01',
-    updated_at: '2024-03-01',
-  },
-];
+import { mockCards } from '../data/mockCards';
+import { mockSets } from '../data/mockSets';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
 
+  const [Cards, setCards] = useState<Card[]>([]);
+  const [Sets, setSets] = useState<Set[]>([]);
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -194,7 +71,7 @@ export default function CardPage() {
     return acc;
   }, {} as Record<string, Set>);
 
-  const filteredCards = mockCards.filter(
+  const filteredCards = Cards.filter(
     (card) =>
       matchCard(card, setMap[card.set_id], searchQuery) &&
       (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
@@ -215,6 +92,8 @@ export default function CardPage() {
   );
 
   useEffect(() => {
+    setCards(mockCards);
+    setSets(mockSets);
     const fetchUserData = async () => {
       try {
         // Simulation avec un délai (à remplacer par fetch réel)
@@ -268,7 +147,7 @@ export default function CardPage() {
         </div>
       </FiltersWrapper>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
-        {mockSets.map((set) => {
+        {Sets.map((set) => {
           const cards = cardsGroupedBySet[set.id];
           if (!cards || cards.length === 0) return null;
           return (
