@@ -17,8 +17,8 @@ export default function MatchList() {
   ];
 
   return (
-    <div className='p-4 '>
-      <h2 className='text-dark-xl mb-4'>Matchs automatiques</h2>
+    <div className='px-4 mt-14 md:mt-0'>
+      <h2 className='text-dark-xl mb-2 text-right'>Matchs</h2>
 
       {mockMatches.length === 0 ? (
         <p className='text-gray-xl text-center'>Aucun match pour l`instant</p>

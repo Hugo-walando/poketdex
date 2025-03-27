@@ -56,7 +56,9 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   });
 
   return (
-    <div className='w-full md:w-6/10 mb-10 gap-6'>
+    <div className='w-full md:w-6/10 mb-10 mt-14 md:mb-0 gap-6'>
+      <h1 className='text-dark-xl mb-2'>Cartes Listées</h1>
+
       <SearchBar
         placeholder='Rechercher une carte...'
         onSearch={(query) => setSearchQuery(query.toLowerCase())}
