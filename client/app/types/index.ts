@@ -34,3 +34,9 @@ export interface ListedCard {
     official_id: number;
   };
 }
+
+export interface WishlistCard {
+  id: string;
+  name: string;
+  img_url: string;
+}
