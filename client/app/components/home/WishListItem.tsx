@@ -1,4 +1,5 @@
 import { WishlistCard } from '@/app/types';
+import { Check } from 'lucide-react';
 import { cn } from '@/app/utils/cn';
 import Image from 'next/image';
 
@@ -17,8 +18,7 @@ export default function WishlistItem({
     <div
       onClick={() => onClick(card.id)}
       className={cn(
-        'rounded-xl bg-gray-100 p-2 shadow-sm flex flex-col items-center cursor-pointer transition-all',
-        isSelected ? 'ring-2 ring-primarygreen' : 'hover:ring-1 ring-grayblue',
+        'shadow-base relative items-center cursor-pointer transition-all',
       )}
     >
       <Image
@@ -26,9 +26,13 @@ export default function WishlistItem({
         alt={card.name}
         width={100}
         height={130}
-        className='mx-auto'
+        className='h-30 w-auto'
       />
-      <p className='text-center text-sm mt-1'>{card.name}</p>
+      {isSelected && (
+        <div className='absolute inset-0 bg-black/50 rounded-sm flex items-center transition-all justify-center'>
+          <Check className='w-8 h-8 text-white' />
+        </div>
+      )}
     </div>
   );
 }
