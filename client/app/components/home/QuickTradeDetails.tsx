@@ -44,6 +44,51 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       name: 'Palkia',
       img_url: '/testimgs/cards/PalkiaEx.png',
     },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
+    {
+      id: '102',
+      name: 'Palkia',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+    },
   ];
 
   return (
@@ -65,7 +110,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           width={0}
           height={0}
           sizes='100vw'
-          className=' rounded-xl w-40 h-auto shadow-base mb-4'
+          className='h-40 w-auto shadow-base mb-4'
         />
         <div className='text-gray-xl'>
           {card.card.official_id}
@@ -101,20 +146,25 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         <span className='text-dark-base'>{card.user.username}</span>
       </div>
 
-      <h3 className='text-dark-xl mt-6 mb-2'>Il recherche :</h3>
-      <div className='grid grid-cols-2 gap-3'>
-        {wishlistMock.map((wish) => (
-          <div key={wish.id} className='rounded-xl bg-gray-100 p-2 shadow-sm'>
-            <Image
-              src={wish.img_url}
-              alt={wish.name}
-              width={100}
-              height={130}
-              className='mx-auto'
-            />
-            <p className='text-center text-sm mt-1'>{wish.name}</p>
-          </div>
-        ))}
+      <h3 className='text-dark-xl mt-2 mb-2'>Il recherche :</h3>
+      <div className='max-h-[150px] overflow-y-auto pr-1'>
+        <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
+          {wishlistMock.map((wish) => (
+            <div
+              key={wish.id}
+              className='flex items-center justify-center hover:scale-110 transition-all hover:cursor-pointer'
+            >
+              <Image
+                src={wish.img_url}
+                alt={wish.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className='w-auto h-30'
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <button className='mt-6 w-full bg-primarygreen text-white py-2 rounded-xl hover:opacity-90 transition-all'>
