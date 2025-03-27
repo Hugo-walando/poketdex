@@ -1,6 +1,7 @@
 'use client';
 
 import { mockSets } from '@/app/data/mockSets';
+import { mockWishlists } from '@/app/data/mockWishlists';
 import { ListedCard, Set } from '@/app/types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -32,64 +33,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }, []);
 
   const cardSet = Sets.find((s) => s.id === card.card.set_id);
-
-  const wishlistMock = [
-    {
-      id: '101',
-      name: 'Dracaufeu',
-      img_url: '/testimgs/cards/DracaufeuEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-    {
-      id: '102',
-      name: 'Palkia',
-      img_url: '/testimgs/cards/PalkiaEx.png',
-    },
-  ];
 
   return (
     <div className='p-4 rounded-xl h-full shadow-base bg-white'>
@@ -149,7 +92,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       <h3 className='text-dark-xl mt-2 mb-2'>Il recherche :</h3>
       <div className='max-h-[20vh] overflow-y-auto'>
         <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
-          {wishlistMock.map((wish) => (
+          {mockWishlists.map((wish) => (
             <div
               key={wish.id}
               className='flex items-center justify-center hover:scale-110 transition-all hover:cursor-pointer'
