@@ -56,6 +56,19 @@ body {
   @apply text-xl text-primarygreen font-semibold font-sans
 }
 
+.text-dark-lg {
+  @apply text-lg text-darkblue font-semibold font-sans
+}
+
+.text-gray-lg {
+  @apply text-lg text-darkgray font-semibold font-sans
+}
+
+.text-green-lg {
+  @apply text-lg text-primarygreen font-semibold font-sans
+}
+
+
 .text-dark-base {
   @apply text-base text-darkblue font-semibold font-sans
 }
