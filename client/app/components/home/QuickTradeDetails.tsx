@@ -92,7 +92,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   ];
 
   return (
-    <div className='p-4 rounded-xl shadow-base bg-white'>
+    <div className='p-4 rounded-xl h-full shadow-base bg-white'>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-dark-xl'>Détails de la carte</h2>
         <button
@@ -147,7 +147,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </div>
 
       <h3 className='text-dark-xl mt-2 mb-2'>Il recherche :</h3>
-      <div className='max-h-[150px] overflow-y-auto pr-1'>
+      <div className='max-h-[20vh] overflow-y-auto'>
         <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
           {wishlistMock.map((wish) => (
             <div
