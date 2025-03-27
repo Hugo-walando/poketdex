@@ -1,4 +1,6 @@
-export const mockWishlists = [
+import { WishlistCard } from '../types';
+
+export const mockWishlists: WishlistCard[] = [
   {
     id: '101',
     name: 'Dracaufeu',
@@ -10,47 +12,47 @@ export const mockWishlists = [
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '103',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '104',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '105',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '106',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '107',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '108',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '109',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '110',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
   {
-    id: '102',
+    id: '111',
     name: 'Palkia',
     img_url: '/testimgs/cards/PalkiaEx.png',
   },
