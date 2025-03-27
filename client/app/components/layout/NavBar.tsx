@@ -85,7 +85,7 @@ export default function Navbar() {
       </nav>
 
       {/* 📱 Mobile */}
-      <nav className='md:hidden fixed bottom-0 w-full bg-white border-gray-200 flex justify-around items-center py-6 shadow-inner z-50'>
+      <nav className='md:hidden fixed bottom-0 left-0 w-full bg-white border-gray-200 flex justify-around items-center py-6 shadow-inner z-50'>
         {navItems.map((item) => (
           <Link
             key={item.href}
