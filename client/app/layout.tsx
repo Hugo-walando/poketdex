@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={poppins.className}>
+    <html lang='fr' className={poppins.variable}>
       <body>
         <MaxWidthWrapper>
           <Navbar />
