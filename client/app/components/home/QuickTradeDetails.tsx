@@ -5,6 +5,8 @@ import { mockWishlists } from '@/app/data/mockWishlists';
 import { ListedCard, Set } from '@/app/types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import WishlistItem from './WishListItem';
+import { cn } from '@/app/utils/cn';
 
 interface Props {
   card: ListedCard;
@@ -24,7 +26,19 @@ const rarityIcons: Record<number, string> = {
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
   const [Sets, setSets] = useState<Set[]>([]);
+  const [selectedWishlistCardId, setSelectedWishlistCardId] = useState<
+    string | null
+  >(null);
 
+  const handleSendRequest = () => {
+    if (!selectedWishlistCardId) return;
+
+    console.log({
+      toUserId: card.user.id,
+      listedCardId: card.card.id,
+      myCardOfferedId: selectedWishlistCardId,
+    });
+  };
   useEffect(() => {
     // Plus tard un fetch ici
     // fetch('/api/sets').then(...)
@@ -97,21 +111,28 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               key={wish.id}
               className='flex items-center justify-center hover:scale-110 transition-all hover:cursor-pointer'
             >
-              <Image
-                src={wish.img_url}
-                alt={wish.name}
-                width={0}
-                height={0}
-                sizes='100vw'
-                className='w-auto h-30'
+              <WishlistItem
+                key={wish.id}
+                card={wish}
+                isSelected={selectedWishlistCardId === wish.id}
+                onClick={setSelectedWishlistCardId}
               />
             </div>
           ))}
         </div>
       </div>
 
-      <button className='mt-6 w-full bg-primarygreen text-white py-2 rounded-xl hover:opacity-90 transition-all'>
-        Envoyer une demande d’échange
+      <button
+        onClick={handleSendRequest}
+        disabled={!selectedWishlistCardId}
+        className={cn(
+          'w-full py-2 mt-6 rounded-xl font-semibold transition-all',
+          selectedWishlistCardId
+            ? 'bg-primarygreen text-white hover:opacity-90'
+            : 'bg-gray-300 text-white cursor-not-allowed',
+        )}
+      >
+        Envoyer la demande d`échange
       </button>
     </div>
   );
