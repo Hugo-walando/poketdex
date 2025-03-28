@@ -15,6 +15,7 @@ interface LeftColumnProps {
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [listedCards, setListedCards] = useState<ListedCard[]>([]);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
@@ -97,7 +98,11 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
             <ListedCardItem
               key={item.duplicate_id}
               data={item}
-              onClick={() => onCardClick(item)}
+              onClick={() => {
+                onCardClick(item);
+                setSelectedCardId(item.card.id);
+              }}
+              isSelected={selectedCardId === item.card.id}
             />
           ))
         )}

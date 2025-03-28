@@ -126,7 +126,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         onClick={handleSendRequest}
         disabled={!selectedWishlistCardId}
         className={cn(
-          'w-full py-2 mt-6 rounded-xl font-semibold transition-all',
+          'w-full py-2 mt-6 rounded-xl font-semibold transition-all hover:cursor-pointer',
           selectedWishlistCardId
             ? 'bg-primarygreen text-white hover:opacity-90'
             : 'bg-gray-300 text-white cursor-not-allowed',
