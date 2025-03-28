@@ -1,0 +1,168 @@
+import { Match } from '../types';
+
+export const mockMatches: Match[] = [
+  {
+    id: 'match_1',
+    status: 'pending',
+    created_at: '2024-03-28T10:00:00Z',
+    user_1: {
+      id: 'user123',
+      username: 'Hugo',
+      profile_picture: '/testimgs/avatars/Av1.png',
+      friend_code: 'SW-1234-5678',
+    },
+    user_2: {
+      id: 'user456',
+      username: 'Leo',
+      profile_picture: '/testimgs/avatars/Av2.png',
+      friend_code: 'SW-8765-4321',
+    },
+    card_from_user_1: {
+      id: '1',
+      name: 'Pikachu EX',
+      img_url: '/testimgs/cards/PikachuEx.png',
+      rarity: 4,
+      official_id: 113,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+    card_from_user_2: {
+      id: '2',
+      name: 'Dracaufeu EX',
+      img_url: '/testimgs/cards/DracaufeuEx.png',
+      rarity: 4,
+      official_id: 34,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+  },
+  {
+    id: 'match_2',
+    status: 'accepted',
+    created_at: '2024-03-27T16:00:00Z',
+    user_1: {
+      id: 'user123',
+      username: 'Hugo',
+      profile_picture: '/testimgs/avatars/Av1.png',
+      friend_code: 'SW-1234-5678',
+    },
+    user_2: {
+      id: 'user321',
+      username: 'Alex',
+      profile_picture: '/testimgs/avatars/Av3.png',
+      friend_code: 'SW-9999-8888',
+    },
+    card_from_user_1: {
+      id: '3',
+      name: 'Amonistar',
+      img_url: '/testimgs/cards/Amonistar.png',
+      rarity: 3,
+      official_id: 12,
+      set: {
+        id: '3',
+        name: 'Choc Spacio Temporel',
+        img_url: '/testimgs/sets/ChocSpacioTemporel.png',
+      },
+    },
+    card_from_user_2: {
+      id: '4',
+      name: 'Palkia EX',
+      img_url: '/testimgs/cards/PalkiaEx.png',
+      rarity: 4,
+      official_id: 123,
+      set: {
+        id: '3',
+        name: 'Choc Spacio Temporel',
+        img_url: '/testimgs/sets/ChocSpacioTemporel.png',
+      },
+    },
+  },
+  {
+    id: 'match_3',
+    status: 'cancelled',
+    created_at: '2024-03-26T12:00:00Z',
+    user_1: {
+      id: 'user123',
+      username: 'Hugo',
+      profile_picture: '/testimgs/avatars/Av1.png',
+      friend_code: 'SW-1234-5678',
+    },
+    user_2: {
+      id: 'user654',
+      username: 'Nina',
+      profile_picture: '/testimgs/avatars/Av4.png',
+      friend_code: 'SW-5555-6666',
+    },
+    card_from_user_1: {
+      id: '5',
+      name: 'Bulbizarre',
+      img_url: '/testimgs/cards/Bulbizarre.png',
+      rarity: 1,
+      official_id: 1,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+    card_from_user_2: {
+      id: '6',
+      name: 'Herbizarre',
+      img_url: '/testimgs/cards/Herbizarre.png',
+      rarity: 2,
+      official_id: 2,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+  },
+  {
+    id: 'match_4',
+    status: 'pending',
+    created_at: '2024-03-28T18:00:00Z',
+    user_1: {
+      id: 'user123',
+      username: 'Hugo',
+      profile_picture: '/testimgs/avatars/Av1.png',
+      friend_code: 'SW-1234-5678',
+    },
+    user_2: {
+      id: 'user753',
+      username: 'Tom',
+      profile_picture: '/testimgs/avatars/Av5.png',
+      friend_code: 'SW-3030-4040',
+    },
+    card_from_user_1: {
+      id: '7',
+      name: 'Arcanin',
+      img_url: '/testimgs/cards/Arcanin.png',
+      rarity: 3,
+      official_id: 14,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+    card_from_user_2: {
+      id: '8',
+      name: 'Chimpanfeu',
+      img_url: '/testimgs/cards/Chimpanfeu.png',
+      rarity: 2,
+      official_id: 24,
+      set: {
+        id: '1',
+        name: 'Puissance Génétique',
+        img_url: '/testimgs/sets/PuissanceGénétique.png',
+      },
+    },
+  },
+];
