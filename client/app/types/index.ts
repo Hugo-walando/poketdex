@@ -44,22 +44,22 @@ export interface WishlistCard {
 export interface Match {
   id: string;
   status: 'pending' | 'accepted' | 'cancelled';
-  createdAt: string;
+  created_at: string;
   user: {
     id: string;
     username: string;
-    profilePicture: string;
-    friendCode: string;
+    profile_picture: string;
+    friend_code: string;
   };
-  offeredCard: CardSummary; // Carte que l’autre joueur t’offre
-  requestedCard: CardSummary; // Carte que tu proposes
+  offered_card: CardSummary;
+  requested_card: CardSummary;
 }
 
 export interface CardSummary {
   id: string;
   name: string;
-  imgUrl: string;
+  img_url: string;
   rarity: number;
-  officialId: number;
-  setImage: string;
+  official_id: number;
+  set_img: string;
 }
