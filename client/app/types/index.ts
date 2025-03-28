@@ -40,3 +40,45 @@ export interface WishlistCard {
   name: string;
   img_url: string;
 }
+
+export interface Match {
+  id: string;
+  status: 'pending' | 'accepted' | 'cancelled';
+  created_at: string;
+  user_1: {
+    id: string;
+    username: string;
+    profile_picture: string;
+    friend_code: string;
+  };
+  user_2: {
+    id: string;
+    username: string;
+    profile_picture: string;
+    friend_code: string;
+  };
+  card_from_user_1: {
+    id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    official_id: number;
+    set: {
+      id: string;
+      name: string;
+      img_url: string;
+    };
+  };
+  card_from_user_2: {
+    id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    official_id: number;
+    set: {
+      id: string;
+      name: string;
+      img_url: string;
+    };
+  };
+}
