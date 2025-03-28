@@ -128,7 +128,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </div>
       </div>
       {!selectedWishlistCardId && (
-        <p className='text-red-sm text-center my-2'>
+        <p className='text-light-sm text-center my-2'>
           Veuillez sélectionner une carte à proposer en échange.
         </p>
       )}
