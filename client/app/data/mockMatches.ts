@@ -8,7 +8,7 @@ export const mockMatches: Match[] = [
     user: {
       id: 'user_002',
       username: 'DresseurX',
-      profile_picture: '/testimgs/avatars/1.png',
+      profile_picture: '/testimgs/avatars/Av1.png',
       friend_code: 'SW-1234-5678',
     },
     offered_card: {
@@ -35,7 +35,7 @@ export const mockMatches: Match[] = [
     user: {
       id: 'user_003',
       username: 'Sacha93',
-      profile_picture: '/testimgs/avatars/2.png',
+      profile_picture: '/testimgs/avatars/Av2.png',
       friend_code: 'SW-8765-4321',
     },
     offered_card: {
