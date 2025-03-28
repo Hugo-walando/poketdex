@@ -61,34 +61,38 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </div>
 
       <div className='w-full gap-3 flex justify-center'>
-        <Image
-          src={card.card.img_url}
-          alt={card.card.name}
-          width={0}
-          height={0}
-          sizes='100vw'
-          className='h-40 w-auto shadow-base mb-4'
-        />
-        <div className='text-gray-xl'>
-          {card.card.official_id}
-          {cardSet && (
-            <Image
-              src={cardSet.img_url}
-              alt={cardSet.name}
-              width={0}
-              height={0}
-              sizes='100vw'
-              className=' h-10 w-auto'
-            />
-          )}
+        <div className='w-1/2 flex justify-end'>
           <Image
-            src={rarityIcons[card.card.rarity]}
-            alt={`Rareté ${card.card.rarity}`}
+            src={card.card.img_url}
+            alt={card.card.name}
             width={0}
             height={0}
             sizes='100vw'
-            className='mt-2 w-auto h-10'
+            className='h-40 w-auto shadow-base mb-4'
           />
+        </div>
+        <div className='w-1/2 flex justify-start'>
+          <div className='text-gray-xl'>
+            {card.card.official_id}
+            {cardSet && (
+              <Image
+                src={cardSet.img_url}
+                alt={cardSet.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className=' h-10 w-auto'
+              />
+            )}
+            <Image
+              src={rarityIcons[card.card.rarity]}
+              alt={`Rareté ${card.card.rarity}`}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='mt-2 w-auto h-10'
+            />
+          </div>
         </div>
       </div>
 
