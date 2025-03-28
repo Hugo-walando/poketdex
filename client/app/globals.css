@@ -62,40 +62,48 @@ body {
 }
 
 .text-gray-lg {
-  @apply text-lg text-darkgray font-semibold font-sans
+  @apply text-lg text-darkgray font-semibold font-poppins
 }
 
 .text-green-lg {
-  @apply text-lg text-primarygreen font-semibold font-sans
+  @apply text-lg text-primarygreen font-semibold font-poppins
 }
 
 
 .text-dark-base {
-  @apply text-base text-darkblue font-semibold font-sans
+  @apply text-base text-darkblue font-semibold font-poppins
 }
 
 .text-gray-base {
-  @apply text-sm text-darkgray font-semibold font-sans
+  @apply text-sm text-darkgray font-semibold font-poppins
 }
 
 .text-green-base {
-  @apply text-base text-primarygreen font-semibold font-sans
+  @apply text-base text-primarygreen font-semibold font-poppins
+}
+
+.text-red-base {
+  @apply text-base text-redalert font-semibold font-poppins
 }
 
 .text-dark-sm {
-  @apply text-sm text-darkblue font-semibold font-sans
+  @apply text-sm text-darkblue font-semibold font-poppins
 }
 
 .text-gray-sm {
-  @apply text-sm text-darkgray font-semibold font-sans
+  @apply text-sm text-darkgray font-semibold font-poppins
 }
 
 .text-green-sm {
-  @apply text-sm text-primarygreen font-semibold font-sans
+  @apply text-sm text-primarygreen font-semibold font-poppins
+}
+
+.text-red-sm {
+  @apply text-sm text-redalert font-semibold font-poppins
 }
 
 .text-light-base {
-  @apply text-base text-bluegray font-semibold font-sans
+  @apply text-base text-bluegray font-semibold font-poppins
 }
 
 
