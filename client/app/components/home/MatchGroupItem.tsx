@@ -13,7 +13,7 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className='border rounded-xl shadow-base'>
+    <div className='bg-white rounded-xl shadow-base'>
       <div
         className='flex items-center justify-between p-4 cursor-pointer'
         onClick={() => setIsOpen(!isOpen)}
