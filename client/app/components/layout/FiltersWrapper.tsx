@@ -6,7 +6,11 @@ interface FiltersWrapperProps {
 }
 
 const FiltersWrapper = ({ children, className }: FiltersWrapperProps) => {
-  return <div className={cn('mb-10 md:flex gap-6', className)}>{children}</div>;
+  return (
+    <div className={cn('mb-10 md:flex gap-2 md:gap-6', className)}>
+      {children}
+    </div>
+  );
 };
 
 export default FiltersWrapper;
