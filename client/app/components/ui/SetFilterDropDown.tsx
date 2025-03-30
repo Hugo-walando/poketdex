@@ -68,7 +68,7 @@ export default function SetFilterDropdown({
     <div className='relative text-left '>
       <button
         onClick={toggleDropdown}
-        className='flex items-center gap-2 px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-lg md:text-gray-xl hover:cursor-pointer'
+        className='flex items-center gap-2 px-2 sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'
       >
         <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
         Extension
