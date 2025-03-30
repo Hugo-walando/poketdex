@@ -33,7 +33,7 @@ export default function MatchList() {
   }
   return (
     <div className='mt-14 md:mt-0 px-2'>
-      <h2 className='text-dark-xl mb-2 text-right'>Matchs</h2>
+      <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>Matchs</h2>
       <div className='  flex flex-col gap-2'>
         {matchGroups.map((group) => (
           <MatchGroupItem key={group.user.id} group={group} />

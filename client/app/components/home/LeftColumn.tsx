@@ -58,13 +58,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
 
   return (
     <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6'>
-      <h1 className='text-dark-xl mb-2'>Cartes Listées</h1>
+      <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>
 
       <SearchBar
         placeholder='Rechercher une carte...'
         onSearch={(query) => setSearchQuery(query.toLowerCase())}
       />
-      <div className='w-full my-6 flex gap-4'>
+      <div className='w-full my-6 flex gap-2 md:gap-4'>
         <SetFilterDropdown
           selectedSets={selectedSets}
           onToggleSet={(setId) =>
