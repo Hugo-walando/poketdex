@@ -63,7 +63,7 @@ export default function Home() {
             onClick={() =>
               setViewMode(viewMode === 'matchs' ? 'default' : 'matchs')
             }
-            className='fixed top-8 left-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-r-full shadow-lg md:hidden flex items-center'
+            className='absolute top-8 left-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-r-full shadow-lg md:hidden flex items-center'
           >
             <ChevronLeft className='w-4 h-4 md:w-6 md:h-6 mr-2' />
             Retour aux cartes
