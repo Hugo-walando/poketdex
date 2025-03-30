@@ -5,7 +5,7 @@ export const mockMatches: MatchGroup[] = [
     user: {
       id: 'u1',
       username: 'PokeFan42',
-      profile_picture: '/testimgs/avatar1.png',
+      profile_picture: '/testimgs/avatars/Av1.png',
     },
     trades: [
       {
@@ -21,12 +21,12 @@ export const mockMatches: MatchGroup[] = [
           updated_at: '2024-03-01',
         },
         requested_card: {
-          id: 'c3',
-          name: 'Mewtwo',
-          img_url: '/testimgs/cards/Mewtwo.png',
-          rarity: 3,
-          official_id: 25,
-          set_id: '2',
+          id: 'c2',
+          name: 'Dracaufeu EX',
+          img_url: '/testimgs/cards/DracaufeuEx.png',
+          rarity: 5,
+          official_id: 101,
+          set_id: '1',
           created_at: '2024-03-01',
           updated_at: '2024-03-01',
         },
@@ -44,12 +44,12 @@ export const mockMatches: MatchGroup[] = [
           updated_at: '2024-03-01',
         },
         requested_card: {
-          id: 'c2',
-          name: 'Dracaufeu EX',
-          img_url: '/testimgs/cards/DracaufeuEx.png',
-          rarity: 5,
-          official_id: 101,
-          set_id: '1',
+          id: 'c3',
+          name: 'Amonistar',
+          img_url: '/testimgs/cards/Amonistar.png',
+          rarity: 3,
+          official_id: 25,
+          set_id: '2',
           created_at: '2024-03-01',
           updated_at: '2024-03-01',
         },
@@ -60,7 +60,7 @@ export const mockMatches: MatchGroup[] = [
     user: {
       id: 'u2',
       username: 'MistyMaster',
-      profile_picture: '/testimgs/avatar2.png',
+      profile_picture: '/testimgs/avatars/Av2.png',
     },
     trades: [
       {
