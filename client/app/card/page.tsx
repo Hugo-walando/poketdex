@@ -130,7 +130,7 @@ export default function CardPage() {
             onSearch={(query) => setSearchQuery(query.toLowerCase())}
           />
         </div>
-        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 justify-between sm:justify-start flex '>
+        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
           <SetFilterDropdown
             selectedSets={selectedSets}
             onToggleSet={toggleSet}
