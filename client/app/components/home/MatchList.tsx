@@ -5,19 +5,19 @@ import Image from 'next/image';
 
 export default function MatchList() {
   return (
-    <div className='px-4 mt-14 md:mt-0'>
-      <h2 className='text-dark-xl mb-2 text-right'>Matchs</h2>
-
+    <div className='mt-14 md:mt-0 w-full'>
       {mockMatches.length === 0 ? (
         <p className='text-gray-xl text-center'>Aucun match pour l`instant</p>
       ) : (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col items-center gap-4 px-4'>
+          <h2 className='text-dark-xl mb-2 text-right'>Matchs</h2>
           {mockMatches.map((match) => (
             <div
               key={match.id}
-              className='flex items-center gap-4 p-3 bg-white rounded-xl shadow-base'
+              className='w-full flex items-center gap-4 px-4 py-4 bg-white rounded-xl shadow-base 
+'
             >
-              <div className='flex pl-6'>
+              <div className='flex pl-2'>
                 <Image
                   src={match.requested_card.img_url}
                   alt={match.requested_card.name}
@@ -26,7 +26,7 @@ export default function MatchList() {
                   sizes='100vw'
                   className='w-20 h-auto rounded-md'
                 />
-                <div className='flex flex-col items-center'>
+                <div className='flex flex-col w-10 items-center'>
                   <h3 className='text-dark-base font-semibold'>
                     {match.requested_card.official_id}
                   </h3>
@@ -36,12 +36,12 @@ export default function MatchList() {
                     width={0}
                     height={0}
                     sizes='100vw'
-                    className='h-10 w-auto'
+                    className='h-4 w-auto'
                   />
                 </div>
               </div>
-              <div className='flex pr-10'>
-                <div className='flex flex-col items-center'>
+              <div className='flex pr-1'>
+                <div className='flex flex-col w-10 items-center'>
                   <h3 className='text-dark-base font-semibold'>
                     {match.offered_card.official_id}
                   </h3>
@@ -51,7 +51,7 @@ export default function MatchList() {
                     width={0}
                     height={0}
                     sizes='100vw'
-                    className='h-10 w-auto'
+                    className='h-4 w-auto'
                   />
                 </div>
                 <Image
@@ -71,9 +71,7 @@ export default function MatchList() {
                   height={32}
                   className='rounded-full'
                 />
-                <div className='flex flex-col'>
-                  <span className='text-dark-base'>{match.user.username}</span>
-                </div>
+                <span className='text-dark-base'>{match.user.username}</span>
               </div>
             </div>
           ))}
