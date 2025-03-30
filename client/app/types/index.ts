@@ -41,25 +41,17 @@ export interface WishlistCard {
   img_url: string;
 }
 
-export interface Match {
+export interface MatchTrade {
   id: string;
-  status: 'pending' | 'accepted' | 'cancelled';
-  created_at: string;
+  offered_card: Card;
+  requested_card: Card;
+}
+
+export interface MatchGroup {
   user: {
     id: string;
     username: string;
     profile_picture: string;
-    friend_code: string;
   };
-  offered_card: CardSummary;
-  requested_card: CardSummary;
-}
-
-export interface CardSummary {
-  id: string;
-  name: string;
-  img_url: string;
-  rarity: number;
-  official_id: number;
-  set_img: string;
+  trades: MatchTrade[];
 }
