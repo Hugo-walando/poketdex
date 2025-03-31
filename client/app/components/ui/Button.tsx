@@ -17,7 +17,7 @@ export default function Button({
   return (
     <button
       className={cn(
-        'px-10 py-2 rounded-full font-sans text-lg shadow-btn font-semibold transition-all duration-200',
+        'px-6 md:px-10 py-2 rounded-full font-sans text-base md:text-lg shadow-btn font-semibold transition-all duration-200',
         variant === 'primary' &&
           'text-white border-solid border-2 border-white bg-primarygreen hover:bg-white hover:text-primarygreen hover:cursor-pointer',
         variant === 'secondary' &&
