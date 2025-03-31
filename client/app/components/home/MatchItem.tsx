@@ -47,7 +47,7 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
           sizes='100vw'
           className='h-22 w-auto'
         />
-        <div className='flex flex-col gap-2 w-[60px]'>
+        <div className='flex flex-col gap-2 w-full'>
           <span className='text-gray-sm'>
             {match.requested_card.official_id}
           </span>
@@ -64,7 +64,7 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
         </div>
       </div>
       {/* Icon & Rarity */}
-      <div className='flex flex-col items-center w-[60px] gap-1'>
+      <div className='flex flex-col items-center w-full gap-1 mx-auto'>
         <TradeIcon className='w-6 h-6 text-primarygreen' />
         <Image
           src={
@@ -79,7 +79,7 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
       </div>
       {/* Offered Card */}
       <div className='flex items-center gap-2 '>
-        <div className='flex flex-col gap-2 w-[60px]'>
+        <div className='flex flex-col gap-2 w-full'>
           <span className='text-gray-sm text-right'>
             {match.offered_card.official_id}
           </span>
