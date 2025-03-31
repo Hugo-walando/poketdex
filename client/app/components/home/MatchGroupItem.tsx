@@ -34,13 +34,15 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
             height={32}
             className='rounded-full'
           />
-          <span className='text-dark-base font-semibold'>
+          <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
             {group.user.username} ({group.trades.length} matchs)
           </span>
         </div>
 
-        <span className='text-sm text-grayblue flex md:hidden ld:block gap-2'>
-          {isOpen ? 'Masquer' : 'Voir les cartes'}
+        <span className='text-sm text-grayblue flex  gap-2'>
+          <div className='hidden text-nowrap sm:block md:hidden xl:block'>
+            {isOpen ? 'Masquer' : 'Voir les cartes'}
+          </div>
           {isOpen ? (
             <MinusIcon className='text-gray-lg' />
           ) : (
@@ -52,7 +54,7 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
       {isOpen && (
         <div className='px-4 pb-4 w-full'>
           {/* Header aligné avec la grille */}
-          <div className='grid grid-cols-4 gap-4 text-center text-gray-sm mb-2'>
+          <div className='grid grid-cols-4 gap-4 text-center text-nowrap text-gray-sm mb-2'>
             <div></div> {/* Colonne checkbox */}
             <span>Vous recevez</span>
             <span></span> {/* Colonne de séparation */}
