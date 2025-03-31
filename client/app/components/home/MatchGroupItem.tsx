@@ -50,21 +50,29 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
       </div>
 
       {isOpen && (
-        <div className='px-4 pb-4 space-y-4'>
-          <div className='pl-10 flex max-w-[350px] items-center justify-between '>
-            <span className='text-light-sm text-nowrap'>Vous recevez</span>
-            <span className='text-light-sm text-nowrap'>Vous offrez</span>
+        <div className='px-4 pb-4 w-full'>
+          {/* Header aligné avec la grille */}
+          <div className='grid grid-cols-4 gap-4 text-center text-gray-sm mb-2'>
+            <div></div> {/* Colonne checkbox */}
+            <span>Vous recevez</span>
+            <span></span> {/* Colonne de séparation */}
+            <span>Vous offrez</span>
           </div>
-          {group.trades.map((match) => (
-            <MatchItem
-              key={match.id}
-              match={match}
-              isSelected={selectedMatchIds.includes(match.id)}
-              onSelect={toggleMatchSelection}
-            />
-          ))}
+
+          {/* Match rows */}
+          <div className='grid grid-cols-4 gap-4 space-y-2'>
+            {group.trades.map((match) => (
+              <MatchItem
+                key={match.id}
+                match={match}
+                isSelected={selectedMatchIds.includes(match.id)}
+                onSelect={toggleMatchSelection}
+              />
+            ))}
+          </div>
         </div>
       )}
+
       {selectedMatchIds.length > 0 && (
         <button
           onClick={() =>
