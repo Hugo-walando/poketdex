@@ -152,14 +152,14 @@ export default function CardPage() {
           if (!cards || cards.length === 0) return null;
           return (
             <section key={set.id} className='mb-12'>
-              <div className='flex items-center bg-white rounded-xl p-6 shadow-base gap-3 mb-6 w-max'>
+              <div className='flex items-center justify-center md:justify-normal w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
                 <Image
                   src={set.img_url}
                   alt={set.name}
                   width={0}
                   height={0}
                   sizes='100vw'
-                  className='w-auto h-[60px]'
+                  className='w-auto h-[50px]'
                 />
               </div>
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
