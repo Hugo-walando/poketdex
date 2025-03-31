@@ -7,22 +7,12 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
+import { rarityIcons } from '@/app/data/rarities';
 
 interface Props {
   card: ListedCard;
   onClose: () => void;
 }
-
-const rarityIcons: Record<number, string> = {
-  1: '/testimgs/rarities/1.png',
-  2: '/testimgs/rarities/2.png',
-  3: '/testimgs/rarities/3.png',
-  4: '/testimgs/rarities/4.png',
-  5: '/testimgs/rarities/5.png',
-  6: '/testimgs/rarities/6.png',
-  7: '/testimgs/rarities/7.png',
-  8: '/testimgs/rarities/8.png',
-};
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
   const [Sets, setSets] = useState<Set[]>([]);
@@ -85,7 +75,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               />
             )}
             <Image
-              src={rarityIcons[card.card.rarity]}
+              src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
               alt={`Rareté ${card.card.rarity}`}
               width={0}
               height={0}

@@ -1,5 +1,6 @@
 'use client';
 
+import { rarities, rarityIcons } from '@/app/data/rarities';
 import { ChevronDown, ChevronUp, StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -8,19 +9,6 @@ interface RarityFilterProps {
   selectedRarities: number[];
   onToggleRarity: (rarity: number) => void;
 }
-
-const rarities = [1, 2, 3, 4, 5, 6, 7, 8]; // 8 niveaux de rareté
-
-const rarityIcons: Record<number, string> = {
-  1: '/testimgs/rarities/1.png',
-  2: '/testimgs/rarities/2.png',
-  3: '/testimgs/rarities/3.png',
-  4: '/testimgs/rarities/4.png',
-  5: '/testimgs/rarities/5.png',
-  6: '/testimgs/rarities/6.png',
-  7: '/testimgs/rarities/7.png',
-  8: '/testimgs/rarities/8.png',
-};
 
 export default function RarityFilter({
   selectedRarities,
