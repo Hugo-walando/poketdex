@@ -4,6 +4,7 @@ import { MatchGroup } from '@/app/types';
 import Image from 'next/image';
 import { useState } from 'react';
 import MatchItem from './MatchItem';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
@@ -37,8 +38,14 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
             {group.user.username} ({group.trades.length} matchs)
           </span>
         </div>
-        <span className='text-sm text-grayblue'>
+
+        <span className='text-sm text-grayblue flex md:hidden ld:block gap-2'>
           {isOpen ? 'Masquer' : 'Voir les cartes'}
+          {isOpen ? (
+            <MinusIcon className='text-gray-lg' />
+          ) : (
+            <PlusIcon className='text-gray-lg' />
+          )}
         </span>
       </div>
 
