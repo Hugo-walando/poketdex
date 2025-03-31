@@ -44,7 +44,7 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
 
       {isOpen && (
         <div className='px-4 pb-4 space-y-4'>
-          <div className='flex max-w-[350px] items-center justify-between '>
+          <div className='pl-10 flex max-w-[350px] items-center justify-between '>
             <span className='text-light-sm text-nowrap'>Vous recevez</span>
             <span className='text-light-sm text-nowrap'>Vous offrez</span>
           </div>

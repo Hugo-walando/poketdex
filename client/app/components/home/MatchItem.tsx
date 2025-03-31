@@ -29,7 +29,7 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
   const offeredCardSet = Sets.find((s) => s.id === match.offered_card.set_id);
 
   return (
-    <div className='flex justify-between items-center gap-4 w-full'>
+    <div className='flex items-center gap-4 w-full'>
       <input
         type='checkbox'
         checked={isSelected}
