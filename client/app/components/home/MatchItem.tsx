@@ -9,9 +9,11 @@ import { rarityIcons } from '@/app/data/rarities';
 
 interface Props {
   match: MatchTrade;
+  isSelected: boolean;
+  onSelect: (matchId: string) => void;
 }
 
-export default function MatchItem({ match }: Props) {
+export default function MatchItem({ match, isSelected, onSelect }: Props) {
   const [Sets, setSets] = useState<Set[]>([]);
 
   useEffect(() => {
@@ -28,6 +30,12 @@ export default function MatchItem({ match }: Props) {
 
   return (
     <div className='flex justify-between items-center gap-4 w-full'>
+      <input
+        type='checkbox'
+        checked={isSelected}
+        onChange={() => onSelect(match.id)}
+        className='w-4 h-4 accent-primarygreen'
+      />
       <div className='flex items-center justify-between gap-4'>
         <div className='flex items-center gap-2 '>
           <Image

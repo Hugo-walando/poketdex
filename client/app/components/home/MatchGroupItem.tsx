@@ -11,6 +11,13 @@ interface MatchGroupItemProps {
 
 export default function MatchGroupItem({ group }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedMatchIds, setSelectedMatchIds] = useState<string[]>([]);
+
+  const toggleMatchSelection = (id: string) => {
+    setSelectedMatchIds((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
+  };
 
   return (
     <div className='bg-white rounded-xl shadow-base'>
@@ -42,9 +49,24 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
             <span className='text-light-sm text-nowrap'>Vous offrez</span>
           </div>
           {group.trades.map((match) => (
-            <MatchItem key={match.id} match={match} />
+            <MatchItem
+              key={match.id}
+              match={match}
+              isSelected={selectedMatchIds.includes(match.id)}
+              onSelect={toggleMatchSelection}
+            />
           ))}
         </div>
+      )}
+      {selectedMatchIds.length > 0 && (
+        <button
+          onClick={() =>
+            console.log('Envoyer les demandes pour :', selectedMatchIds)
+          }
+          className='mt-4 w-full py-2 bg-primarygreen text-white rounded-xl font-semibold'
+        >
+          Envoyer {selectedMatchIds.length} demande(s)
+        </button>
       )}
     </div>
   );
