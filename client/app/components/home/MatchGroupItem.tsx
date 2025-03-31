@@ -52,9 +52,9 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
       </div>
 
       {isOpen && (
-        <div className='px-4 pb-4 w-full'>
+        <div className='px-4 pb-4 w-full max-w-[500px] mx-auto'>
           {/* Header aligné avec la grille */}
-          <div className='grid grid-cols-4 gap-4 text-center text-nowrap text-gray-sm mb-2'>
+          <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,5fr)] gap-4 text-center text-gray-sm mb-2 text-nowrap'>
             <div></div> {/* Colonne checkbox */}
             <span>Vous recevez</span>
             <span></span> {/* Colonne de séparation */}
@@ -62,7 +62,7 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
           </div>
 
           {/* Match rows */}
-          <div className='grid grid-cols-4 gap-4 space-y-2'>
+          <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,5fr)] gap-4 items-center'>
             {group.trades.map((match) => (
               <MatchItem
                 key={match.id}
