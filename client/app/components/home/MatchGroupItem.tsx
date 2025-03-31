@@ -37,9 +37,9 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
 
       {isOpen && (
         <div className='px-4 pb-4 space-y-4'>
-          <div className='flex gap-18'>
-            <span className='text-light-sm'>Vous recevez</span>
-            <span className='text-light-sm'>Vous offrez</span>
+          <div className='flex max-w-[350px] items-center justify-between '>
+            <span className='text-light-sm text-nowrap'>Vous recevez</span>
+            <span className='text-light-sm text-nowrap'>Vous offrez</span>
           </div>
           {group.trades.map((match) => (
             <MatchItem key={match.id} match={match} />
