@@ -6,6 +6,7 @@ import { Set } from '@/app/types';
 import BoosterIcon from '../svgs/BoosterIcon';
 import { useFilter } from '@/app/context/FilterContext';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const mockSets: Set[] = [
   {
@@ -42,7 +43,6 @@ export default function SetFilterDropdown({
 }: SetFilterDropdownProps) {
   const [sets, setSets] = useState<Set[]>(mockSets);
   const hasSelected = selectedSets.length > 0;
-
   const { openFilter, setOpenFilter } = useFilter();
 
   useEffect(() => {
@@ -61,35 +61,37 @@ export default function SetFilterDropdown({
     fetchSets();
   }, []);
 
+  const isOpen = openFilter === 'set';
+
   return (
     <DropdownMenu.Root
-      open={openFilter === 'set'}
-      onOpenChange={(isOpen) => setOpenFilter(isOpen ? 'set' : null)}
+      open={isOpen}
+      onOpenChange={(isNowOpen) => {
+        // Autoriser le clic sur l'autre bouton sans double clic
+        if (isNowOpen) {
+          setOpenFilter('set');
+        } else {
+          // Un petit timeout permet de vérifier si un autre filtre est cliqué immédiatement après
+          setTimeout(() => {
+            if (openFilter === 'set') setOpenFilter(null);
+          }, 50);
+        }
+      }}
     >
       <DropdownMenu.Trigger asChild>
-        <button className='flex items-center gap-2 px-2 sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'>
+        <button className='relative flex items-center gap-2 px-2 sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'>
           <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
           Extension
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            className='w-6 h-6'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke='currentColor'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth={2}
-              d='M19 9l-7 7-7-7'
-            />
-          </svg>
+          {isOpen ? (
+            <ChevronUp className='w-5 h-5 text-darkgray' />
+          ) : (
+            <ChevronDown className='w-5 h-5 text-darkgray' />
+          )}
+          {hasSelected && (
+            <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
+          )}
         </button>
       </DropdownMenu.Trigger>
-
-      {hasSelected && (
-        <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
-      )}
 
       <DropdownMenu.Content
         sideOffset={8}

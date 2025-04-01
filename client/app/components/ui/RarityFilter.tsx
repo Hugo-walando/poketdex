@@ -29,9 +29,9 @@ export default function RarityFilter({
           <StarIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray fill-darkgray' />
           Rareté
           {isOpen ? (
-            <ChevronUp className='w-6 h-6' />
+            <ChevronUp className='w-5 h-5' />
           ) : (
-            <ChevronDown className='w-6 h-6' />
+            <ChevronDown className='w-5 h-5' />
           )}
           {hasSelected && (
             <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
