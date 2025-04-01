@@ -43,12 +43,6 @@ export default function Home() {
       {/* 📱 Mobile : détails plein écran */}
       {isMobile && selectedCard && (
         <div className='fixed inset-0 bg-white z-50 p-4 overflow-y-auto'>
-          <button
-            onClick={() => setSelectedCard(null)}
-            className='absolute top-4 right-0 text-darkgray text-xl'
-          >
-            ✕
-          </button>
           <QuickTradeDetails
             card={selectedCard}
             onClose={() => setSelectedCard(null)}
