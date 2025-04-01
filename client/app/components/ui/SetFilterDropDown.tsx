@@ -101,9 +101,12 @@ export default function SetFilterDropdown({
         {sets.map((set) => {
           const isSelected = selectedSets.includes(set.id);
           return (
-            <DropdownMenu.Item asChild key={set.id}>
+            <div key={set.id}>
               <button
-                onClick={() => onToggleSet(set.id)}
+                onClick={(e) => {
+                  e.stopPropagation(); // évite toute propagation éventuelle
+                  onToggleSet(set.id);
+                }}
                 className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer ${
                   isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'
                 }`}
@@ -118,7 +121,7 @@ export default function SetFilterDropdown({
                   className='object-contain h-[50px] w-auto'
                 />
               </button>
-            </DropdownMenu.Item>
+            </div>
           );
         })}
       </DropdownMenu.Content>

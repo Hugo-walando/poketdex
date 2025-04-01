@@ -45,7 +45,7 @@ export default function RarityFilter({
           className='z-50 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
         >
           {rarities.map((rarity) => (
-            <DropdownMenu.Item asChild key={rarity}>
+            <div key={rarity}>
               <button
                 onClick={() => onToggleRarity(rarity)}
                 className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer
@@ -65,7 +65,7 @@ export default function RarityFilter({
                   className='object-contain w-auto h-[25px]'
                 />
               </button>
-            </DropdownMenu.Item>
+            </div>
           ))}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
