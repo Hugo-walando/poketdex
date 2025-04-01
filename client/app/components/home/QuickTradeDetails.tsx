@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
+import CloseButton from '../ui/CloseButton';
 
 interface Props {
   card: ListedCard;
@@ -39,15 +40,10 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   const cardSet = Sets.find((s) => s.id === card.card.set_id);
 
   return (
-    <div className='p-4 rounded-xl h-full shadow-base bg-white'>
+    <div className='p-4 rounded-xl h-full '>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-dark-xl'>Détails de la carte</h2>
-        <button
-          onClick={onClose}
-          className='text-sm text-primarygreen underline hover:cursor-pointer'
-        >
-          Fermer
-        </button>
+        <CloseButton onClick={onClose} />
       </div>
 
       <div className='w-full gap-3 flex justify-center'>
