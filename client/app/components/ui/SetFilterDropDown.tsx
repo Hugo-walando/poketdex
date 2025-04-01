@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Set } from '@/app/types';
 import BoosterIcon from '../svgs/BoosterIcon';
 import { useFilter } from '@/app/context/FilterContext';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 const mockSets: Set[] = [
   {
@@ -40,20 +40,12 @@ export default function SetFilterDropdown({
   selectedSets,
   onToggleSet,
 }: SetFilterDropdownProps) {
-  const [sets, setSets] = useState<Set[]>(mockSets); // initialisé avec mock
-
+  const [sets, setSets] = useState<Set[]>(mockSets);
   const hasSelected = selectedSets.length > 0;
 
   const { openFilter, setOpenFilter } = useFilter();
 
-  const isOpen = openFilter === 'set';
-  const toggleDropdown = () => {
-    setOpenFilter(isOpen ? null : 'set');
-  };
-
   useEffect(() => {
-    // Pour l'API plus tard
-
     const fetchSets = async () => {
       try {
         const res = await fetch('/api/sets');
@@ -70,35 +62,49 @@ export default function SetFilterDropdown({
   }, []);
 
   return (
-    <div className='relative text-left '>
-      <button
-        onClick={toggleDropdown}
-        className='flex items-center gap-2 px-2 sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'
-      >
-        <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
-        Extension
-        {isOpen ? (
-          <ChevronUp className='w-6 h-6' />
-        ) : (
-          <ChevronDown className='w-6 h-6' />
-        )}
-      </button>
+    <DropdownMenu.Root
+      open={openFilter === 'set'}
+      onOpenChange={(isOpen) => setOpenFilter(isOpen ? 'set' : null)}
+    >
+      <DropdownMenu.Trigger asChild>
+        <button className='flex items-center gap-2 px-2 sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'>
+          <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
+          Extension
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='w-6 h-6'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M19 9l-7 7-7-7'
+            />
+          </svg>
+        </button>
+      </DropdownMenu.Trigger>
+
       {hasSelected && (
         <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
       )}
 
-      {isOpen && (
-        <div className='absolute z-10 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'>
-          {sets.map((set) => {
-            const isSelected = selectedSets.includes(set.id);
-            return (
+      <DropdownMenu.Content
+        sideOffset={8}
+        align='start'
+        className='z-10 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
+      >
+        {sets.map((set) => {
+          const isSelected = selectedSets.includes(set.id);
+          return (
+            <DropdownMenu.Item asChild key={set.id}>
               <button
-                key={set.id}
-                onClick={() => {
-                  onToggleSet(set.id);
-                }}
-                className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer
-                ${isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'}`}
+                onClick={() => onToggleSet(set.id)}
+                className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer ${
+                  isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'
+                }`}
               >
                 <Image
                   src={set.img_url}
@@ -107,13 +113,13 @@ export default function SetFilterDropdown({
                   height={0}
                   sizes='100vw'
                   quality={100}
-                  className='object-contain h-[50px] w-auto  '
+                  className='object-contain h-[50px] w-auto'
                 />
               </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+            </DropdownMenu.Item>
+          );
+        })}
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 }
