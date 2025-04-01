@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Set } from '@/app/types';
 import BoosterIcon from '../svgs/BoosterIcon';
+import { useFilter } from '@/app/context/FilterContext';
 
 const mockSets: Set[] = [
   {
@@ -39,12 +40,16 @@ export default function SetFilterDropdown({
   selectedSets,
   onToggleSet,
 }: SetFilterDropdownProps) {
-  const [open, setOpen] = useState(false);
   const [sets, setSets] = useState<Set[]>(mockSets); // initialisé avec mock
 
   const hasSelected = selectedSets.length > 0;
 
-  const toggleDropdown = () => setOpen((prev) => !prev);
+  const { openFilter, setOpenFilter } = useFilter();
+
+  const isOpen = openFilter === 'set';
+  const toggleDropdown = () => {
+    setOpenFilter(isOpen ? null : 'set');
+  };
 
   useEffect(() => {
     // Pour l'API plus tard
@@ -72,7 +77,7 @@ export default function SetFilterDropdown({
       >
         <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
         Extension
-        {open ? (
+        {isOpen ? (
           <ChevronUp className='w-6 h-6' />
         ) : (
           <ChevronDown className='w-6 h-6' />
@@ -82,7 +87,7 @@ export default function SetFilterDropdown({
         <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
       )}
 
-      {open && (
+      {isOpen && (
         <div className='absolute z-10 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'>
           {sets.map((set) => {
             const isSelected = selectedSets.includes(set.id);

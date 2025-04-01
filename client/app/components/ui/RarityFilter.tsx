@@ -1,9 +1,9 @@
 'use client';
 
+import { useFilter } from '@/app/context/FilterContext';
 import { rarities, rarityIcons } from '@/app/data/rarities';
 import { ChevronDown, ChevronUp, StarIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 
 interface RarityFilterProps {
   selectedRarities: number[];
@@ -14,11 +14,15 @@ export default function RarityFilter({
   selectedRarities,
   onToggleRarity,
 }: RarityFilterProps) {
-  const [open, setOpen] = useState(false);
+  const { openFilter, setOpenFilter } = useFilter();
+
+  const isOpen = openFilter === 'rarity';
+
+  const toggleDropdown = () => {
+    setOpenFilter(isOpen ? null : 'rarity');
+  };
 
   const hasSelected = selectedRarities.length > 0;
-
-  const toggleDropdown = () => setOpen((prev) => !prev);
 
   return (
     <div className='relative text-left '>
@@ -28,7 +32,7 @@ export default function RarityFilter({
       >
         <StarIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray fill-darkgray' />
         Rareté
-        {open ? (
+        {isOpen ? (
           <ChevronUp className='w-6 h-6' />
         ) : (
           <ChevronDown className='w-6 h-6' />
@@ -38,7 +42,7 @@ export default function RarityFilter({
         <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-primarygreen ring-2 ring-white' />
       )}
 
-      {open && (
+      {isOpen && (
         <div className='absolute z-10 mt-1 mx-auto w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'>
           {rarities.map((rarity) => (
             <button

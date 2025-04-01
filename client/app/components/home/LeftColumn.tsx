@@ -8,6 +8,7 @@ import ResetFilters from '../ui/ResetFilters';
 import { useEffect, useState } from 'react';
 import { mockListedCards } from '@/app/data/mockListedCards';
 import ListedCardItem from './ListedCardItem';
+import { FilterDropdownProvider } from '@/app/context/FilterContext';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -65,26 +66,28 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         onSearch={(query) => setSearchQuery(query.toLowerCase())}
       />
       <div className='w-full my-6 flex gap-2 md:gap-4'>
-        <SetFilterDropdown
-          selectedSets={selectedSets}
-          onToggleSet={(setId) =>
-            setSelectedSets((prev) =>
-              prev.includes(setId)
-                ? prev.filter((id) => id !== setId)
-                : [...prev, setId],
-            )
-          }
-        />
-        <RarityFilter
-          selectedRarities={selectedRarities}
-          onToggleRarity={(rarity) =>
-            setSelectedRarities((prev) =>
-              prev.includes(rarity)
-                ? prev.filter((r) => r !== rarity)
-                : [...prev, rarity],
-            )
-          }
-        />
+        <FilterDropdownProvider>
+          <SetFilterDropdown
+            selectedSets={selectedSets}
+            onToggleSet={(setId) =>
+              setSelectedSets((prev) =>
+                prev.includes(setId)
+                  ? prev.filter((id) => id !== setId)
+                  : [...prev, setId],
+              )
+            }
+          />
+          <RarityFilter
+            selectedRarities={selectedRarities}
+            onToggleRarity={(rarity) =>
+              setSelectedRarities((prev) =>
+                prev.includes(rarity)
+                  ? prev.filter((r) => r !== rarity)
+                  : [...prev, rarity],
+              )
+            }
+          />
+        </FilterDropdownProvider>
         <ResetFilters onClick={resetAllFilters} disabled={!hasActiveFilters} />
       </div>
 

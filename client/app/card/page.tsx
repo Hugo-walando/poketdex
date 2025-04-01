@@ -12,6 +12,7 @@ import { Card, Set } from '../types';
 import FiltersWrapper from '../components/layout/FiltersWrapper';
 import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
+import { FilterDropdownProvider } from '../context/FilterContext';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
@@ -131,15 +132,16 @@ export default function CardPage() {
           />
         </div>
         <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
-          <SetFilterDropdown
-            selectedSets={selectedSets}
-            onToggleSet={toggleSet}
-          />
-          <RarityFilter
-            selectedRarities={selectedRarities}
-            onToggleRarity={toggleRarity}
-          />
-
+          <FilterDropdownProvider>
+            <SetFilterDropdown
+              selectedSets={selectedSets}
+              onToggleSet={toggleSet}
+            />
+            <RarityFilter
+              selectedRarities={selectedRarities}
+              onToggleRarity={toggleRarity}
+            />
+          </FilterDropdownProvider>
           <ResetFilters
             onClick={resetAllFilters}
             disabled={!hasActiveFilters}
