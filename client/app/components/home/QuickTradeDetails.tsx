@@ -33,6 +33,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   useEffect(() => {
     // Plus tard un fetch ici
     // fetch('/api/sets').then(...)
+    console.log('fetch QuickeTradeDetails');
 
     setSets(mockSets); // pour l’instant on simule
   }, []);
