@@ -95,3 +95,10 @@ export interface TradeRequest {
     set_id: string;
   };
 }
+
+export interface User {
+  id: string;
+  username: string;
+  profile_picture: string;
+  friend_code: string;
+}
