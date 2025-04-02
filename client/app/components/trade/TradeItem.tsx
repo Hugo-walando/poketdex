@@ -40,6 +40,9 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
       )}
     >
       {/* Cartes échange */}
+      {trade.is_active && (
+        <span className='text-green-base  mb-1'>Échange en cours</span>
+      )}
       <div className='flex items-center justify-between'>
         {/* Vous recevez */}
         <div className='flex flex-col gap-2'>
