@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import UserSidebar from '../components/trade/UserSideBar';
 import TradeListSection from '../components/trade/TradeListSection';
+import UserDetail from '../components/trade/UserDetail';
 import useIsMobile from '../hooks/useIsMobile';
 import { User } from '../types';
 
@@ -33,10 +34,16 @@ export default function TradePage() {
       {isMobile ? (
         <div className='h-full'>
           {selectedUserId ? (
-            <TradeListSection
-              selectedUser={selectedUser!}
-              onBack={() => setSelectedUserId(null)}
-            />
+            <div className='h-full'>
+              <div className=''>
+                <UserDetail user={selectedUser!} />
+              </div>
+
+              <TradeListSection
+                selectedUser={selectedUser!}
+                onBack={() => setSelectedUserId(null)}
+              />
+            </div>
           ) : (
             <UserSidebar
               users={mockUsers}
@@ -54,13 +61,27 @@ export default function TradePage() {
           />
 
           {selectedUser && (
-            <TradeListSection
-              selectedUser={selectedUser}
-              onBack={() => setSelectedUserId(null)}
-            />
-          )}
+            <div className='flex-1'>
+              {/* ✅ Affichage au-dessus sur < xl */}
+              <div className='block lg:hidden mb-4'>
+                <UserDetail user={selectedUser} />
+              </div>
 
-          {/* ActivityList sera réintégré plus tard ici */}
+              <div className='flex flex-col lg:flex-row gap-4'>
+                <div className='flex-1'>
+                  <TradeListSection
+                    selectedUser={selectedUser}
+                    onBack={() => setSelectedUserId(null)}
+                  />
+                </div>
+
+                {/* ✅ Affichage à droite sur xl+ */}
+                <div className='hidden lg:block w-[280px]'>
+                  <UserDetail user={selectedUser} />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
