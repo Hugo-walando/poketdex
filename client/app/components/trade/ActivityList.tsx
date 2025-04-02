@@ -14,7 +14,7 @@ export default function ActivityList() {
   // }, []);
 
   return (
-    <aside className='w-full md:w-[300px] bg-white rounded-xl shadow-base p-4 h-[60vh] overflow-y-auto'>
+    <aside className='w-full hidden md:block md:w-[300px] bg-white rounded-xl shadow-base p-4 h-[60vh] overflow-y-auto'>
       <h2 className='text-dark-xl mb-4'>Activités</h2>
       <div className='flex flex-col gap-3'>
         {/* {notifications.length === 0 ? (

@@ -1,63 +1,120 @@
 'use client';
 
 import Image from 'next/image';
-import { TradeRequest } from '@/app/types'; // à adapter selon l'interface
+import { TradeRequest } from '@/app/types';
+import TradeIcon from '../svgs/TradeIcon';
+import { rarityIcons } from '@/app/data/rarities';
+import { cn } from '@/app/utils/cn';
+import { useState } from 'react';
 
 interface TradeItemProps {
   trade: TradeRequest;
+  currentUserId: string;
 }
 
-export default function TradeItem({ trade }: TradeItemProps) {
+export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
+  // Logique d’état côté front (à remplacer plus tard par le backend)
+  const [sentByMe, setSentByMe] = useState(
+    trade.sender_id === currentUserId
+      ? trade.sent_by_sender
+      : trade.sent_by_receiver,
+  );
+  const sentByOther =
+    trade.sender_id === currentUserId
+      ? trade.sent_by_receiver
+      : trade.sent_by_sender;
+
+  const handleMarkAsSent = () => {
+    // Plus tard : requête vers le backend ici
+    setSentByMe(true);
+    console.log('Carte marquée comme envoyée');
+  };
+
   return (
-    <div className='bg-white shadow-base rounded-xl p-4 flex flex-col gap-2'>
+    <div className='bg-white shadow-base rounded-xl p-4 flex flex-col gap-4'>
+      {/* Cartes échange */}
       <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-3'>
-          <Image
-            src={trade.offered_card.img_url}
-            alt={trade.offered_card.name}
-            width={60}
-            height={90}
-            className='rounded-md'
-          />
-          <span className='text-sm text-darkblue font-semibold'>
-            {trade.offered_card.official_id}
-          </span>
+        {/* Vous recevez */}
+        <div className='flex flex-col gap-2'>
+          <span className='text-gray-lg'>Vous recevez</span>
+          <div className='flex items-center gap-3'>
+            <Image
+              src={trade.requested_card.img_url}
+              alt={trade.requested_card.name}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='h-32 w-auto'
+            />
+            <span className='text-dark-base'>
+              {trade.requested_card.official_id}
+            </span>
+          </div>
         </div>
 
-        <span className='text-primarygreen font-bold text-xl'>⇄</span>
-
-        <div className='flex items-center gap-3'>
+        {/* Icon et rareté */}
+        <div className='flex flex-col items-center gap-2'>
+          <TradeIcon className='text-sm w-10 h-10 text-primarygreen' />
           <Image
-            src={trade.requested_card.img_url}
-            alt={trade.requested_card.name}
-            width={60}
-            height={90}
-            className='rounded-md'
+            src={
+              rarityIcons[trade.offered_card.rarity as keyof typeof rarityIcons]
+            }
+            alt={`Rareté ${trade.offered_card.rarity}`}
+            width={0}
+            height={0}
+            sizes='100vw'
+            className='h-10 w-auto object-contain'
           />
-          <span className='text-sm text-darkblue font-semibold'>
-            {trade.requested_card.official_id}
-          </span>
+        </div>
+
+        {/* Vous envoyez */}
+        <div className='flex flex-col gap-2 items-end'>
+          <span className='text-gray-lg'>Vous envoyez</span>
+          <div className='flex items-center gap-3'>
+            <span className='text-dark-base'>
+              {trade.offered_card.official_id}
+            </span>
+            <Image
+              src={trade.offered_card.img_url}
+              alt={trade.offered_card.name}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='h-32 w-auto'
+            />
+          </div>
         </div>
       </div>
 
-      <div className='flex justify-between items-center text-gray-sm mt-2'>
-        <span>
-          État :{' '}
-          <span className='font-semibold text-darkgray'>
-            {trade.status === 'pending'
-              ? 'En attente'
-              : trade.status === 'accepted'
-              ? 'Accepté'
-              : trade.status === 'cancelled'
-              ? 'Annulé'
-              : 'Inconnu'}
+      {/* Actions */}
+      <div className='flex justify-between items-center text-gray-sm'>
+        <div className='flex items-center gap-2'>
+          <span className='text-darkgray'>L’autre joueur :</span>
+          <div
+            className={cn(
+              'w-3 h-3 rounded-full',
+              sentByOther ? 'bg-primarygreen' : 'bg-gray-300',
+            )}
+          />
+          <span className='text-sm'>
+            {sentByOther ? 'A envoyé sa carte' : 'En attente'}
           </span>
-        </span>
-
-        {/* Placeholder action rapide à adapter plus tard */}
-        <button className='text-sm text-primarygreen underline hover:opacity-70'>
-          Marquer comme envoyé
-        </button>
+        </div>
+        <div className='flex items-center gap-2'>
+          <span className='text-darkgray'>Tu as envoyé :</span>
+          <button
+            onClick={handleMarkAsSent}
+            disabled={sentByMe}
+            className={cn(
+              'text-sm px-3 py-1 rounded-full font-semibold transition-all',
+              sentByMe
+                ? 'bg-primarygreen text-white cursor-default'
+                : 'bg-gray-100 text-darkgray hover:bg-gray-200',
+            )}
+          >
+            {sentByMe ? '✔️ Envoyée' : 'Marquer comme envoyée'}
+          </button>
+        </div>
       </div>
     </div>
   );
