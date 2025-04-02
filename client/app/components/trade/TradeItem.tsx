@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { Trade } from '@/app/types'; // à adapter selon l'interface
+import { TradeRequest } from '@/app/types'; // à adapter selon l'interface
 
 interface TradeItemProps {
-  trade: Trade;
+  trade: TradeRequest;
 }
 
 export default function TradeItem({ trade }: TradeItemProps) {
