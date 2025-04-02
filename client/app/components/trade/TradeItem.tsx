@@ -54,7 +54,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
 
         {/* Icon et rareté */}
         <div className='flex flex-col items-center gap-2'>
-          <TradeIcon className='text-sm md:w-6 md:h-6 lg:w-10 lg:h-10 text-primarygreen' />
+          <TradeIcon className='text-sm w-10 h-10 md:w-6 md:h-6 lg:w-10 lg:h-10 text-primarygreen' />
           <Image
             src={
               rarityIcons[trade.offered_card.rarity as keyof typeof rarityIcons]
@@ -63,7 +63,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
             width={0}
             height={0}
             sizes='100vw'
-            className='md:h-6 lg:h-10 w-auto object-contain'
+            className='h-6 lg:h-10 w-auto object-contain'
           />
         </div>
 
