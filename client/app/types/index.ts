@@ -55,3 +55,43 @@ export interface MatchGroup {
   };
   trades: MatchTrade[];
 }
+
+export interface TradeRequest {
+  id: string;
+  sender_id: string;
+  receiver_id: string;
+  status: 'pending' | 'accepted' | 'declined' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+
+  sender: {
+    id: string;
+    username: string;
+    profile_picture: string;
+    friend_code: string;
+  };
+  receiver: {
+    id: string;
+    username: string;
+    profile_picture: string;
+    friend_code: string;
+  };
+
+  offered_card: {
+    id: string;
+    name: string;
+    img_url: string;
+    official_id: string;
+    rarity: number;
+    set_id: string;
+  };
+
+  requested_card: {
+    id: string;
+    name: string;
+    img_url: string;
+    official_id: string;
+    rarity: number;
+    set_id: string;
+  };
+}
