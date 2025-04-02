@@ -6,6 +6,7 @@ export const mockTrades: TradeRequest[] = [
     sender_id: 'user_123',
     receiver_id: 'user_101',
     status: 'accepted',
+    is_active: true,
     created_at: '2025-04-02T11:01:20.089876',
     updated_at: '2025-04-02T11:01:20.089886',
     sender: {
@@ -42,6 +43,7 @@ export const mockTrades: TradeRequest[] = [
     sender_id: 'user_123',
     receiver_id: 'user_102',
     status: 'cancelled',
+    is_active: false,
     created_at: '2025-04-02T11:01:20.089911',
     updated_at: '2025-04-02T11:01:20.089914',
     sender: {
@@ -78,6 +80,7 @@ export const mockTrades: TradeRequest[] = [
     sender_id: 'user_123',
     receiver_id: 'user_103',
     status: 'pending',
+    is_active: false,
     created_at: '2025-04-02T11:01:20.089939',
     updated_at: '2025-04-02T11:01:20.089943',
     sender: {
@@ -114,6 +117,7 @@ export const mockTrades: TradeRequest[] = [
     sender_id: 'user_123',
     receiver_id: 'user_104',
     status: 'cancelled',
+    is_active: false,
     created_at: '2025-04-02T11:01:20.089960',
     updated_at: '2025-04-02T11:01:20.089963',
     sender: {
@@ -150,6 +154,7 @@ export const mockTrades: TradeRequest[] = [
     sender_id: 'user_123',
     receiver_id: 'user_105',
     status: 'pending',
+    is_active: false,
     created_at: '2025-04-02T11:01:20.089981',
     updated_at: '2025-04-02T11:01:20.089984',
     sender: {

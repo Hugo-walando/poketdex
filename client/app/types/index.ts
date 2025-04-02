@@ -61,6 +61,7 @@ export interface TradeRequest {
   sender_id: string;
   receiver_id: string;
   status: 'pending' | 'accepted' | 'declined' | 'cancelled';
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 

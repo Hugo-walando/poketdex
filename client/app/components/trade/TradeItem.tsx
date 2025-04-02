@@ -31,7 +31,14 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
   };
 
   return (
-    <div className='bg-white shadow-base rounded-xl p-4 flex flex-col gap-4'>
+    <div
+      className={cn(
+        'bg-white rounded-xl p-4 flex flex-col gap-2 transition-all shadow-base border-2',
+        trade.is_active
+          ? 'border-primarygreen ring-2 ring-primarygreen'
+          : 'border-transparent',
+      )}
+    >
       {/* Cartes échange */}
       <div className='flex items-center justify-between'>
         {/* Vous recevez */}
@@ -89,9 +96,6 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
       {/* Actions */}
       <div className='flex justify-between items-center text-gray-sm'>
         <div className='flex items-center gap-2'>
-          <span className='text-darkgray md:hidden lg:block'>
-            L’autre joueur :
-          </span>
           <div
             className={cn(
               'w-3 h-3 rounded-full',
@@ -103,9 +107,6 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
           </span>
         </div>
         <div className='flex items-center gap-2'>
-          <span className='text-darkgray md:hidden lg:block'>
-            Tu as envoyé :
-          </span>
           <button
             onClick={handleMarkAsSent}
             disabled={sentByMe}
