@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import UserSidebar from '../components/trade/UserSideBar';
 import TradeListSection from '../components/trade/TradeListSection';
+import ActivityList from '../components/trade/ActivityList';
 
 // Mock temporaire
 const mockUsers = [
@@ -38,6 +39,7 @@ export default function TradePage() {
       <TradeListSection />
 
       {/* Liste d’activité */}
+      <ActivityList />
     </div>
   );
 }
