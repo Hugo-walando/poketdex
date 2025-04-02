@@ -1,96 +1,66 @@
-// app/trades/page.tsx
-
 'use client';
 
 import { useState } from 'react';
 import UserSidebar from '../components/trade/UserSideBar';
 import TradeListSection from '../components/trade/TradeListSection';
-import ActivityList from '../components/trade/ActivityList';
 import useIsMobile from '../hooks/useIsMobile';
-import { Users, Repeat, Bell } from 'lucide-react';
+import { User } from '../types';
 
-const mockUsers = [
+// Mock temporaire
+const mockUsers: User[] = [
   {
     id: 'u1',
     username: 'AshKetchum',
     profile_picture: '/testimgs/avatars/Av1.png',
+    friend_code: '1234-5678-7184-8614',
   },
   {
     id: 'u2',
     username: 'Misty',
     profile_picture: '/testimgs/avatars/Av2.png',
+    friend_code: '1234-5678-7184-8614',
   },
 ];
 
 export default function TradePage() {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(
-    mockUsers[0].id,
-  );
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = useState<'users' | 'trades' | 'activity'>(
-    'trades',
-  );
+
+  const selectedUser = mockUsers.find((user) => user.id === selectedUserId);
 
   return (
-    <div className='relative flex flex-col h-screen'>
-      {/* Affichage desktop avec layout classique */}
-      {!isMobile && (
-        <div className='flex flex-1'>
-          <UserSidebar
-            users={mockUsers}
-            selectedUserId={selectedUserId}
-            onSelectUser={setSelectedUserId}
-          />
-          <TradeListSection />
-          <ActivityList />
-        </div>
-      )}
-
-      {/* Affichage mobile avec tabs */}
-      {isMobile && (
-        <div className='flex-1 overflow-y-auto'>
-          {activeTab === 'users' && (
+    <div className='h-screen'>
+      {isMobile ? (
+        <div className='h-full'>
+          {selectedUserId ? (
+            <TradeListSection
+              selectedUser={selectedUser!}
+              onBack={() => setSelectedUserId(null)}
+            />
+          ) : (
             <UserSidebar
               users={mockUsers}
               selectedUserId={selectedUserId}
               onSelectUser={setSelectedUserId}
             />
           )}
-          {activeTab === 'trades' && <TradeListSection />}
-          {activeTab === 'activity' && <ActivityList />}
         </div>
-      )}
+      ) : (
+        <div className='flex h-full'>
+          <UserSidebar
+            users={mockUsers}
+            selectedUserId={selectedUserId}
+            onSelectUser={setSelectedUserId}
+          />
 
-      {/* Footer avec tabs (uniquement mobile) */}
-      {isMobile && (
-        <div className='fixed top-0 mb-10 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-3 z-50'>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`flex flex-col items-center ${
-              activeTab === 'users' ? 'text-primarygreen' : 'text-darkgray'
-            }`}
-          >
-            <Users className='w-5 h-5 mb-1' />
-            <span className='text-xs'>Utilisateurs</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('trades')}
-            className={`flex flex-col items-center ${
-              activeTab === 'trades' ? 'text-primarygreen' : 'text-darkgray'
-            }`}
-          >
-            <Repeat className='w-5 h-5 mb-1' />
-            <span className='text-xs'>Échanges</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('activity')}
-            className={`flex flex-col items-center ${
-              activeTab === 'activity' ? 'text-primarygreen' : 'text-darkgray'
-            }`}
-          >
-            <Bell className='w-5 h-5 mb-1' />
-            <span className='text-xs'>Activité</span>
-          </button>
+          {selectedUser && (
+            <TradeListSection
+              selectedUser={selectedUser}
+              onBack={() => setSelectedUserId(null)}
+            />
+          )}
+
+          {/* ActivityList sera réintégré plus tard ici */}
         </div>
       )}
     </div>
