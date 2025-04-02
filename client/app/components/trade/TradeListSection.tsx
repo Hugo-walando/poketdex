@@ -20,7 +20,11 @@ export default function TradeListSection({
       <span className='text-gray-base mb-4'>{selectedUser.username}</span>
       <div className='space-y-4'>
         {mockTrades.map((trade) => (
-          <TradeItem key={trade.id} trade={trade} />
+          <TradeItem
+            key={trade.id}
+            trade={trade}
+            currentUserId={selectedUser.id}
+          />
         ))}
       </div>
     </section>
