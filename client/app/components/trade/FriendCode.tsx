@@ -1,0 +1,40 @@
+'use client';
+
+import { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
+import { cn } from '@/app/utils/cn';
+
+interface FriendCodeProps {
+  code: string;
+  className?: string;
+}
+
+export default function FriendCode({ code, className }: FriendCodeProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={cn(
+        'flex items-center justify-between gap-4 bg-lightgray rounded-xl px-4 py-2 w-full max-w-[320px] hover:cursor-pointer hover:bg-gray-100 transition',
+        className,
+      )}
+      aria-label='Copier le code ami'
+    >
+      <span className='text-dark-base font-mono text-sm md:text-base'>
+        {code}
+      </span>
+      {copied ? (
+        <Check className='w-5 h-5 text-primarygreen' />
+      ) : (
+        <Copy className='w-5 h-5 text-darkgray' />
+      )}
+    </button>
+  );
+}
