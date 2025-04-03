@@ -22,8 +22,8 @@ export default function UserItem({
     <button
       onClick={() => onSelect(id)}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primarygreen/10 hover:cursor-pointer transition-all w-full text-left',
-        isSelected && 'bg-primarygreen/40 hover:bg-primarygreen/40',
+        'flex items-center gap-3 px-4 py-3 rounded-xl shadow-base  md:shadow-none md:hover:bg-primarygreen/10 hover:cursor-pointer transition-all w-full text-left',
+        isSelected && 'md:bg-primarygreen/40 md:hover:bg-primarygreen/40',
       )}
     >
       <Image
@@ -32,9 +32,9 @@ export default function UserItem({
         width={0}
         height={0}
         sizes='100vw'
-        className='rounded-full h-10 w-10 object-cover'
+        className='rounded-full h-10 w-10 '
       />
-      <span className='text-dark-base font-medium truncate'>{username}</span>
+      <span className='text-dark-lg truncate'>{username}</span>
     </button>
   );
 }
