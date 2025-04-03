@@ -118,4 +118,8 @@ body {
 
 /* Container Styles */
 
+.scroll-area {
+  height: calc(100vh - 196px);
+}
+
 /* Button Styles */
