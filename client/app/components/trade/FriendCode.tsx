@@ -22,14 +22,12 @@ export default function FriendCode({ code, className }: FriendCodeProps) {
     <button
       onClick={handleCopy}
       className={cn(
-        'flex items-center justify-between gap-4 bg-lightgray rounded-xl px-4 py-2 w-full max-w-[320px] hover:cursor-pointer hover:bg-gray-100 transition',
+        'flex items-center justify-between gap-4 bg-lightgray rounded-xl sm:px-4 sm:py-2 w-full max-w-[320px] hover:cursor-pointer sm:hover:bg-gray-100 transition',
         className,
       )}
       aria-label='Copier le code ami'
     >
-      <span className='text-dark-base font-mono text-sm md:text-base'>
-        {code}
-      </span>
+      <span className='text-dark-sm font-mono md:text-dark-base'>{code}</span>
       {copied ? (
         <Check className='w-5 h-5 text-primarygreen' />
       ) : (
