@@ -20,8 +20,8 @@ export default function UserDetail({ user }: UserDetailProps) {
           sizes='100vw'
           className='h-20 w-20 rounded-full'
         />
-        <div className='flex flex-col lg:items-center gap-1'>
-          <span className='text-dark-base'>{user.username}</span>
+        <div className='flex flex-col lg:items-center gap-1 w-full'>
+          <span className='text-dark-base truncate'>{user.username}</span>
           <span className='text-light-sm sm:flex truncate items-center lg:flex-col '>
             Code ami :
             <FriendCode code={user.friend_code} />

@@ -22,7 +22,7 @@ export default function FriendCode({ code, className }: FriendCodeProps) {
     <button
       onClick={handleCopy}
       className={cn(
-        'flex items-center justify-between gap-4 bg-lightgray rounded-xl sm:px-4 sm:py-2 w-full max-w-[320px] hover:cursor-pointer sm:hover:bg-gray-100 transition',
+        'flex items-center gap-4 bg-lightgray rounded-xl sm:px-4 sm:py-2 w-full max-w-[320px] hover:cursor-pointer sm:hover:bg-gray-100 transition',
         className,
       )}
       aria-label='Copier le code ami'
