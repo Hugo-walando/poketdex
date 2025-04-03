@@ -33,7 +33,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
   return (
     <div
       className={cn(
-        'bg-white rounded-xl p-4 flex flex-col gap-2 transition-all shadow-base border-2',
+        'bg-white rounded-xl p-2 xl:p-4 flex flex-col gap-2 transition-all shadow-base border-2',
         trade.is_active
           ? 'border-primarygreen ring-2 ring-primarygreen'
           : 'border-transparent',
@@ -45,16 +45,18 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
       )}
       <div className='flex items-center justify-between'>
         {/* Vous recevez */}
-        <div className='flex flex-col gap-2'>
-          <span className='text-gray-base lg:text-gray-lg'>Vous recevez</span>
-          <div className='flex items-center gap-3'>
+        <div className='flex flex-col gap-1 lg:gap-2'>
+          <span className='text-gray-base lg:text-gray-lg truncate'>
+            Vous recevez
+          </span>
+          <div className='flex items-center gap-1 lg:gap-3'>
             <Image
               src={trade.requested_card.img_url}
               alt={trade.requested_card.name}
               width={0}
               height={0}
               sizes='100vw'
-              className='md:h-26 lg:h-32 w-auto'
+              className='h-26 md:h-32 lg:h-36 w-auto'
             />
             <span className='text-dark-sm lg:text-dark-base'>
               {trade.requested_card.official_id}
@@ -63,8 +65,8 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
         </div>
 
         {/* Icon et rareté */}
-        <div className='flex flex-col items-center gap-2'>
-          <TradeIcon className='text-sm w-10 h-10 md:w-6 md:h-6 lg:w-10 lg:h-10 text-primarygreen' />
+        <div className='flex flex-col items-center gap-1 lg:gap-2 '>
+          <TradeIcon className='text-sm w-6 h-6 lg:w-10 lg:h-10 text-primarygreen' />
           <Image
             src={
               rarityIcons[trade.offered_card.rarity as keyof typeof rarityIcons]
@@ -78,9 +80,11 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
         </div>
 
         {/* Vous envoyez */}
-        <div className='flex flex-col gap-2 items-end'>
-          <span className='text-gray-base lg:text-gray-lg'>Vous envoyez</span>
-          <div className='flex items-center gap-3'>
+        <div className='flex flex-col gap-1 lg:gap-2 items-end'>
+          <span className='text-gray-base lg:text-gray-lg truncate'>
+            Vous envoyez
+          </span>
+          <div className='flex items-center gap-1 lg:gap-3'>
             <span className='text-dark-sm lg:text-dark-base'>
               {trade.offered_card.official_id}
             </span>
@@ -90,7 +94,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
               width={0}
               height={0}
               sizes='100vw'
-              className='md:h-26 lg:h-32 w-auto'
+              className='h-26 md:h-32 lg:h-36 w-auto'
             />
           </div>
         </div>
@@ -98,7 +102,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
 
       {/* Actions */}
       <div className='flex justify-between items-center text-gray-sm'>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1 lg:gap-2'>
           <div
             className={cn(
               'w-3 h-3 rounded-full',
@@ -109,7 +113,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
             {sentByOther ? 'A envoyé sa carte' : 'En attente'}
           </span>
         </div>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1 lg:gap-2'>
           <button
             onClick={handleMarkAsSent}
             disabled={sentByMe}

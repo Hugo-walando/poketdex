@@ -14,7 +14,7 @@ export default function TradeListSection({
   onBack,
 }: TradeListSectionProps) {
   return (
-    <section className='flex-1 px-4'>
+    <section className='flex-1 px-1 xl:px-4'>
       <button onClick={onBack}>Back</button>
       <h2 className='text-dark-xl mb-4'>Demandes et Échanges</h2>
       <span className='text-gray-base mb-4'>{selectedUser.username}</span>
