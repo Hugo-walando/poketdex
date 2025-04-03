@@ -38,7 +38,7 @@ export default function TradePage() {
         </div>
       ) : (
         <div className='hidden md:flex h-[calc(100vh-152px)]'>
-          <div className='w-[250px] border-r border-gray-200 overflow-y-auto'>
+          <div className='w-[250px] border-r border-gray-200 overflow-y-auto overflow-x-hidden'>
             <UserSidebar
               users={mockUsers}
               selectedUserId={selectedUserId}
@@ -47,24 +47,23 @@ export default function TradePage() {
           </div>
 
           {selectedUser && (
-            <div className='flex-1 overflow-y-auto px-2'>
-              {/* UserDetail au-dessus en <lg */}
+            <div className='flex-1 px-2 flex flex-col lg:flex-row gap-2'>
+              {/* UserDetail au-dessus sur <lg */}
               <div className='block lg:hidden mb-4'>
                 <UserDetail user={selectedUser} />
               </div>
 
-              <div className='flex flex-col lg:flex-row gap-2'>
-                <div className='flex-1'>
-                  <TradeListSection
-                    selectedUser={selectedUser}
-                    onBack={() => setSelectedUserId(null)}
-                  />
-                </div>
+              {/* Zone scrollable uniquement pour les échanges */}
+              <div className='flex-1 overflow-y-auto max-h-[calc(100vh-152px)] pr-2'>
+                <TradeListSection
+                  selectedUser={selectedUser}
+                  onBack={() => setSelectedUserId(null)}
+                />
+              </div>
 
-                {/* UserDetail à droite sur lg+ */}
-                <div className='hidden lg:block relative fixed w-[280px]'>
-                  <UserDetail user={selectedUser} />
-                </div>
+              {/* UserDetail à droite sur lg+ → en dehors du scroll */}
+              <div className='hidden lg:block w-[280px] shrink-0'>
+                <UserDetail user={selectedUser} />
               </div>
             </div>
           )}
