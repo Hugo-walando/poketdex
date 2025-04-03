@@ -14,7 +14,7 @@ export default function UserSidebar({
   onSelectUser,
 }: UserSidebarProps) {
   return (
-    <aside className='w-full md:w-[250px] border-r border-gray-200 pr-2 overflow-y-auto'>
+    <aside className='w-full md:w-[250px] md:border-r md:border-gray-200 pr-2 overflow-y-auto'>
       <h2 className='text-dark-xl mb-4 pl-4 pt-2'>Utilisateurs</h2>
       <div className='flex flex-col gap-1'>
         {users.map((user) => (

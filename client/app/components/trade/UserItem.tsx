@@ -29,9 +29,10 @@ export default function UserItem({
       <Image
         src={profilePicture}
         alt={username}
-        width={32}
-        height={32}
-        className='rounded-full'
+        width={0}
+        height={0}
+        sizes='100vw'
+        className='rounded-full h-10 w-10 object-cover'
       />
       <span className='text-dark-base font-medium truncate'>{username}</span>
     </button>
