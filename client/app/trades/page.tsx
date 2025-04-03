@@ -35,7 +35,7 @@ export default function TradePage() {
         <div className='h-full'>
           {selectedUserId ? (
             <div className='h-full'>
-              <div className=''>
+              <div className='mb-4'>
                 <UserDetail user={selectedUser!} />
               </div>
 
