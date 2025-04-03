@@ -56,7 +56,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
               width={0}
               height={0}
               sizes='100vw'
-              className='h-26 md:h-32 lg:h-36 w-auto'
+              className='h-26 sm:h-32 lg:h-36 w-auto'
             />
             <span className='text-dark-sm lg:text-dark-base'>
               {trade.requested_card.official_id}
@@ -94,7 +94,7 @@ export default function TradeItem({ trade, currentUserId }: TradeItemProps) {
               width={0}
               height={0}
               sizes='100vw'
-              className='h-26 md:h-32 lg:h-36 w-auto'
+              className='h-26 sm:h-32 lg:h-36 w-auto'
             />
           </div>
         </div>

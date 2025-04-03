@@ -94,7 +94,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         <span className='text-dark-base'>{card.user.username}</span>
       </div>
 
-      <h3 className='text-dark-xl mt-2 mb-2'>
+      <h3 className='text-dark-xl my-1'>
         {card.user.username} voudrait ces cartes:{' '}
       </h3>
       <div className='max-h-[20vh] overflow-y-auto'>
@@ -124,9 +124,9 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         onClick={handleSendRequest}
         disabled={!selectedWishlistCardId}
         className={cn(
-          'w-full py-2 mt-2 rounded-xl font-semibold transition-all hover:cursor-pointer',
+          'w-full py-2 rounded-xl font-semibold ',
           selectedWishlistCardId
-            ? 'bg-primarygreen text-white hover:opacity-90'
+            ? 'bg-primarygreen text-white hover:opacity-90 mt-9 hover:cursor-pointer'
             : 'bg-gray-300 text-white cursor-not-allowed',
         )}
       >

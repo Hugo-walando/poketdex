@@ -24,9 +24,10 @@ export default function WishlistItem({
       <Image
         src={card.img_url}
         alt={card.name}
-        width={100}
-        height={130}
-        className='h-30 w-auto'
+        width={0}
+        height={0}
+        sizes='100vw'
+        className='h-26 w-auto'
       />
       {isSelected && (
         <div className='absolute inset-0 bg-black/50 rounded-sm flex items-center transition-all justify-center'>

@@ -67,7 +67,7 @@ export default function TradePage() {
                 <UserDetail user={selectedUser} />
               </div>
 
-              <div className='flex flex-col lg:flex-row gap-4'>
+              <div className='flex flex-col lg:flex-row gap-2'>
                 <div className='flex-1'>
                   <TradeListSection
                     selectedUser={selectedUser}
