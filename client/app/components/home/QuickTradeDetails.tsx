@@ -41,7 +41,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   const cardSet = Sets.find((s) => s.id === card.card.set_id);
 
   return (
-    <div className='p-4 rounded-xl h-full '>
+    <div className='p-4 rounded-xl'>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-dark-xl'>Détails de la carte</h2>
         <CloseButton onClick={onClose} />
@@ -55,7 +55,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
             width={0}
             height={0}
             sizes='100vw'
-            className='h-40 w-auto shadow-base mb-4'
+            className='h-34 w-auto shadow-base mb-4'
           />
         </div>
         <div className='w-1/2 flex justify-start'>
@@ -68,7 +68,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
                 width={0}
                 height={0}
                 sizes='100vw'
-                className=' h-10 w-auto'
+                className='h-8 w-auto'
               />
             )}
             <Image
@@ -77,7 +77,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               width={0}
               height={0}
               sizes='100vw'
-              className='mt-2 w-auto h-10'
+              className='mt-2 w-auto h-8'
             />
           </div>
         </div>

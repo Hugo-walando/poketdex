@@ -16,4 +16,19 @@ export const mockWishlists: WishlistCard[] = [
     name: 'Chimpanfeu',
     img_url: '/testimgs/cards/Chimpanfeu.png',
   },
+  {
+    id: '104',
+    name: 'Chimpanfeu',
+    img_url: '/testimgs/cards/Chimpanfeu.png',
+  },
+  {
+    id: '105',
+    name: 'Chimpanfeu',
+    img_url: '/testimgs/cards/Chimpanfeu.png',
+  },
+  {
+    id: '106',
+    name: 'Chimpanfeu',
+    img_url: '/testimgs/cards/Chimpanfeu.png',
+  },
 ];

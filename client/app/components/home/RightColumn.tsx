@@ -12,7 +12,7 @@ export default function RightColumn({
   onClose,
 }: RightColumnProps) {
   return (
-    <div className='bg-white rounded-xl shadow-base md:block w-4/10 overflow-y-auto max-h-[70vh] '>
+    <div className='bg-white rounded-xl shadow-base md:block w-4/10 overflow-y-auto '>
       {selectedCard ? (
         <QuickTradeDetails card={selectedCard} onClose={onClose} />
       ) : (
