@@ -1,46 +1,70 @@
 'use client';
 
 import { useState } from 'react';
-import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
-import Button from './components/ui/Button';
-import Input from './components/ui/Input';
-import Modal from './components/ui/Modal';
+import LeftColumn from './components/home/LeftColumn';
+import RightColumn from './components/home/RightColumn';
+import { ListedCard } from './types';
+import useIsMobile from './hooks/useIsMobile';
+import QuickTradeDetails from './components/home/QuickTradeDetails';
+import MatchList from './components/home/MatchList';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
+  const [viewMode, setViewMode] = useState<'default' | 'matchs'>('default');
+  const isMobile = useIsMobile();
 
-  const handleSendTrade = () => {
-    console.log('Demande envoyé !');
-    setShowModal(false); // ← ferme le modal
-  };
   return (
-    <MaxWidthWrapper>
-      Home
-      <div className='mx-40 my-40 py-[100px] px-[100px] bg-white rounded-md shadow-base'>
-        <Button variant='primary' onClick={() => setShowModal(true)}>
-          Echanger
-        </Button>
-        <Button variant='danger'>Supprimer</Button>
-        <Button variant='secondary'>Annuler</Button>
-        <Input label='Nom' placeholder='Entrez votre nom' />
-        <Modal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          title='Proposer l’échange ?'
+    <>
+      {/* Mobile : bouton pour changer de mode */}
+      {isMobile && viewMode === 'default' && (
+        <button
+          onClick={() => setViewMode('matchs')}
+          className='fixed top-8 right-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-l-full shadow-lg md:hidden flex items-center'
         >
-          <p className='text-gray-base mb-4 text-center'>
-            Êtes-vous sûr de vouloir proposer l`échange ?
-          </p>
-          <div className='flex justify-center gap-2'>
-            <Button variant='secondary' onClick={() => setShowModal(false)}>
-              Annuler
-            </Button>
-            <Button variant='primary' onClick={handleSendTrade}>
-              Confirmer
-            </Button>
-          </div>
-        </Modal>
+          Voir les matchs
+          <ChevronRight className='w-4 h-4 sm:w-6 sm:h-6 ml-2' />
+        </button>
+      )}
+
+      <div className='flex gap-6'>
+        {/* 🟢 LeftColumn visible dans tous les cas */}
+        {viewMode === 'default' && <LeftColumn onCardClick={setSelectedCard} />}
+
+        {/* 🟦 RightColumn (matchs ou détails) sur desktop */}
+        {!isMobile && (
+          <RightColumn
+            selectedCard={selectedCard}
+            onClose={() => setSelectedCard(null)}
+          />
+        )}
       </div>
-    </MaxWidthWrapper>
+
+      {/* 📱 Mobile : détails plein écran */}
+      {isMobile && selectedCard && (
+        <div className='fixed inset-0 bg-white z-50 p-4 overflow-y-auto'>
+          <QuickTradeDetails
+            card={selectedCard}
+            onClose={() => setSelectedCard(null)}
+          />
+        </div>
+      )}
+
+      {/* 📱 Mobile : matchs en plein écran */}
+      {isMobile && viewMode === 'matchs' && (
+        <div className='fixed inset-0 z-50 overflow-y-auto'>
+          <button
+            onClick={() =>
+              setViewMode(viewMode === 'matchs' ? 'default' : 'matchs')
+            }
+            className='absolute top-8 left-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-r-full shadow-lg md:hidden flex items-center'
+          >
+            <ChevronLeft className='w-4 h-4 md:w-6 md:h-6 mr-2' />
+            Retour aux cartes
+          </button>
+          <MatchList />
+        </div>
+      )}
+    </>
   );
 }

@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// import HomeIcon from '@/public/icons/Home.svg';
-// import CardIcon from '@/public/icons/Card.svg';
-// import TradeIcon from '@/public/icons/Exchange.svg';
 import { cn } from '@/app/utils/cn';
+import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
+import CardIcon from '../svgs/CardIcon';
+import TradeIcon from '../svgs/TradeIcon';
 
 // Mock temporaire (à remplacer avec données réelles plus tard)
 const isAuthenticated = true;
@@ -18,19 +18,19 @@ export default function Navbar() {
   const navItems = [
     {
       href: '/',
-      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
+      icon: <HomeIcon className={cn('w-6 h-6')} />,
       label: 'Accueil',
     },
     {
       href: '/card',
-      icon: <div className='w-6 h-6 bg-primarygreen'></div>,
+      icon: <CardIcon className={cn('w-6 h-6')} />,
       label: 'Mes cartes',
     },
     {
       href: '/trades',
       icon: (
         <div className='relative'>
-          <div className='w-6 h-6 bg-primarygreen'></div>
+          <TradeIcon className={cn('w-6 h-6')} />
           {hasPendingTrade && (
             <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full' />
           )}
@@ -38,36 +38,34 @@ export default function Navbar() {
       ),
       label: 'Échanges',
     },
-    {
-      href: '/profile',
-      icon: <div className='w-6 h-6 rounded-full bg-primarygreen'></div>,
-      label: '',
-    },
   ];
 
   return (
     <>
       {/* 🖥️ Desktop */}
-      <nav className='hidden md:flex justify-between items-center px-6 py-4 shadow-base bg-white mt-10 rounded-2xl'>
-        <div className='flex gap-6'>
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2',
-                pathname === item.href && 'text-primarygreen',
-              )}
-            >
-              <span
-                className={cn(
-                  pathname === item.href ? 'text-green-xl' : 'text-gray-xl',
-                )}
+      <nav className='hidden md:flex justify-between items-center px-10 py-4 shadow-base bg-white md:my-10 rounded-2xl'>
+        <div className='flex gap-16'>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn('flex items-center ')}
               >
-                {item.label}
-              </span>
-            </Link>
-          ))}
+                <span
+                  className={cn(
+                    'flex items-center gap-2',
+                    isActive ? 'text-green-xl' : 'text-gray-xl',
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
 
         {isAuthenticated ? (
@@ -87,7 +85,7 @@ export default function Navbar() {
       </nav>
 
       {/* 📱 Mobile */}
-      <nav className='md:hidden fixed bottom-0 w-full bg-white border-gray-200 flex justify-around items-center py-6 shadow-inner z-50'>
+      <nav className='md:hidden fixed bottom-0 left-0 w-full bg-white border-gray-200 flex justify-around items-center py-6 shadow-inner z-100'>
         {navItems.map((item) => (
           <Link
             key={item.href}
