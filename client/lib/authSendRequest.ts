@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import PokexchangeMagicLinkEmail from '@/emails/PokexchangeMagicLinkEmail';
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
@@ -15,11 +16,7 @@ export async function sendVerificationRequest({
     from: 'onboarding@resend.dev',
     to: email,
     subject: 'Connexion à Pokexchange',
-    html: `
-      <p>Bonjour 👋</p>
-      <p>Clique ici pour te connecter à Pokexchange :</p>
-      <p><a href="${url}">${url}</a></p>
-    `,
+    react: PokexchangeMagicLinkEmail({ url }),
   });
 
   if (result.error) {
