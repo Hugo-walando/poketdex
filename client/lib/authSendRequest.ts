@@ -16,7 +16,7 @@ export async function sendVerificationRequest({
 
   try {
     const result = await resend.emails.send({
-      from: 'login@pokexchange.com',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Connexion à Pokexchange',
       react: PokexchangeMagicLinkEmail({ url }),
