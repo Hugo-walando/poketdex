@@ -17,5 +17,8 @@ connectDB();
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
+const setRoutes = require('./routes/setRoutes');
+app.use('/api/sets', setRoutes);
+
 
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
