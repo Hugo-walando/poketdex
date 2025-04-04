@@ -12,14 +12,22 @@ export async function sendVerificationRequest({
   email,
   url,
 }: SendVerificationParams) {
-  const result = await resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: email,
-    subject: 'Connexion à Pokexchange',
-    react: PokexchangeMagicLinkEmail({ url }),
-  });
+  console.log('📨 Envoi du lien à', email);
 
-  if (result.error) {
-    throw new Error(`Erreur d'envoi : ${result.error.message}`);
+  try {
+    const result = await resend.emails.send({
+      from: 'login@pokexchange.com',
+      to: email,
+      subject: 'Connexion à Pokexchange',
+      react: PokexchangeMagicLinkEmail({ url }),
+    });
+
+    console.log('✅ Email envoyé :', result);
+    if (result.error) {
+      throw new Error(`Erreur Resend : ${result.error.message}`);
+    }
+  } catch (error) {
+    console.error('❌ Erreur d’envoi de l’email :', error);
+    throw new Error('Erreur interne lors de l’envoi du mail.');
   }
 }
