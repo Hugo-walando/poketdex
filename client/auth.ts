@@ -1,40 +1,25 @@
+import NextAuth from 'next-auth';
 import type { NextAuthConfig } from 'next-auth';
-import EmailProvider from 'next-auth/providers/email';
-import GoogleProvider from 'next-auth/providers/google';
-import DiscordProvider from 'next-auth/providers/discord';
+import { sendVerificationRequest } from '@/lib/authSendRequest';
+import { MongoDBAdapter } from '@auth/mongodb-adapter';
+import clientPromise from '@/lib/mongo/client';
 
-export const auth: NextAuthConfig = {
-  providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER!,
-      from: process.env.EMAIL_FROM!,
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID!,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-      }
-      return session;
-    },
-  },
+export const authConfig = {
+  adapter: MongoDBAdapter(clientPromise),
+  session: { strategy: 'jwt' },
   pages: {
-    signIn: '/login', // optionnel
+    signIn: '/login',
   },
-  secret: process.env.AUTH_SECRET!,
-};
-export default auth;
+  providers: [
+    {
+      id: 'resend',
+      type: 'email',
+      name: 'Email',
+      async sendVerificationRequest({ identifier, url }) {
+        await sendVerificationRequest({ email: identifier, url });
+      },
+    },
+  ],
+} satisfies NextAuthConfig;
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
