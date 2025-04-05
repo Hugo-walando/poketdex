@@ -5,16 +5,23 @@ import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle',
+  );
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus('sending');
 
-    await signIn('resend', {
+    const res = await signIn('resend', {
       email,
-      redirect: false, // on veut juste envoyer le lien
+      redirect: false,
     });
+
+    if (!res?.ok) {
+      console.error('🚨 Erreur côté client lors du signIn:', res?.error);
+      setStatus('error');
+    }
 
     setStatus('sent');
   };
@@ -25,6 +32,13 @@ export default function LoginPage() {
         <h1 className='text-dark-2xl text-center mb-6 font-semibold'>
           Connexion à Pokexchange
         </h1>
+
+        {status === 'error' && (
+          <p className='text-red-500 text-center'>
+            ❌ Une erreur est survenue lors de l&apos;envoi du lien de
+            connexion.
+          </p>
+        )}
 
         {status === 'sent' ? (
           <p className='text-gray-base text-center'>

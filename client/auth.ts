@@ -16,6 +16,10 @@ export const authConfig = {
       type: 'email',
       name: 'Email',
       async sendVerificationRequest({ identifier, url }) {
+        console.log('📨 sendVerificationRequest INIT from provider', {
+          identifier,
+          url,
+        });
         await sendVerificationRequest({ email: identifier, url });
       },
     },

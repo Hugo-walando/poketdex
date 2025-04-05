@@ -13,7 +13,7 @@ export async function sendVerificationRequest({
   url,
 }: SendVerificationParams) {
   console.log('📨 Envoi du lien à', email);
-
+  console.log('🔐 RESEND_API_KEY chargée ?', !!process.env.RESEND_API_KEY);
   try {
     const result = await resend.emails.send({
       from: 'onboarding@resend.dev',
