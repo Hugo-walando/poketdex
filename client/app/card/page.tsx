@@ -14,6 +14,7 @@ import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
+import Loader from '../components/ui/Loader';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
@@ -119,12 +120,7 @@ export default function CardPage() {
     fetchUserData();
   }, [userId]);
 
-  if (loading)
-    return (
-      <div className='p-4 text-center text-gray-xl'>
-        Chargement des cartes ...
-      </div>
-    );
+  if (loading) return <Loader />;
 
   return (
     <ProtectedPage>
