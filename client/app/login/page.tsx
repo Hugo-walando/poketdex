@@ -30,7 +30,7 @@ export default function LoginPage() {
     <div className=' flex items-center justify-center '>
       <div className='w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-10'>
         <h1 className='text-dark-2xl text-center mb-6 font-semibold'>
-          Connexion à Pokexchange
+          Connexion à Poketdex
         </h1>
 
         {status === 'error' && (

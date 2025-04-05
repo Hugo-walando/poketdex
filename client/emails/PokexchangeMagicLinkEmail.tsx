@@ -10,11 +10,11 @@ import {
   Tailwind,
 } from '@react-email/components';
 
-interface PokexchangeMagicLinkEmailProps {
+interface PoketdexMagicLinkEmailProps {
   url: string;
 }
 
-function PokexchangeMagicLinkEmail({ url }: PokexchangeMagicLinkEmailProps) {
+function PoketdexMagicLinkEmail({ url }: PoketdexMagicLinkEmailProps) {
   return (
     <Html lang='fr'>
       <Head />
@@ -27,13 +27,13 @@ function PokexchangeMagicLinkEmail({ url }: PokexchangeMagicLinkEmailProps) {
           <Container className='p-6 mx-auto'>
             {/* Titre de bienvenue */}
             <Heading className='text-center my-0'>
-              Bienvenue sur Pokexchange
+              Bienvenue sur PoketDex
             </Heading>
 
             {/* Message explicatif */}
             <Section className='mt-4'>
               <Text>
-                Vous avez demandé à vous connecter à Pokexchange.
+                Vous avez demandé à vous connecter à Poketdex.
                 <br />
                 Cliquez sur le bouton ci-dessous pour confirmer votre
                 connexion :
@@ -46,7 +46,7 @@ function PokexchangeMagicLinkEmail({ url }: PokexchangeMagicLinkEmailProps) {
                 href={url}
                 className='bg-primarygreen text-white rounded-lg py-3 px-6'
               >
-                Se connecter à Pokexchange
+                Se connecter à PoketDex
               </Button>
             </Section>
 
@@ -64,4 +64,4 @@ function PokexchangeMagicLinkEmail({ url }: PokexchangeMagicLinkEmailProps) {
   );
 }
 
-export default PokexchangeMagicLinkEmail;
+export default PoketdexMagicLinkEmail;

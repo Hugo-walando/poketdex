@@ -6,7 +6,7 @@ import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
-  title: 'PokeXchange',
+  title: 'PoketDex',
   description: 'Echangez vos cartes Pokémon TCG Pocket !',
 };
 
