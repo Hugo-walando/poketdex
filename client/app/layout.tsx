@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/layout/NavBar';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: 'PokeXchange',
@@ -24,8 +25,10 @@ export default function RootLayout({
     <html lang='fr' className={poppins.variable}>
       <body>
         <MaxWidthWrapper>
-          <Navbar />
-          {children}
+          <SessionProvider>
+            <Navbar />
+            {children}
+          </SessionProvider>
         </MaxWidthWrapper>
       </body>
     </html>
