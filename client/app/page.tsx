@@ -8,6 +8,7 @@ import useIsMobile from './hooks/useIsMobile';
 import QuickTradeDetails from './components/home/QuickTradeDetails';
 import MatchList from './components/home/MatchList';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ProtectedPage from './components/auth/ProtectedPage';
 
 export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
@@ -15,7 +16,7 @@ export default function Home() {
   const isMobile = useIsMobile();
 
   return (
-    <>
+    <ProtectedPage>
       {/* Mobile : bouton pour changer de mode */}
       {isMobile && viewMode === 'default' && (
         <button
@@ -65,6 +66,6 @@ export default function Home() {
           <MatchList />
         </div>
       )}
-    </>
+    </ProtectedPage>
   );
 }

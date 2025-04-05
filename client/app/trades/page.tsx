@@ -6,6 +6,7 @@ import TradeListSection from '../components/trade/TradeListSection';
 import UserDetail from '../components/trade/UserDetail';
 import useIsMobile from '../hooks/useIsMobile';
 import { mockUsers } from '../data/mockUsers';
+import ProtectedPage from '../components/auth/ProtectedPage';
 
 export default function TradePage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -14,7 +15,7 @@ export default function TradePage() {
   const selectedUser = mockUsers.find((user) => user.id === selectedUserId);
 
   return (
-    <>
+    <ProtectedPage>
       {isMobile ? (
         <div className='h-full'>
           {selectedUserId ? (
@@ -69,6 +70,6 @@ export default function TradePage() {
           )}
         </div>
       )}
-    </>
+    </ProtectedPage>
   );
 }

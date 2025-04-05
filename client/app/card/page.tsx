@@ -13,6 +13,7 @@ import FiltersWrapper from '../components/layout/FiltersWrapper';
 import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
+import ProtectedPage from '../components/auth/ProtectedPage';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
@@ -67,10 +68,13 @@ export default function CardPage() {
   };
 
   // Filter
-  const setMap = Sets.reduce((acc, set) => {
-    acc[set.id] = set;
-    return acc;
-  }, {} as Record<string, Set>);
+  const setMap = Sets.reduce(
+    (acc, set) => {
+      acc[set.id] = set;
+      return acc;
+    },
+    {} as Record<string, Set>,
+  );
 
   const filteredCards = Cards.filter(
     (card) =>
@@ -123,7 +127,7 @@ export default function CardPage() {
     );
 
   return (
-    <>
+    <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
         <div className='w-full md:w-[600px] mx-auto md:mx-0 '>
           <SearchBar
@@ -203,6 +207,6 @@ export default function CardPage() {
           );
         })}
       </div>
-    </>
+    </ProtectedPage>
   );
 }
