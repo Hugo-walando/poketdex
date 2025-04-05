@@ -6,10 +6,12 @@ import { User } from 'next-auth';
 
 interface CompleteProfileModalProps {
   user: User;
+  onClose: () => void;
 }
 
 export default function CompleteProfileModal({
   user,
+  onClose,
 }: CompleteProfileModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState(user.username ?? '');
@@ -36,7 +38,7 @@ export default function CompleteProfileModal({
 
       if (!res.ok) throw new Error('Erreur lors de la mise à jour du profil');
 
-      setIsOpen(false);
+      onClose();
     } catch (err) {
       console.error(err);
       alert("Une erreur s'est produite");
@@ -44,7 +46,7 @@ export default function CompleteProfileModal({
   };
 
   return (
-    <Dialog open={isOpen} onClose={() => {}} className='relative z-50'>
+    <Dialog open={isOpen} onClose={onClose} className='relative z-50'>
       <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
       <div className='fixed inset-0 flex items-center justify-center p-4'>
         <Dialog.Panel className='bg-white max-w-md w-full p-6 rounded-xl shadow-lg space-y-4'>
