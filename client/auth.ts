@@ -1,7 +1,9 @@
 import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/mongo/client';
+import type { NextAuthConfig } from 'next-auth';
 import { generateAccessToken } from './app/utils/generateAccessToken';
+import { sendVerificationRequest } from './lib/authSendRequest';
 
 export const authConfig = {
   adapter: MongoDBAdapter(clientPromise),
@@ -25,44 +27,42 @@ export const authConfig = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Si l'utilisateur est défini, on génère un access_token et on l'ajoute au token JWT
+      console.log('JWT Callback - user:', user); // Log user to check for null/undefined
+
       if (user) {
-        console.log('Première connexion, génération du token JWT:', user);
-        token.accessToken = generateAccessToken(user); // Générer le `access_token`
-        token.id = user.id; // Ajouter `user.id` au token JWT
+        token.accessToken = generateAccessToken(user); // Generate the `access_token`
+        token.id = user.id;
         token.email = user.email;
       }
 
-      // Affichage du token dans les logs
       if (token.accessToken) {
-        console.log('Token JWT avec access_token:', token);
+        console.log('Token JWT with access_token:', token);
+      }
+      if (!user) {
+        console.log('User is undefined in jwt callback');
       }
 
-      return token; // Retourne le token mis à jour
+      return token; // Return the updated token
     },
 
+    // Session callback : make the accessToken available in the session
     async session({ session, token }) {
-      // Assurer que l'id de l'utilisateur est dans la session
-      if (token.id) {
-        session.user.id = token.id; // Assure que l'id de l'utilisateur est bien ajouté à la session
-      }
-      if (token.email) {
-        session.user.email = token.email; // Ajoute aussi l'email de l'utilisateur si disponible
-      }
-      session.accessToken = token.accessToken as string; // Ajoute l'accessToken à la session
+      console.log('Session before update:', session); // Log the session before update
+      console.log('Token in session callback:', token); // Log the token in session callback
 
-      // Affichage du contenu de la session dans les logs
-      console.log('Session user', session.user);
-      console.log('Session User ID', session.user.id);
-      console.log('Session callback - AccessToken:', session.accessToken);
+      // Ensure that user.id and email are defined
+      session.user.id = token.id as string;
+      session.user.email = token.email as string;
 
-      return session; // Retourner la session mise à jour
-    },
+      session.accessToken = token.accessToken as string; // Ensure the accessToken is always set
 
-    async redirect({ baseUrl }) {
-      return baseUrl + '/'; // Redirige vers la page d'accueil après connexion
+      console.log('Session after update:', session); // Log the updated session
+      return session; // Return the updated session
     },
   },
-};
+} satisfies NextAuthConfig;
+
+console.log('Auth config:', authConfig); // Log the authConfig to check its structure
+console.log('NextAuth config:', NextAuth); // Log the NextAuth config to check its structure
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);

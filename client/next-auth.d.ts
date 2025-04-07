@@ -10,8 +10,15 @@ declare module 'next-auth' {
     role?: 'user' | 'admin';
     accessToken?: string;
   }
+
   interface Session {
     user: User;
-    accessToken?: string;
+    accessToken?: string; // Ajout de l'accessToken à la session
+  }
+
+  interface JWT {
+    id: string;
+    email: string;
+    accessToken?: string; // Ajout de l'accessToken au token JWT
   }
 }
