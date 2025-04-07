@@ -16,7 +16,7 @@ export async function sendVerificationRequest({
   console.log('🔐 RESEND_API_KEY chargée ?', !!process.env.RESEND_API_KEY);
   try {
     const result = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'signin@poketdex.app',
       to: email,
       subject: 'Connexion à Poketdex',
       react: PoketdexMagicLinkEmail({ url }),
