@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { User } from 'next-auth';
+import useUpdateUser from '@/app/hooks/useUpdateUser';
 
 interface CompleteProfileModalProps {
   user: User;
@@ -13,6 +14,7 @@ export default function CompleteProfileModal({
   user,
   onClose,
 }: CompleteProfileModalProps) {
+  const { updateUser, loading, error, success } = useUpdateUser();
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState(user.username ?? '');
   const [friendCode, setFriendCode] = useState(user.friend_code ?? '');
@@ -23,26 +25,12 @@ export default function CompleteProfileModal({
   }, [user]);
 
   const handleSubmit = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${user.token}`, // à adapter si tu veux passer le token dans le header
-          },
-          body: JSON.stringify({ username, friend_code: friendCode }),
-        },
-      );
+    const userData = {
+      username,
+      friend_code: friendCode,
+    };
 
-      if (!res.ok) throw new Error('Erreur lors de la mise à jour du profil');
-
-      onClose();
-    } catch (err) {
-      console.error(err);
-      alert("Une erreur s'est produite");
-    }
+    await updateUser(userData);
   };
 
   return (
@@ -53,6 +41,8 @@ export default function CompleteProfileModal({
           <Dialog.Title className='text-xl font-semibold text-dark'>
             Complète ton profil
           </Dialog.Title>
+          {success && <div className='alert alert-success'>{success}</div>}
+          {error && <div className='alert alert-danger'>{error}</div>}
 
           <div className='space-y-3'>
             <div>
@@ -87,7 +77,7 @@ export default function CompleteProfileModal({
               onClick={handleSubmit}
               className='bg-primarygreen text-white px-4 py-2 rounded-lg hover:opacity-90 transition'
             >
-              Enregistrer
+              {loading ? 'Mise à jour en cours...' : 'Mettre à jour'}
             </button>
           </div>
         </Dialog.Panel>
