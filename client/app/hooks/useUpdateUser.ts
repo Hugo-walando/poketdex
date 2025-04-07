@@ -40,9 +40,16 @@ const useUpdateUser = () => {
       // Réponse réussie
       setSuccess('Informations mises à jour avec succès !');
       return response.data;
-    } catch (err: any) {
+    } catch (err) {
       // Gestion des erreurs
-      setError("Erreur lors de la mise à jour de l'utilisateur");
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          err.response.data?.message ||
+            "Erreur lors de la mise à jour de l'utilisateur",
+        );
+      } else {
+        setError("Erreur lors de la mise à jour de l'utilisateur");
+      }
       console.error(err);
     } finally {
       setLoading(false);
