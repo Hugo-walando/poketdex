@@ -59,6 +59,9 @@ export const authConfig = {
       console.log('Session after update:', session); // Log the updated session
       return session; // Return the updated session
     },
+    async redirect({ baseUrl }) {
+      return baseUrl + '/'; // Redirect to the base URL after sign-in
+    },
   },
 } satisfies NextAuthConfig;
 
