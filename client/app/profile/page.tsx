@@ -10,6 +10,10 @@ export default function Profile() {
     <ProtectedPage>
       <div>
         Bonjour {session?.user?.email} <LogoutButton />
+        <p className='text-gray-lg'>
+          Votre Pseudo est {session?.user?.username} et votre friend code est
+          {session?.user?.friend_code}
+        </p>
       </div>
     </ProtectedPage>
   );
