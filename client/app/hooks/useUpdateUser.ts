@@ -11,7 +11,6 @@ const useUpdateUser = () => {
 
   // Fonction pour mettre à jour les informations utilisateur
   const updateUser = async (userData: {
-    email: string;
     username: string;
     friend_code: string;
   }) => {

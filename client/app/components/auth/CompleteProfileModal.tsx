@@ -26,7 +26,6 @@ export default function CompleteProfileModal({
 
   const handleSubmit = async () => {
     const userData = {
-      email: user.email!,
       username,
       friend_code: friendCode,
     };
