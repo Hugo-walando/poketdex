@@ -37,12 +37,12 @@ export default function LoginPage() {
           Connexion à Poketdex
         </h1>
 
-        {status === 'error' && (
+        {/* {status === 'error' && (
           <p className='text-red-500 text-center'>
             ❌ Une erreur est survenue lors de l&apos;envoi du lien de
             connexion.
           </p>
-        )}
+        )} */}
 
         {/* {status === 'sent' ? (
           <p className='text-gray-base text-center'>
