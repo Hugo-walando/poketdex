@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
-  const { data: session } = useSession(); // Récupère les données de la session utilisateur
+  const { data: session, update } = useSession(); // Récupère les données de la session utilisateur
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -41,7 +41,8 @@ const useUpdateUser = () => {
       );
 
       // Réponse réussie
-      setSuccess('Informations mises à jour avec succès !');
+      await update(); // Met à jour la session avec les nouvelles informations
+      await setSuccess('Informations mises à jour avec succès !');
       return response.data;
     } catch (err) {
       // Gestion des erreurs
