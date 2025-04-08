@@ -26,8 +26,12 @@ export default function LoginPage() {
     setStatus('sent');
   };
 
+  const handleGoogleSignIn = () => {
+    signIn('google', { redirect: false }); // Connexion via Google
+  };
+
   return (
-    <div className=' flex items-center justify-center '>
+    <div className='flex items-center justify-center'>
       <div className='w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-10'>
         <h1 className='text-dark-2xl text-center mb-6 font-semibold'>
           Connexion à Poketdex
@@ -68,6 +72,16 @@ export default function LoginPage() {
             </button>
           </form>
         )}
+
+        {/* Ajout du bouton Google */}
+        <div className='mt-4'>
+          <button
+            onClick={handleGoogleSignIn}
+            className='w-full py-2 bg-blue-500 text-white rounded-xl font-semibold hover:opacity-90 transition'
+          >
+            Se connecter avec Google
+          </button>
+        </div>
       </div>
     </div>
   );

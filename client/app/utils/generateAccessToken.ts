@@ -15,7 +15,7 @@ export const generateAccessToken = (user: User) => {
   }
 
   // Créer un JWT avec une expiration d'une heure
-  const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+  const token = jwt.sign(payload, secret, { expiresIn: '5m' });
 
   return token;
 };

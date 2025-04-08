@@ -14,6 +14,7 @@ declare module 'next-auth' {
   interface Session {
     user: User;
     accessToken?: string; // Ajout de l'accessToken à la session
+    error?: string; // Ajout d'une erreur potentielle
   }
 
   interface JWT {

@@ -11,6 +11,7 @@ const useUpdateUser = () => {
 
   // Fonction pour mettre à jour les informations utilisateur
   const updateUser = async (userData: {
+    email: string;
     username: string;
     friend_code: string;
   }) => {
@@ -26,6 +27,7 @@ const useUpdateUser = () => {
 
     try {
       // Requête PATCH pour mettre à jour les informations utilisateur
+      console.log('Mise à jour des informations utilisateur', userData);
       const response = await axios.patch(
         `http://localhost:5000/api/users/${session.user.id}`, // L'ID de l'utilisateur est récupéré depuis la session
         userData,
@@ -34,6 +36,7 @@ const useUpdateUser = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${session.accessToken}`, // Ajoute le access_token dans l'en-tête Authorization
           },
+          withCredentials: true, // Permet d'envoyer les cookies avec la requête
         },
       );
 
