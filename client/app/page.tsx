@@ -15,7 +15,6 @@ export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
   const [viewMode, setViewMode] = useState<'default' | 'matchs'>('default');
   const isMobile = useIsMobile();
-
   return (
     <ProtectedPage>
       <ProtectedLayout>

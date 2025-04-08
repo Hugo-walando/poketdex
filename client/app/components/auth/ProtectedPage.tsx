@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
+import Loader from '../ui/Loader';
 
 interface Props {
   children: ReactNode;
@@ -20,7 +21,7 @@ export default function ProtectedPage({ children }: Props) {
 
   if (status === 'loading') {
     // Tu peux afficher un spinner, une splash screen, ou rien du tout ici
-    return <div className='text-center py-10'>Chargement...</div>;
+    return <Loader />;
   }
 
   if (status === 'authenticated') {

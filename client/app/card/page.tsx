@@ -14,7 +14,6 @@ import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
-import Loader from '../components/ui/Loader';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
@@ -23,7 +22,6 @@ export default function CardPage() {
   const [Sets, setSets] = useState<Set[]>([]);
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
@@ -112,16 +110,11 @@ export default function CardPage() {
         setOwnedCards(mockDuplicates);
       } catch (err) {
         console.error('Erreur lors du chargement des données utilisateur', err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserData();
   }, [userId]);
-
-  if (loading) return <Loader />;
-
   return (
     <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
