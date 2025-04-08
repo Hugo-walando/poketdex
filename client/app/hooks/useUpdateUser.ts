@@ -29,7 +29,7 @@ const useUpdateUser = () => {
       // Requête PATCH pour mettre à jour les informations utilisateur
       console.log('Mise à jour des informations utilisateur', userData);
       const response = await axios.patch(
-        `http://localhost:5000/api/users/${session.user.id}`, // L'ID de l'utilisateur est récupéré depuis la session
+        `${process.env.LOCAL_BACKEND_URL}users/${session.user.id}`, // L'ID de l'utilisateur est récupéré depuis la session
         userData,
         {
           headers: {
