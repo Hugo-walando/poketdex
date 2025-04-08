@@ -26,9 +26,7 @@ async function authenticateToken(req, res, next) {
 
     // Ajoute les informations de l'utilisateur dans la requête
     req.user = decoded; // L'ID et l'email de l'utilisateur sont dans `decoded`
-    console.log('req.user:', req.user);
     // console.log(req);
-    console.log('🧑‍💻 Utilisateur authentifié :', req.user);
     next();
   } catch (err) {
     console.error('❌ Token invalide ou expiré');

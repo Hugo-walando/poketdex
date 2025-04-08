@@ -8,12 +8,10 @@ import ProtectedPage from '../components/auth/ProtectedPage';
 
 export default function Profile() {
   const { data: session } = useSession();
-  const { updateUser } = useUpdateUser();
+  const { updateUser, error, success, loading } = useUpdateUser();
 
   const [username, setUsername] = useState('');
   const [friendCode, setFriendCode] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (session?.user) {
@@ -23,19 +21,12 @@ export default function Profile() {
   }, [session]);
 
   const handleSave = async () => {
-    try {
-      setLoading(true);
-      await updateUser({
-        username,
-        friend_code: friendCode,
-      });
-      setMessage('✅ Profil mis à jour !');
-    } catch (error) {
-      console.error('Erreur de mise à jour utilisateur :', error);
-      setMessage('❌ Une erreur est survenue.');
-    } finally {
-      setLoading(false);
-    }
+    const userData = {
+      username: username,
+      friend_code: friendCode,
+    };
+
+    await updateUser(userData);
   };
 
   if (!session) return null;
@@ -47,6 +38,8 @@ export default function Profile() {
           Bienvenue {session.user.email}
         </h2>
         <LogoutButton />
+        {success && <div className='alert alert-success'>{success}</div>}
+        {error && <div className='alert alert-danger'>{error}</div>}
 
         <div>
           <label className='block mb-1'>Pseudo</label>
@@ -75,8 +68,6 @@ export default function Profile() {
         >
           {loading ? 'Sauvegarde...' : 'Sauvegarder'}
         </button>
-
-        {message && <p className='text-sm mt-2'>{message}</p>}
       </div>
     </ProtectedPage>
   );

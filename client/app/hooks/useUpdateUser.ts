@@ -4,18 +4,16 @@ import axios from 'axios';
 
 // Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
-  const { data: session, update } = useSession(); // Récupère les données de la session utilisateur
+  const { data: session, update } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fonction pour mettre à jour les informations utilisateur
   const updateUser = async (userData: {
     username: string;
     friend_code: string;
   }) => {
     if (!session?.accessToken) {
-      // Vérifie que l'utilisateur est authentifié et qu'il a un token
       setError('Utilisateur non authentifié');
       return;
     }
@@ -25,26 +23,22 @@ const useUpdateUser = () => {
     setSuccess(null);
 
     try {
-      // Requête PATCH pour mettre à jour les informations utilisateur
-      console.log('Mise à jour des informations utilisateur', userData);
       const response = await axios.patch(
-        `${process.env.LOCAL_BACKEND_URL}users/${session.user.id}`, // L'ID de l'utilisateur est récupéré depuis la session
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
         userData,
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.accessToken}`, // Ajoute le access_token dans l'en-tête Authorization
+            Authorization: `Bearer ${session.accessToken}`,
           },
-          withCredentials: true, // Permet d'envoyer les cookies avec la requête
+          withCredentials: true,
         },
       );
 
-      // Réponse réussie
-      await update(); // Met à jour la session avec les nouvelles informations
-      await setSuccess('Informations mises à jour avec succès !');
+      await update(); // rafraîchit la session côté front
+      setSuccess('✅ Informations mises à jour avec succès');
       return response.data;
     } catch (err) {
-      // Gestion des erreurs
       if (axios.isAxiosError(err) && err.response) {
         setError(
           err.response.data?.message ||

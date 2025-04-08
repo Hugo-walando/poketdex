@@ -51,13 +51,6 @@ const updateUser = async (req, res) => {
   const updates = req.body;
 
   console.log('🔧 Requête de mise à jour utilisateur');
-  console.log('Payload token Google (req.user):', req.user);
-
-  if (!updates.email) {
-    return res
-      .status(400)
-      .json({ message: "L'email est requis pour la mise à jour" });
-  }
 
   try {
     // Étape 1 : retrouver le compte "Google" lié au token

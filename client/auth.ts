@@ -25,9 +25,9 @@ export const authConfig = {
 
       // 🧠 Récupérer les infos supplémentaires de l'utilisateur via ton backend Express
       try {
-        console.log(process.env.LOCAL_BACKEND_URL);
+        console.log(process.env.NEXT_PUBLIC_API_URL);
         const res = await axios.get(
-          `${process.env.LOCAL_BACKEND_URL}users/me`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
           {
             headers: {
               Authorization: `Bearer ${token.accessToken}`,
