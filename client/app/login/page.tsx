@@ -1,30 +1,30 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+// import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
-    'idle',
-  );
+  // const [email, setEmail] = useState('');
+  // const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+  //   'idle',
+  // );
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
+  // const handleSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   setStatus('sending');
 
-    const res = await signIn('resend', {
-      email,
-      redirect: false,
-    });
+  //   const res = await signIn('resend', {
+  //     email,
+  //     redirect: false,
+  //   });
 
-    if (!res?.ok) {
-      console.error('🚨 Erreur côté client lors du signIn:', res?.error);
-      setStatus('error');
-    }
+  //   if (!res?.ok) {
+  //     console.error('🚨 Erreur côté client lors du signIn:', res?.error);
+  //     setStatus('error');
+  //   }
 
-    setStatus('sent');
-  };
+  //   setStatus('sent');
+  // };
 
   const handleGoogleSignIn = () => {
     signIn('google', { redirect: false }); // Connexion via Google
@@ -44,7 +44,7 @@ export default function LoginPage() {
           </p>
         )}
 
-        {status === 'sent' ? (
+        {/* {status === 'sent' ? (
           <p className='text-gray-base text-center'>
             📬 Un lien de connexion a été envoyé à{' '}
             <span className='font-semibold'>{email}</span>.
@@ -71,7 +71,7 @@ export default function LoginPage() {
               {status === 'sending' ? 'Envoi en cours...' : 'Se connecter'}
             </button>
           </form>
-        )}
+        )} */}
 
         {/* Ajout du bouton Google */}
         <div className='mt-4'>
