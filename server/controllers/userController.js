@@ -3,8 +3,20 @@ const Account = require('../models/Account'); // le modèle pour la collection "
 
 const getCurrentUser = async (req, res) => {
   try {
-    const userId = req.user.id; // ajouté par le middleware
-    const user = await User.findById(userId).select('-password');
+    const googleId = req.user.sub;
+
+    // Étape 1 : retrouver le compte lié à ce Google ID
+    const account = await Account.findOne({
+      provider: 'google',
+      providerAccountId: googleId,
+    });
+
+    if (!account) {
+      return res.status(401).json({ message: 'Compte non reconnu' });
+    }
+
+    // Étape 2 : retrouver l'utilisateur via l'userId stocké dans l'account
+    const user = await User.findById(account.userId).select('-password');
 
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
@@ -81,10 +93,6 @@ const updateUser = async (req, res) => {
     console.error('[updateUser error]', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
-};
-
-module.exports = {
-  updateUser,
 };
 
 module.exports = {
