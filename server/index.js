@@ -48,4 +48,7 @@ app.use('/api/duplicates', duplicatesRoutes);
 const matchRoutes = require('./routes/matchRoutes');
 app.use('/api/matches', matchRoutes);
 
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/api/notifications', notificationRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
