@@ -25,6 +25,8 @@ connectDB();
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
+const setRoutes = require('./routes/setRoutes');
+app.use('/api/sets', setRoutes);
 // const setRoutes = require('./routes/setRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 // app.use('/api/sets', setRoutes);
