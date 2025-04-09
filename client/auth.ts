@@ -2,12 +2,11 @@ import NextAuth, { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/mongo/client'; // Ton client MongoDB
-import axios from 'axios';
 import axiosClient from './lib/axios';
 
 export const authConfig = {
   adapter: MongoDBAdapter(clientPromise), // On utilise MongoDBAdapter
-  session: { strategy: 'jwt' },
+  session: { strategy: 'jwt', maxAge: 60 * 60, updateAge: 60 * 30 },
   pages: {
     signIn: '/login', // Page de connexion personnalisée
   },
