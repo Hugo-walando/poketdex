@@ -33,4 +33,7 @@ app.use('/api/boosters', boosterRoutes);
 const cardRoutes = require('./routes/cardRoutes');
 app.use('/api/cards', cardRoutes);
 
+const cardBoosterRoutes = require('./routes/cardBoosterRoutes');
+app.use('/api/card-booster', cardBoosterRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
