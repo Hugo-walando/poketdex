@@ -45,4 +45,7 @@ app.use('/api/trade-requests', tradeRequestRoutes);
 const duplicatesRoutes = require('./routes/duplicatesRoutes');
 app.use('/api/duplicates', duplicatesRoutes);
 
+const matchRoutes = require('./routes/matchRoutes');
+app.use('/api/matches', matchRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
