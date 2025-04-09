@@ -27,4 +27,19 @@ app.use('/api/users', userRoutes);
 const errorHandler = require('./middlewares/errorHandler');
 // app.use('/api/sets', setRoutes);
 
+const boosterRoutes = require('./routes/boosterRoutes');
+app.use('/api/boosters', boosterRoutes);
+
+const cardRoutes = require('./routes/cardRoutes');
+app.use('/api/cards', cardRoutes);
+
+const cardBoosterRoutes = require('./routes/cardBoosterRoutes');
+app.use('/api/card-booster', cardBoosterRoutes);
+
+const wishlistRoutes = require('./routes/wishlistRoutes');
+app.use('/api/wishlist', wishlistRoutes);
+
+const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
+app.use('/api/trade-requests', tradeRequestRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
