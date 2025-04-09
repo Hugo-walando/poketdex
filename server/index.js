@@ -42,4 +42,7 @@ app.use('/api/wishlist', wishlistRoutes);
 const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
 app.use('/api/trade-requests', tradeRequestRoutes);
 
+const duplicatesRoutes = require('./routes/duplicatesRoutes');
+app.use('/api/duplicates', duplicatesRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
