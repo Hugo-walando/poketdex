@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react'; // Assurez-vous d'utiliser Auth.js pour la gestion de session
 import axios from 'axios';
+import axiosClient from '@/lib/axios';
 
 // Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
@@ -23,7 +24,7 @@ const useUpdateUser = () => {
     setSuccess(null);
 
     try {
-      const response = await axios.patch(
+      const response = await axiosClient.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
         userData,
         {

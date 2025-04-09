@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
+import { Toaster } from 'react-hot-toast';
 import Navbar from './components/layout/NavBar';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import { SessionProvider } from 'next-auth/react';
@@ -27,6 +28,7 @@ export default function RootLayout({
         <MaxWidthWrapper>
           <SessionProvider>
             <Navbar />
+            <Toaster position='top-center' />
             {children}
           </SessionProvider>
         </MaxWidthWrapper>
