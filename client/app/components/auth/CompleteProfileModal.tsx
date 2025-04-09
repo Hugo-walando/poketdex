@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { User } from 'next-auth';
 import useUpdateUser from '@/app/hooks/useUpdateUser';
+import { updateUserSchema } from '@/lib/validation/user';
 
 interface CompleteProfileModalProps {
   user: User;
@@ -19,18 +20,35 @@ export default function CompleteProfileModal({
   const [username, setUsername] = useState(user.username ?? '');
   const [friendCode, setFriendCode] = useState(user.friend_code ?? '');
 
+  const [formErrors, setFormErrors] = useState<{
+    username?: string[];
+    friend_code?: string[];
+  }>({});
+
   useEffect(() => {
     const missingFields = !user.username || !user.friend_code;
     setIsOpen(missingFields);
   }, [user]);
 
   const handleSubmit = async () => {
-    const userData = {
+    setFormErrors({}); // reset erreurs
+
+    const result = updateUserSchema.safeParse({
       username,
       friend_code: friendCode,
-    };
+    });
 
-    await updateUser(userData);
+    if (!result.success) {
+      setFormErrors(result.error.flatten().fieldErrors);
+      return;
+    }
+
+    const validData = result.data;
+
+    await updateUser({
+      username: validData.username,
+      friend_code: validData.friend_code,
+    });
   };
 
   return (
@@ -41,8 +59,11 @@ export default function CompleteProfileModal({
           <Dialog.Title className='text-xl font-semibold text-dark'>
             Complète ton profil
           </Dialog.Title>
-          {success && <div className='alert alert-success'>{success}</div>}
-          {error && <div className='alert alert-danger'>{error}</div>}
+
+          {success && (
+            <div className='text-green-600 font-medium'>{success}</div>
+          )}
+          {error && <div className='text-red-600 font-medium'>{error}</div>}
 
           <div className='space-y-3'>
             <div>
@@ -56,6 +77,11 @@ export default function CompleteProfileModal({
                 className='w-full mt-1 px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-primarygreen'
                 placeholder='Ton pseudo'
               />
+              {formErrors.username && (
+                <p className='text-sm text-red-600 mt-1'>
+                  {formErrors.username[0]}
+                </p>
+              )}
             </div>
 
             <div>
@@ -69,6 +95,11 @@ export default function CompleteProfileModal({
                 className='w-full mt-1 px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-primarygreen'
                 placeholder='1234-5678-9101-1121'
               />
+              {formErrors.friend_code && (
+                <p className='text-sm text-red-600 mt-1'>
+                  {formErrors.friend_code[0]}
+                </p>
+              )}
             </div>
           </div>
 

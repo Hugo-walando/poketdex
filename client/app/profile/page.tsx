@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import useUpdateUser from '@/app/hooks/useUpdateUser';
 import LogoutButton from '../components/ui/LogoutButton';
 import ProtectedPage from '../components/auth/ProtectedPage';
+import { updateUserSchema } from '@/lib/validation/user';
 
 export default function Profile() {
   const { data: session } = useSession();
@@ -12,6 +13,10 @@ export default function Profile() {
 
   const [username, setUsername] = useState('');
   const [friendCode, setFriendCode] = useState('');
+  const [formErrors, setFormErrors] = useState<{
+    username?: string[];
+    friend_code?: string[];
+  }>({});
 
   useEffect(() => {
     if (session?.user) {
@@ -21,12 +26,24 @@ export default function Profile() {
   }, [session]);
 
   const handleSave = async () => {
-    const userData = {
-      username: username,
-      friend_code: friendCode,
-    };
+    setFormErrors({}); // Réinitialise les erreurs
 
-    await updateUser(userData);
+    const result = updateUserSchema.safeParse({
+      username,
+      friend_code: friendCode,
+    });
+
+    if (!result.success) {
+      setFormErrors(result.error.flatten().fieldErrors);
+      return;
+    }
+
+    const validData = result.data;
+
+    await updateUser({
+      username: validData.username,
+      friend_code: validData.friend_code,
+    });
   };
 
   if (!session) return null;
@@ -38,8 +55,9 @@ export default function Profile() {
           Bienvenue {session.user.email}
         </h2>
         <LogoutButton />
-        {success && <div className='alert alert-success'>{success}</div>}
-        {error && <div className='alert alert-danger'>{error}</div>}
+
+        {success && <div className='text-green-600 font-medium'>{success}</div>}
+        {error && <div className='text-red-600 font-medium'>{error}</div>}
 
         <div>
           <label className='block mb-1'>Pseudo</label>
@@ -49,6 +67,11 @@ export default function Profile() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          {formErrors.username && (
+            <p className='text-sm text-red-600 mt-1'>
+              {formErrors.username[0]}
+            </p>
+          )}
         </div>
 
         <div>
@@ -59,6 +82,11 @@ export default function Profile() {
             value={friendCode}
             onChange={(e) => setFriendCode(e.target.value)}
           />
+          {formErrors.friend_code && (
+            <p className='text-sm text-red-600 mt-1'>
+              {formErrors.friend_code[0]}
+            </p>
+          )}
         </div>
 
         <button
