@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
@@ -10,17 +10,20 @@ import ResetFilters from '../components/ui/ResetFilters';
 import { matchCard } from '../utils/matchCards';
 import { Card, Set } from '../types';
 import FiltersWrapper from '../components/layout/FiltersWrapper';
-import { mockCards } from '../data/mockCards';
-import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
 import useFetchSets from '@/app/hooks/useFetchSets';
+import useFetchCards from '@/app/hooks/useFetchCards';
 
 export default function CardPage() {
-  const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
-
-  const [Cards, setCards] = useState<Card[]>([]);
   const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
+
+  const {
+    cards: Cards,
+    loading: cardsLoading,
+    error: cardsError,
+  } = useFetchCards(); // <-- sans filtre, toutes les cartes
+
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,7 +70,7 @@ export default function CardPage() {
     );
   };
 
-  // Filter
+  // Mapping
   const setMap = Sets.reduce(
     (acc, set) => {
       acc[set.id] = set;
@@ -96,30 +99,23 @@ export default function CardPage() {
     {} as Record<string, Card[]>,
   );
 
-  useEffect(() => {
-    setCards(mockCards);
-    const fetchUserData = async () => {
-      try {
-        // Simulation avec un délai (à remplacer par fetch réel)
-        await new Promise((res) => setTimeout(res, 800));
+  // Simule les données utilisateur
+  useState(() => {
+    const mockWishlist = ['1'];
+    const mockDuplicates = ['2'];
+    setWishlist(mockWishlist);
+    setOwnedCards(mockDuplicates);
+  });
 
-        const mockWishlist = ['1'];
-        const mockDuplicates = ['2'];
+  if (setsLoading || cardsLoading)
+    return <div className='text-center mt-10'>Chargement des données...</div>;
 
-        setWishlist(mockWishlist);
-        setOwnedCards(mockDuplicates);
-      } catch (err) {
-        console.error('Erreur lors du chargement des données utilisateur', err);
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
-
-  if (setsLoading)
-    return <div className='text-center mt-10'>Chargement des sets...</div>;
-  if (setsError)
-    return <div className='text-center mt-10 text-red-500'>{setsError}</div>;
+  if (setsError || cardsError)
+    return (
+      <div className='text-center mt-10 text-red-500'>
+        {setsError || cardsError}
+      </div>
+    );
 
   return (
     <ProtectedPage>
