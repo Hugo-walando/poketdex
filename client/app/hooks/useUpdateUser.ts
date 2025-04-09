@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react'; // Assurez-vous d'utiliser Auth.js pour la gestion de session
 import axios from 'axios';
 import axiosClient from '@/lib/axios';
+import toast from 'react-hot-toast';
 
 // Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
@@ -16,6 +17,8 @@ const useUpdateUser = () => {
   }) => {
     if (!session?.accessToken) {
       setError('Utilisateur non authentifié');
+      toast.error('Erreur : utilisateur non authentifié');
+
       return;
     }
 
@@ -38,6 +41,7 @@ const useUpdateUser = () => {
 
       await update(); // rafraîchit la session côté front
       setSuccess('✅ Informations mises à jour avec succès');
+      toast.success('Informations mises à jour avec succès');
       return response.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
@@ -47,6 +51,7 @@ const useUpdateUser = () => {
         );
       } else {
         setError("Erreur lors de la mise à jour de l'utilisateur");
+        toast.error("Erreur lors de la mise à jour de l'utilisateur");
       }
       console.error(err);
     } finally {
