@@ -23,14 +23,12 @@ connectDB();
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
-const setRoutes = require('./routes/setRoutes');
-app.use('/api/sets', setRoutes);
+// const setRoutes = require('./routes/setRoutes');
+const errorHandler = require('./middlewares/errorHandler');
+// app.use('/api/sets', setRoutes);
 
 const boosterRoutes = require('./routes/boosterRoutes');
 app.use('/api/boosters', boosterRoutes);
 
-// const setRoutes = require('./routes/setRoutes');
-const errorHandler = require('./middlewares/errorHandler');
-// app.use('/api/sets', setRoutes);
 
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
