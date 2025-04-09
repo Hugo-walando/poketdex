@@ -39,4 +39,7 @@ app.use('/api/card-booster', cardBoosterRoutes);
 const wishlistRoutes = require('./routes/wishlistRoutes');
 app.use('/api/wishlist', wishlistRoutes);
 
+const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
+app.use('/api/trade-requests', tradeRequestRoutes);
+
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
