@@ -1,79 +1,88 @@
 'use client';
 
-import { useState } from 'react';
+// import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  // const [email, setEmail] = useState('');
+  // const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+  //   'idle',
+  // );
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  // const handleSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   setStatus('sending');
 
-    const res = await signIn('email', {
-      email,
-      redirect: false,
-      callbackUrl: '/',
-    });
+  //   const res = await signIn('resend', {
+  //     email,
+  //     redirect: false,
+  //   });
 
-    if (res?.ok) {
-      alert('Un lien de connexion a été envoyé à votre email !');
-    } else {
-      alert('Erreur lors de la connexion.');
-    }
+  //   if (!res?.ok) {
+  //     console.error('🚨 Erreur côté client lors du signIn:', res?.error);
+  //     setStatus('error');
+  //   }
 
-    setLoading(false);
+  //   setStatus('sent');
+  // };
+
+  const handleGoogleSignIn = () => {
+    signIn('google', { redirect: false }); // Connexion via Google
   };
 
   return (
-    <main className='flex items-center justify-center h-screen w-full bg-gray-50 px-4'>
-      <div className='bg-white rounded-xl shadow-base p-6 w-full max-w-md flex flex-col gap-6'>
-        <h1 className='text-center text-dark-xl font-bold'>Connexion</h1>
+    <div className='flex items-center justify-center'>
+      <div className='w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-10'>
+        <h1 className='text-dark-2xl text-center mb-6 font-semibold'>
+          Connexion à Poketdex
+        </h1>
 
-        <form onSubmit={handleEmailSignIn} className='flex flex-col gap-4'>
-          <label className='text-sm text-gray-600'>Email</label>
-          <input
-            type='email'
-            value={email}
-            required
-            onChange={(e) => setEmail(e.target.value)}
-            className='px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primarygreen'
-            placeholder='adresse@email.com'
-          />
+        {/* {status === 'error' && (
+          <p className='text-red-500 text-center'>
+            ❌ Une erreur est survenue lors de l&apos;envoi du lien de
+            connexion.
+          </p>
+        )} */}
 
+        {/* {status === 'sent' ? (
+          <p className='text-gray-base text-center'>
+            📬 Un lien de connexion a été envoyé à{' '}
+            <span className='font-semibold'>{email}</span>.
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} className='space-y-4'>
+            <label className='block'>
+              <span className='text-gray-base'>Adresse email</span>
+              <input
+                type='email'
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className='mt-1 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primarygreen'
+                placeholder='tonemail@example.com'
+              />
+            </label>
+
+            <button
+              type='submit'
+              disabled={status === 'sending'}
+              className='w-full py-2 bg-primarygreen text-white rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-60'
+            >
+              {status === 'sending' ? 'Envoi en cours...' : 'Se connecter'}
+            </button>
+          </form>
+        )} */}
+
+        {/* Ajout du bouton Google */}
+        <div className='mt-4'>
           <button
-            type='submit'
-            disabled={loading}
-            className='bg-primarygreen text-white py-2 rounded-md hover:opacity-90 transition'
+            onClick={handleGoogleSignIn}
+            className='w-full py-2 bg-blue-500 text-white rounded-xl font-semibold hover:opacity-90 transition'
           >
-            {loading ? 'Envoi en cours...' : 'Recevoir un lien magique'}
-          </button>
-        </form>
-
-        <div className='flex items-center gap-2'>
-          <hr className='flex-1 border-gray-200' />
-          <span className='text-xs text-gray-400'>ou</span>
-          <hr className='flex-1 border-gray-200' />
-        </div>
-
-        <div className='flex flex-col gap-2'>
-          <button
-            onClick={() => signIn('google', { callbackUrl: '/' })}
-            className='bg-white border text-darkgray py-2 rounded-md hover:bg-gray-50 transition'
-          >
-            Continuer avec Google
-          </button>
-          <button
-            onClick={() => signIn('discord', { callbackUrl: '/' })}
-            className='bg-white border text-darkgray py-2 rounded-md hover:bg-gray-50 transition'
-          >
-            Continuer avec Discord
+            Se connecter avec Google
           </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

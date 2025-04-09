@@ -13,6 +13,7 @@ import FiltersWrapper from '../components/layout/FiltersWrapper';
 import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
+import ProtectedPage from '../components/auth/ProtectedPage';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
@@ -21,7 +22,6 @@ export default function CardPage() {
   const [Sets, setSets] = useState<Set[]>([]);
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
@@ -67,10 +67,13 @@ export default function CardPage() {
   };
 
   // Filter
-  const setMap = Sets.reduce((acc, set) => {
-    acc[set.id] = set;
-    return acc;
-  }, {} as Record<string, Set>);
+  const setMap = Sets.reduce(
+    (acc, set) => {
+      acc[set.id] = set;
+      return acc;
+    },
+    {} as Record<string, Set>,
+  );
 
   const filteredCards = Cards.filter(
     (card) =>
@@ -107,23 +110,13 @@ export default function CardPage() {
         setOwnedCards(mockDuplicates);
       } catch (err) {
         console.error('Erreur lors du chargement des données utilisateur', err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserData();
   }, [userId]);
-
-  if (loading)
-    return (
-      <div className='p-4 text-center text-gray-xl'>
-        Chargement des cartes ...
-      </div>
-    );
-
   return (
-    <>
+    <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
         <div className='w-full md:w-[600px] mx-auto md:mx-0 '>
           <SearchBar
@@ -203,6 +196,6 @@ export default function CardPage() {
           );
         })}
       </div>
-    </>
+    </ProtectedPage>
   );
 }

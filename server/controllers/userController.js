@@ -1,66 +1,95 @@
 const User = require('../models/User');
+const Account = require('../models/Account'); // le modèle pour la collection "accounts"
 
-const userController = {
-  // Méthode pour créer un nouvel utilisateur
-  createUser: async (req, res) => {
-    try {
-      const { username, email, role, profile_picture, friend_code } = req.body;
-      const newUser = new User({
-        username,
-        email,
-        role,
-        profile_picture,
-        friend_code
-      });
-      const savedUser = await newUser.save();
-      res.status(201).json(savedUser);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
+const getCurrentUser = async (req, res) => {
+  try {
+    const googleId = req.user.sub;
 
-  // Méthode pour obtenir tous les utilisateurs
-  getAllUsers: async (req, res) => {
-    try {
-      const users = await User.find();
-      res.json(users);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+    // Étape 1 : retrouver le compte lié à ce Google ID
+    const account = await Account.findOne({
+      provider: 'google',
+      providerAccountId: googleId,
+    });
 
-  // Méthode pour obtenir un utilisateur par son ID
-  getUserById: async (req, res) => {
-    try {
-      const user = await User.findById(req.params.id);
-      if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!account) {
+      return res.status(401).json({ message: 'Compte non reconnu' });
     }
-  },
 
-  // Méthode pour mettre à jour un utilisateur
-  updateUser: async (req, res) => {
-    try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedUser) return res.status(404).json({ message: "Utilisateur non trouvé" });
-      res.json(updatedUser);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
+    // Étape 2 : retrouver l'utilisateur via l'userId stocké dans l'account
+    const user = await User.findById(account.userId).select('-password');
 
-  // Méthode pour supprimer un utilisateur
-  deleteUser: async (req, res) => {
-    try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
-      if (!deletedUser) return res.status(404).json({ message: "Utilisateur non trouvé" });
-      res.json({ message: "Utilisateur supprimé avec succès" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Erreur /me :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 
-module.exports = userController;
+const getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Erreur récupération utilisateur par ID :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+// Imports (si tu ne les as pas déjà)
+
+const updateUser = async (req, res) => {
+  const updates = req.body;
+
+  console.log('🔧 Requête de mise à jour utilisateur');
+
+  try {
+    // Étape 1 : retrouver le compte "Google" lié au token
+    const account = await Account.findOne({
+      provider: 'google',
+      providerAccountId: req.user.sub, // sub = ID Google unique
+    });
+
+    if (!account) {
+      console.warn('❌ Aucun compte Google lié à cet utilisateur');
+      return res
+        .status(401)
+        .json({ message: 'Utilisateur non reconnu (pas de compte lié)' });
+    }
+
+    // Étape 2 : retrouver l'utilisateur principal via userId (dans la collection "users")
+    const currentUser = await User.findById(account.userId);
+
+    if (!currentUser) {
+      console.warn("❌ Utilisateur introuvable via l'userId de l'account");
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Étape 3 : faire la mise à jour
+    const updatedUser = await User.findByIdAndUpdate(currentUser._id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    console.log('✅ Utilisateur mis à jour avec succès :', updatedUser);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('[updateUser error]', err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+module.exports = {
+  getCurrentUser,
+  getUserById,
+  updateUser,
+};
