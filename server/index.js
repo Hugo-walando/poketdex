@@ -20,5 +20,8 @@ app.use('/api/users', userRoutes);
 const setRoutes = require('./routes/setRoutes');
 app.use('/api/sets', setRoutes);
 
+const boosterRoutes = require('./routes/boosterRoutes');
+app.use('/api/boosters', boosterRoutes);
+
 
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
