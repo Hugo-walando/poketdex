@@ -7,9 +7,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+
 app.use(
   cors({
-    origin: 'http://localhost:3000', // Remplace par l'URL de ton frontend
+    origin: allowedOrigin, // Remplace par l'URL de ton frontend
     credentials: true, // Permet d'envoyer des cookies et des en-têtes d'autorisation
   }),
 );
