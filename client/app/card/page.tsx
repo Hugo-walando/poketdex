@@ -14,12 +14,13 @@ import { mockCards } from '../data/mockCards';
 import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
+import useFetchSets from '@/app/hooks/useFetchSets';
 
 export default function CardPage() {
   const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
 
   const [Cards, setCards] = useState<Card[]>([]);
-  const [Sets, setSets] = useState<Set[]>([]);
+  const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,8 +78,8 @@ export default function CardPage() {
 
   const filteredCards = Cards.filter(
     (card) =>
-      matchCard(card, setMap[card.set_id], searchQuery) &&
-      (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
+      matchCard(card, setMap[card.set_code], searchQuery) &&
+      (selectedSets.length === 0 || selectedSets.includes(card.set_code)) &&
       (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
   );
 
@@ -88,8 +89,8 @@ export default function CardPage() {
 
   const cardsGroupedBySet: Record<string, Card[]> = cardsSorted.reduce(
     (acc, card) => {
-      if (!acc[card.set_id]) acc[card.set_id] = [];
-      acc[card.set_id].push(card);
+      if (!acc[card.set_code]) acc[card.set_code] = [];
+      acc[card.set_code].push(card);
       return acc;
     },
     {} as Record<string, Card[]>,
@@ -97,7 +98,6 @@ export default function CardPage() {
 
   useEffect(() => {
     setCards(mockCards);
-    setSets(mockSets);
     const fetchUserData = async () => {
       try {
         // Simulation avec un délai (à remplacer par fetch réel)
@@ -115,6 +115,12 @@ export default function CardPage() {
 
     fetchUserData();
   }, [userId]);
+
+  if (setsLoading)
+    return <div className='text-center mt-10'>Chargement des sets...</div>;
+  if (setsError)
+    return <div className='text-center mt-10 text-red-500'>{setsError}</div>;
+
   return (
     <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
