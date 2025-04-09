@@ -1,25 +1,27 @@
 const Card = require('../models/Card');
 
-const cardController = {
-  createCard: async (req, res) => {
-    try {
-      const { img_url, name, rarity, official_id } = req.body;
-      const newCard = new Card({ img_url, name, rarity, official_id });
-      const savedCard = await newCard.save();
-      res.status(201).json(savedCard);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
-
-  getAllCards: async (req, res) => {
-    try {
-      const cards = await Card.find();
-      res.json(cards);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+// controllers/cardController.ts
+export const getCardsBySet = async (req, res) => {
+  const { code } = req.params;
+  try {
+    const cards = await Card.find({ set_id: code }).sort({ official_id: 1 });
+    res.status(200).json(cards);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'Erreur lors de la récupération des cartes' });
   }
 };
 
-module.exports = cardController;
+export const getCardById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const card = await Card.findOne({ official_id: id });
+    if (!card) return res.status(404).json({ message: 'Carte non trouvée' });
+    res.status(200).json(card);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'Erreur lors de la récupération de la carte' });
+  }
+};
