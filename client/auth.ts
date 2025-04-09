@@ -3,6 +3,7 @@ import Google from 'next-auth/providers/google';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/mongo/client'; // Ton client MongoDB
 import axios from 'axios';
+import axiosClient from './lib/axios';
 
 export const authConfig = {
   adapter: MongoDBAdapter(clientPromise), // On utilise MongoDBAdapter
@@ -26,7 +27,7 @@ export const authConfig = {
       // 🧠 Récupérer les infos supplémentaires de l'utilisateur via ton backend Express
       try {
         console.log(process.env.NEXT_PUBLIC_API_URL);
-        const res = await axios.get(
+        const res = await axiosClient.get(
           `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
           {
             headers: {
