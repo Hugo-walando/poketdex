@@ -30,5 +30,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const boosterRoutes = require('./routes/boosterRoutes');
 app.use('/api/boosters', boosterRoutes);
 
+const cardRoutes = require('./routes/cardRoutes');
+app.use('/api/cards', cardRoutes);
 
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
