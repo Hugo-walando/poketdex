@@ -30,7 +30,7 @@ async function authenticateToken(req, res, next) {
     next();
   } catch (err) {
     console.error('❌ Token invalide ou expiré');
-    return res.status(403).json({ message: 'Token invalide' });
+    return res.status(401).json({ message: 'Token invalide' });
   }
 }
 
