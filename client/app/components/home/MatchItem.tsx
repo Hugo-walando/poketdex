@@ -24,9 +24,9 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
   }, []);
 
   const requestedCardSet = Sets.find(
-    (s) => s.id === match.requested_card.set_id,
+    (s) => s.id === match.requested_card.set_code,
   );
-  const offeredCardSet = Sets.find((s) => s.id === match.offered_card.set_id);
+  const offeredCardSet = Sets.find((s) => s.id === match.offered_card.set_code);
 
   return (
     <>
