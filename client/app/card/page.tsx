@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
@@ -75,11 +75,6 @@ export default function CardPage() {
     setWishlist(mockWishlist);
     setOwnedCards(mockDuplicates);
   });
-
-  useEffect(() => {
-    console.log('📦 Sets récupérés :', Sets);
-    console.log('🃏 Cartes regroupées :', cardsBySet);
-  }, [Sets, cardsBySet]);
 
   if (setsLoading || cardsLoading) return <Loader />;
 
