@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
@@ -18,6 +18,7 @@ import Loader from '../components/ui/Loader';
 
 export default function CardPage() {
   const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
+
   const {
     cardsBySet,
     loading: cardsLoading,
@@ -29,6 +30,22 @@ export default function CardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+  const prevSetsRef = useRef<Set[] | null>(null);
+
+  useEffect(() => {
+    if (prevSetsRef.current) {
+      const hasChanged =
+        JSON.stringify(prevSetsRef.current) !== JSON.stringify(Sets);
+      if (hasChanged) {
+        console.log('🔁 Sets have changed!');
+        console.log('⬅️ Previous Sets:', prevSetsRef.current);
+        console.log('➡️ New Sets:', Sets);
+      }
+    } else {
+      console.log('📦 Initial Sets:', Sets);
+    }
+    prevSetsRef.current = Sets;
+  }, [Sets]);
 
   const hasActiveFilters =
     searchQuery.length > 0 ||

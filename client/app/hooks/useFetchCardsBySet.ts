@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 type CardsBySet = Record<string, Card[]>;
 
 const useFetchCardsBySets = (sets: Set[]) => {
-  console.log('useFetchCardsBySets', sets);
   const { data: session, status } = useSession();
 
   const [cardsBySet, setCardsBySet] = useState<CardsBySet>({});
@@ -16,6 +15,9 @@ const useFetchCardsBySets = (sets: Set[]) => {
 
   useEffect(() => {
     if (status == 'authenticated') {
+      const setsToFetch = sets.filter((set) => !cardsBySet[set.code]);
+      if (setsToFetch.length === 0) return;
+
       const fetchCards = async () => {
         if (!session?.accessToken) {
           setError('Utilisateur non authentifié');

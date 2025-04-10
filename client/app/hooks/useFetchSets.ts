@@ -6,7 +6,6 @@ import { Set } from '@/app/types/index'; // <-- import propre
 import { useSession } from 'next-auth/react';
 
 const useFetchSets = () => {
-  console.log('useFetchSets');
   const { data: session, status } = useSession();
   const [sets, setSets] = useState<Set[]>([]);
   const [loading, setLoading] = useState(false);
