@@ -19,6 +19,7 @@ export default function SetFilterDropdown({
   onToggleSet,
   sets,
 }: SetFilterDropdownProps) {
+  console.log('SetFilterDropdown', selectedSets, sets);
   const hasSelected = selectedSets.length > 0;
   const { openFilter, setOpenFilter } = useFilter();
 
