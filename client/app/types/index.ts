@@ -3,7 +3,7 @@ export interface Card {
   name: string;
   img_url: string;
   rarity: number;
-  set_id: string;
+  set_code: string;
   official_id: number;
   created_at: string;
   updated_at: string;
@@ -11,10 +11,11 @@ export interface Card {
 
 export interface Set {
   id: string;
+  code: string;
   name: string;
   color: string;
-  img_url: string;
   card_count: number;
+  img_url: string;
   created_at?: string;
 }
 
@@ -30,7 +31,7 @@ export interface ListedCard {
     name: string;
     img_url: string;
     rarity: number;
-    set_id: string;
+    set_code: string;
     official_id: number;
   };
 }

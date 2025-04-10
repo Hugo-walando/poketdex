@@ -3,7 +3,10 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-  reactStrictMode: true,
+  reactStrictMode: false,
+  images: {
+    domains: ['ptcgp-wiki.metainnovation.site'],
+  },
   // webpack(config) {
   //   config.module.rules.push({
   //     test: /\.svg$/,

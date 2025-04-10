@@ -10,23 +10,26 @@ import ResetFilters from '../components/ui/ResetFilters';
 import { matchCard } from '../utils/matchCards';
 import { Card, Set } from '../types';
 import FiltersWrapper from '../components/layout/FiltersWrapper';
-import { mockCards } from '../data/mockCards';
-import { mockSets } from '../data/mockSets';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
+import useFetchSets from '@/app/hooks/useFetchSets';
+import useFetchCardsBySets from '@/app/hooks/useFetchCardsBySet';
+import Loader from '../components/ui/Loader';
 
 export default function CardPage() {
-  const userId = '123'; // Temporaire, à remplacer par l'ID utilisateur réel
+  const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
+  const {
+    cardsBySet,
+    loading: cardsLoading,
+    error: cardsError,
+  } = useFetchCardsBySets(Sets);
 
-  const [Cards, setCards] = useState<Card[]>([]);
-  const [Sets, setSets] = useState<Set[]>([]);
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
-  // Reset Filters
   const hasActiveFilters =
     searchQuery.length > 0 ||
     selectedSets.length > 0 ||
@@ -66,55 +69,27 @@ export default function CardPage() {
     );
   };
 
-  // Filter
-  const setMap = Sets.reduce(
-    (acc, set) => {
-      acc[set.id] = set;
-      return acc;
-    },
-    {} as Record<string, Set>,
-  );
-
-  const filteredCards = Cards.filter(
-    (card) =>
-      matchCard(card, setMap[card.set_id], searchQuery) &&
-      (selectedSets.length === 0 || selectedSets.includes(card.set_id)) &&
-      (selectedRarities.length === 0 || selectedRarities.includes(card.rarity)),
-  );
-
-  const cardsSorted = [...filteredCards].sort(
-    (a, b) => a.official_id - b.official_id,
-  );
-
-  const cardsGroupedBySet: Record<string, Card[]> = cardsSorted.reduce(
-    (acc, card) => {
-      if (!acc[card.set_id]) acc[card.set_id] = [];
-      acc[card.set_id].push(card);
-      return acc;
-    },
-    {} as Record<string, Card[]>,
-  );
+  useState(() => {
+    const mockWishlist = ['1'];
+    const mockDuplicates = ['2'];
+    setWishlist(mockWishlist);
+    setOwnedCards(mockDuplicates);
+  });
 
   useEffect(() => {
-    setCards(mockCards);
-    setSets(mockSets);
-    const fetchUserData = async () => {
-      try {
-        // Simulation avec un délai (à remplacer par fetch réel)
-        await new Promise((res) => setTimeout(res, 800));
+    console.log('📦 Sets récupérés :', Sets);
+    console.log('🃏 Cartes regroupées :', cardsBySet);
+  }, [Sets, cardsBySet]);
 
-        const mockWishlist = ['1'];
-        const mockDuplicates = ['2'];
+  if (setsLoading || cardsLoading) return <Loader />;
 
-        setWishlist(mockWishlist);
-        setOwnedCards(mockDuplicates);
-      } catch (err) {
-        console.error('Erreur lors du chargement des données utilisateur', err);
-      }
-    };
+  if (setsError || cardsError)
+    return (
+      <div className='text-center mt-10 text-red-500'>
+        {setsError || cardsError}
+      </div>
+    );
 
-    fetchUserData();
-  }, [userId]);
   return (
     <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
@@ -126,10 +101,13 @@ export default function CardPage() {
         </div>
         <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
           <FilterDropdownProvider>
-            <SetFilterDropdown
-              selectedSets={selectedSets}
-              onToggleSet={toggleSet}
-            />
+            {Sets.length > 0 && (
+              <SetFilterDropdown
+                selectedSets={selectedSets}
+                onToggleSet={toggleSet}
+                sets={Sets}
+              />
+            )}
             <RarityFilter
               selectedRarities={selectedRarities}
               onToggleRarity={toggleRarity}
@@ -142,11 +120,20 @@ export default function CardPage() {
         </div>
       </FiltersWrapper>
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
-        {Sets.map((set) => {
-          const cards = cardsGroupedBySet[set.id];
+        {Sets.map((set: Set) => {
+          const cards = cardsBySet[set.code]?.filter(
+            (card: Card) =>
+              matchCard(card, set, searchQuery) &&
+              (selectedSets.length === 0 ||
+                selectedSets.includes(card.set_code)) &&
+              (selectedRarities.length === 0 ||
+                selectedRarities.includes(card.rarity)),
+          );
+
           if (!cards || cards.length === 0) return null;
+
           return (
-            <section key={set.id} className='mb-12'>
+            <section key={set.code} className='mb-12'>
               <div className='flex items-center justify-center md:justify-normal w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
                 <Image
                   src={set.img_url}
@@ -158,25 +145,22 @@ export default function CardPage() {
                 />
               </div>
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                {cards.map((card) => (
+                {cards.map((card: Card) => (
                   <div key={card.id} className='justify-self-center'>
-                    <Image
-                      src={card.img_url}
-                      alt={card.name}
-                      width={0}
-                      height={0}
-                      sizes='100vw'
-                      className=' w-[120px]
-                          sm:w-[130px]
-                          md:w-[150px]
-                          lg:w-[170px]
-                          xl:w-[190px]
-                          2xl:w-[210px]
-                          h-auto
-                          shadow-base
-                          mx-auto
-                          '
-                    />
+                    {card.img_url ? (
+                      <Image
+                        src={card.img_url}
+                        alt={card.name || 'Carte'}
+                        width={0}
+                        height={0}
+                        sizes='100vw'
+                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto shadow-base mx-auto'
+                      />
+                    ) : (
+                      <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                        Image manquante
+                      </div>
+                    )}
 
                     <CardSelector
                       cardId={card.id}

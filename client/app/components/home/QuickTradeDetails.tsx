@@ -38,7 +38,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
     setSets(mockSets); // pour l’instant on simule
   }, []);
 
-  const cardSet = Sets.find((s) => s.id === card.card.set_id);
+  const cardSet = Sets.find((s) => s.id === card.card.set_code);
 
   return (
     <div className='p-4 rounded-xl'>
