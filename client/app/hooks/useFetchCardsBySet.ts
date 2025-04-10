@@ -7,53 +7,57 @@ import toast from 'react-hot-toast';
 type CardsBySet = Record<string, Card[]>;
 
 const useFetchCardsBySets = (sets: Set[]) => {
-  const { data: session } = useSession();
+  console.log('useFetchCardsBySets', sets);
+  const { data: session, status } = useSession();
 
   const [cardsBySet, setCardsBySet] = useState<CardsBySet>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCards = async () => {
-      if (!session?.accessToken) {
-        setError('Utilisateur non authentifié');
-        toast.error('Utilisateur non authentifié');
-        return;
-      }
+    if (status == 'authenticated') {
+      const fetchCards = async () => {
+        if (!session?.accessToken) {
+          setError('Utilisateur non authentifié');
+          toast.error('Utilisateur non authentifié');
+          return;
+        }
 
-      setLoading(true);
-      const result: CardsBySet = {};
+        setLoading(true);
+        const result: CardsBySet = {};
 
-      try {
-        await Promise.all(
-          sets.map(async (set) => {
-            const response = await axiosClient.get<Card[]>(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/cards/set/${set.code}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${session.accessToken}`,
+        try {
+          await Promise.all(
+            sets.map(async (set) => {
+              console.log('Fetching cards by set...', set);
+              const response = await axiosClient.get<Card[]>(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/cards/set/${set.code}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${session.accessToken}`,
+                  },
+                  withCredentials: true,
                 },
-                withCredentials: true,
-              },
-            );
-            result[set.code] = response.data;
-          }),
-        );
+              );
+              result[set.code] = response.data;
+            }),
+          );
 
-        setCardsBySet(result);
-      } catch (err) {
-        console.error(err);
-        setError('Erreur lors du chargement des cartes');
-        toast.error('Erreur lors du chargement des cartes');
-      } finally {
-        setLoading(false);
+          setCardsBySet(result);
+        } catch (err) {
+          console.error(err);
+          setError('Erreur lors du chargement des cartes');
+          toast.error('Erreur lors du chargement des cartes');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if (sets.length > 0 && Object.keys(cardsBySet).length === 0) {
+        fetchCards();
       }
-    };
-
-    if (sets.length > 0) {
-      fetchCards();
     }
-  }, [sets, session]);
+  }, [sets, session, status]);
 
   return { cardsBySet, loading, error };
 };
