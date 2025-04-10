@@ -31,7 +31,7 @@ export interface ListedCard {
     name: string;
     img_url: string;
     rarity: number;
-    set_id: string;
+    set_code: string;
     official_id: number;
   };
 }
