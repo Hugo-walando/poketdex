@@ -4,6 +4,6 @@ const setController = require('../controllers/setController');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
 // Route pour créer un set
-router.get('/sets', authenticateToken, setController.getAllSets);
+router.get('/', authenticateToken, setController.getAllSets);
 
 module.exports = router;
