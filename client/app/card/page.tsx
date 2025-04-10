@@ -14,6 +14,7 @@ import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
 import useFetchSets from '@/app/hooks/useFetchSets';
 import useFetchCardsBySets from '@/app/hooks/useFetchCardsBySet';
+import Loader from '../components/ui/Loader';
 
 export default function CardPage() {
   const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
@@ -80,8 +81,7 @@ export default function CardPage() {
     console.log('🃏 Cartes regroupées :', cardsBySet);
   }, [Sets, cardsBySet]);
 
-  if (setsLoading || cardsLoading)
-    return <div className='text-center mt-10'>Chargement des données...</div>;
+  if (setsLoading || cardsLoading) return <Loader />;
 
   if (setsError || cardsError)
     return (
@@ -101,10 +101,13 @@ export default function CardPage() {
         </div>
         <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
           <FilterDropdownProvider>
-            <SetFilterDropdown
-              selectedSets={selectedSets}
-              onToggleSet={toggleSet}
-            />
+            {Sets.length > 0 && (
+              <SetFilterDropdown
+                selectedSets={selectedSets}
+                onToggleSet={toggleSet}
+                sets={Sets}
+              />
+            )}
             <RarityFilter
               selectedRarities={selectedRarities}
               onToggleRarity={toggleRarity}

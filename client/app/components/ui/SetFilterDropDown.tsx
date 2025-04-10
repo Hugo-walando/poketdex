@@ -1,80 +1,40 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Set } from '@/app/types';
 import BoosterIcon from '../svgs/BoosterIcon';
 import { useFilter } from '@/app/context/FilterContext';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
-const mockSets: Set[] = [
-  {
-    id: '1',
-    code: 'A1',
-    name: 'Puissance Génétique',
-    color: '#FFD700',
-    img_url: '/testimgs/sets/PuissanceGénétique.png',
-    card_count: 226,
-  },
-  {
-    id: '2',
-    code: 'A1a',
-    name: 'Ile Fabuleuse',
-    color: '#FF006E',
-    img_url: '/testimgs/sets/IleFabuleuse.png',
-    card_count: 86,
-  },
-  {
-    id: '3',
-    code: 'A2',
-    name: 'Choc Spacio Temporel',
-    color: '#00C2FF',
-    img_url: '/testimgs/sets/ChocSpacioTemporel.png',
-    card_count: 178,
-  },
-];
+import { useEffect } from 'react';
 
 interface SetFilterDropdownProps {
   selectedSets: string[];
   onToggleSet: (setId: string) => void;
+  sets: Set[]; // ✅ sets passés en props depuis la page
 }
 
 export default function SetFilterDropdown({
   selectedSets,
   onToggleSet,
+  sets,
 }: SetFilterDropdownProps) {
-  const [sets, setSets] = useState<Set[]>(mockSets);
   const hasSelected = selectedSets.length > 0;
   const { openFilter, setOpenFilter } = useFilter();
 
-  useEffect(() => {
-    const fetchSets = async () => {
-      try {
-        const res = await fetch('/api/sets');
-        if (!res.ok)
-          throw new Error('Erreur lors du chargement des extensions');
-        const data = await res.json();
-        setSets(data);
-      } catch (err) {
-        console.warn(err, 'Utilisation du mockSet (API non disponible)');
-      }
-    };
-
-    fetchSets();
-  }, []);
-
   const isOpen = openFilter === 'set';
+
+  useEffect(() => {
+    console.log('Re-rendering SetFilterDropdown');
+  });
 
   return (
     <DropdownMenu.Root
       open={isOpen}
       onOpenChange={(isNowOpen) => {
-        // Autoriser le clic sur l'autre bouton sans double clic
         if (isNowOpen) {
           setOpenFilter('set');
         } else {
-          // Un petit timeout permet de vérifier si un autre filtre est cliqué immédiatement après
           setTimeout(() => {
             if (openFilter === 'set') setOpenFilter(null);
           }, 50);
@@ -102,13 +62,13 @@ export default function SetFilterDropdown({
         className='z-10 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
       >
         {sets.map((set) => {
-          const isSelected = selectedSets.includes(set.id);
+          const isSelected = selectedSets.includes(set.code); // ✅ on utilise `set.code` comme identifiant
           return (
-            <div key={set.id}>
+            <div key={set.code}>
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // évite toute propagation éventuelle
-                  onToggleSet(set.id);
+                  e.stopPropagation();
+                  onToggleSet(set.code); // ✅ passe `set.code`
                 }}
                 className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer ${
                   isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'
