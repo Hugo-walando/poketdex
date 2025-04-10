@@ -49,7 +49,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       card.official_id.toString().includes(searchQuery);
 
     const matchSet =
-      selectedSets.length === 0 || selectedSets.includes(card.set_id);
+      selectedSets.length === 0 || selectedSets.includes(card.set_code);
 
     const matchRarity =
       selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
