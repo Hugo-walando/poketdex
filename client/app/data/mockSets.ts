@@ -11,7 +11,7 @@ export const mockSets: Set[] = [
   },
   {
     id: '2',
-    code: 'A2',
+    code: 'A1a',
     name: 'Ile Fabuleuse',
     color: '#FF006E',
     card_count: 86,
@@ -19,7 +19,7 @@ export const mockSets: Set[] = [
   },
   {
     id: '3',
-    code: 'A3',
+    code: 'A2',
     name: 'Choc Spacio Temporel',
     color: '#00C2FF',
     card_count: 178,
