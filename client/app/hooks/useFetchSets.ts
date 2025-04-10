@@ -6,7 +6,7 @@ import { Set } from '@/app/types/index'; // <-- import propre
 import { useSession } from 'next-auth/react';
 
 const useFetchSets = () => {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [sets, setSets] = useState<Set[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ const useFetchSets = () => {
         );
 
         setSets(response.data);
-        // await update(); // rafraîchit la session côté front
+
         setSuccess('✅ Sets chargés avec succès');
         toast.success('Sets chargés avec succès');
       } catch (err) {
