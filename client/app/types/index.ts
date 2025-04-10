@@ -11,6 +11,7 @@ export interface Card {
 
 export interface Set {
   id: string;
+  code: string;
   name: string;
   color: string;
   card_count: number;
