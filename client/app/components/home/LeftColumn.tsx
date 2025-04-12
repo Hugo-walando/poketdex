@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { mockListedCards } from '@/app/data/mockListedCards';
 import ListedCardItem from './ListedCardItem';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
-import useFetchSets from '@/app/hooks/useFetchSets';
 import Loader from '../ui/Loader';
+import useFetchSets from '@/app/hooks/useFetchSets';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;

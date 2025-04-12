@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import CardSelector from '@/app/components/ui/CardSelector';
 import SearchBar from '../components/ui/SearchBar';
@@ -12,45 +12,38 @@ import { Card, Set } from '../types';
 import FiltersWrapper from '../components/layout/FiltersWrapper';
 import { FilterDropdownProvider } from '../context/FilterContext';
 import ProtectedPage from '../components/auth/ProtectedPage';
-import useFetchSets from '@/app/hooks/useFetchSets';
-import useFetchCardsBySets from '@/app/hooks/useFetchCardsBySet';
-import Loader from '../components/ui/Loader';
+// import useFetchCardsBySets from '@/app/hooks/useFetchCardsBySet';
+// import Loader from '../components/ui/Loader';
+// import { useSets } from '../context/SetsContext';
+// import useFetchSets from '../hooks/useFetchSets';
+import { useGlobalData } from '../store/useGlobalData';
 
 export default function CardPage() {
-  const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
+  console.log('📄 CardPage rendered');
 
-  const {
-    cardsBySet,
-    loading: cardsLoading,
-    error: cardsError,
-  } = useFetchCardsBySets(Sets);
+  const Sets = useGlobalData((state) => state.sets);
+  const cardsBySet = useGlobalData((state) => state.cardsBySet);
 
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
-  const prevSetsRef = useRef<Set[] | null>(null);
+
+  console.log('🎯 CardPage mounted with Sets:', Sets);
 
   useEffect(() => {
-    if (prevSetsRef.current) {
-      const hasChanged =
-        JSON.stringify(prevSetsRef.current) !== JSON.stringify(Sets);
-      if (hasChanged) {
-        console.log('🔁 Sets have changed!');
-        console.log('⬅️ Previous Sets:', prevSetsRef.current);
-        console.log('➡️ New Sets:', Sets);
-      }
-    } else {
-      console.log('📦 Initial Sets:', Sets);
-    }
-    prevSetsRef.current = Sets;
-  }, [Sets]);
+    console.log('[🧪 TEST] Sets:', Sets);
+    console.log('[🧪 TEST] CardsBySet:', cardsBySet);
+  }, [Sets, cardsBySet]);
 
-  const hasActiveFilters =
-    searchQuery.length > 0 ||
-    selectedSets.length > 0 ||
-    selectedRarities.length > 0;
+  const hasActiveFilters = useMemo(() => {
+    return (
+      searchQuery.length > 0 ||
+      selectedSets.length > 0 ||
+      selectedRarities.length > 0
+    );
+  }, [searchQuery, selectedSets, selectedRarities]);
 
   const resetAllFilters = () => {
     setSearchQuery('');
@@ -85,22 +78,14 @@ export default function CardPage() {
         : [...prev, rarity],
     );
   };
+  // if (setsLoading || cardsLoading) return <Loader />;
 
-  useState(() => {
-    const mockWishlist = ['1'];
-    const mockDuplicates = ['2'];
-    setWishlist(mockWishlist);
-    setOwnedCards(mockDuplicates);
-  });
-
-  if (setsLoading || cardsLoading) return <Loader />;
-
-  if (setsError || cardsError)
-    return (
-      <div className='text-center mt-10 text-red-500'>
-        {setsError || cardsError}
-      </div>
-    );
+  // if (setsError || cardsError)
+  //   return (
+  //     <div className='text-center mt-10 text-red-500'>
+  //       {setsError || cardsError}
+  //     </div>
+  //   );
 
   return (
     <ProtectedPage>
@@ -158,7 +143,7 @@ export default function CardPage() {
               </div>
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                 {cards.map((card: Card) => (
-                  <div key={card.id} className='justify-self-center'>
+                  <div key={card.official_id} className='justify-self-center'>
                     {card.img_url ? (
                       <Image
                         src={card.img_url}
@@ -175,7 +160,7 @@ export default function CardPage() {
                     )}
 
                     <CardSelector
-                      cardId={card.id}
+                      cardId={card.official_id.toString()}
                       ownedCards={ownedCards}
                       wishlist={wishlist}
                       toggleOwned={(id) =>

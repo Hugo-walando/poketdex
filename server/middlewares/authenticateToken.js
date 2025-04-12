@@ -22,7 +22,7 @@ async function authenticateToken(req, res, next) {
     );
     const decoded = response.data;
 
-    console.log('✅ Token valide, payload décodé :', decoded);
+    console.log('✅ Token valide, payload décodé ');
 
     // Ajoute les informations de l'utilisateur dans la requête
     req.user = decoded; // L'ID et l'email de l'utilisateur sont dans `decoded`

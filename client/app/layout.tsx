@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/layout/NavBar';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
-import { SessionProvider } from 'next-auth/react';
+import ClientProviders from './ClientProviders';
 
 export const metadata: Metadata = {
   title: 'PoketDex',
@@ -26,11 +26,9 @@ export default function RootLayout({
     <html lang='fr' className={poppins.variable}>
       <body>
         <MaxWidthWrapper>
-          <SessionProvider>
-            <Navbar />
-            <Toaster position='top-center' />
-            {children}
-          </SessionProvider>
+          <Navbar />
+          <Toaster position='top-center' />
+          <ClientProviders>{children}</ClientProviders>
         </MaxWidthWrapper>
       </body>
     </html>

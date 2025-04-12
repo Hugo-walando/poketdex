@@ -40,7 +40,7 @@ const useFetchSets = () => {
           );
 
           setSets(response.data);
-
+          console.log('✅ Sets fetched ');
           setSuccess('✅ Sets chargés avec succès');
           toast.success('Sets chargés avec succès');
         } catch (err) {

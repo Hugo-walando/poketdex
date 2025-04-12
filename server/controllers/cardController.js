@@ -4,11 +4,10 @@ const Card = require('../models/Card');
 const getCardsBySet = async (req, res) => {
   const { set_code } = req.params;
   try {
-    console.log('Fetching cards for set:', set_code);
+    console.log('Fetching cards for set');
     const cards = await Card.find({ set_code }).sort({
       official_id: 1,
     });
-    console.log(cards);
     res.status(200).json(cards);
   } catch (err) {
     res
