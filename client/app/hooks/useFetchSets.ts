@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
@@ -12,8 +12,11 @@ const useFetchSets = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const hasFetched = useRef(false);
+
   useEffect(() => {
-    if (sets.length > 0) return;
+    if (hasFetched.current) return; // Ne pas refetch si déjà fait
+
     if (user) {
       const fetchSets = async () => {
         if (!user?.accessToken) {
