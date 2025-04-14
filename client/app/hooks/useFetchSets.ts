@@ -3,10 +3,10 @@ import axios from 'axios';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
 import { Set } from '@/app/types/index'; // <-- import propre
-import { useSession } from 'next-auth/react';
+import { useUserStore } from '../store/useUserStore';
 
 const useFetchSets = () => {
-  const { data: session, status } = useSession();
+  const user = useUserStore((state) => state.user);
   const [sets, setSets] = useState<Set[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,9 +14,9 @@ const useFetchSets = () => {
 
   useEffect(() => {
     if (sets.length > 0) return;
-    if (status == 'authenticated') {
+    if (user) {
       const fetchSets = async () => {
-        if (!session?.accessToken) {
+        if (!user?.accessToken) {
           setError('Utilisateur non authentifié');
           toast.error('Erreur : utilisateur non authentifié');
 
@@ -33,7 +33,7 @@ const useFetchSets = () => {
             {
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${session.accessToken}`,
+                Authorization: `Bearer ${user.accessToken}`,
               },
               withCredentials: true,
             },
@@ -64,7 +64,7 @@ const useFetchSets = () => {
 
       fetchSets();
     }
-  }, [status, session]);
+  }, [user]);
 
   return { sets, loading, error, success };
 };

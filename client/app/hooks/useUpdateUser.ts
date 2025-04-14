@@ -3,10 +3,13 @@ import { useSession } from 'next-auth/react'; // Assurez-vous d'utiliser Auth.js
 import axios from 'axios';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
+import { useUserStore } from '../store/useUserStore';
 
 // Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
-  const { data: session, update } = useSession();
+  const { update } = useSession();
+  const user = useUserStore((state) => state.user);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -15,7 +18,7 @@ const useUpdateUser = () => {
     username: string;
     friend_code: string;
   }) => {
-    if (!session?.accessToken) {
+    if (!user?.accessToken) {
       setError('Utilisateur non authentifié');
       toast.error('Erreur : utilisateur non authentifié');
 
@@ -33,7 +36,7 @@ const useUpdateUser = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
           withCredentials: true,
         },

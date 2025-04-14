@@ -4,10 +4,13 @@ import { useEffect } from 'react';
 import useFetchSets from '@/app/hooks/useFetchSets';
 import useFetchCardsBySetsManual from '@/app/hooks/useFetchCardsBySet';
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useSession } from 'next-auth/react';
+import { useUserStore } from '@/app/store/useUserStore';
 
 export default function GlobalDataLoader() {
   console.log('📦 GlobalDataLoader rendered');
-
+  const { data: session, status } = useSession();
+  const setUser = useUserStore((s) => s.setUser);
   const { sets: fetchedSets, loading: setsLoading } = useFetchSets();
   const { sets, setSets, cardsBySet, setCardsBySet } = useGlobalData();
 
@@ -16,6 +19,23 @@ export default function GlobalDataLoader() {
     loading: cardsLoading,
     triggerFetch,
   } = useFetchCardsBySetsManual();
+
+  useEffect(() => {
+    if (
+      status === 'authenticated' &&
+      session.user &&
+      session.user.email &&
+      session.user.id // 👈 On vérifie explicitement
+    ) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email,
+        username: session.user.username,
+        friend_code: session.user.friend_code,
+        accessToken: session.accessToken,
+      });
+    }
+  }, [session, status, setUser]);
 
   // 🧠 Sauver les sets dans le global store
   useEffect(() => {

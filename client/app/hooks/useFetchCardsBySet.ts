@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { Card, Set } from '@/app/types';
-import { useSession } from 'next-auth/react';
+import { useUserStore } from '../store/useUserStore';
 
 export default function useFetchCardsBySetsManual() {
-  const { data: session } = useSession();
+  const user = useUserStore((state) => state.user);
   const [cardsBySet, setCardsBySet] = useState<Record<string, Card[]>>({});
   const [loading, setLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
@@ -23,7 +23,7 @@ export default function useFetchCardsBySetsManual() {
           `/api/cards/set/${set.code}`,
           {
             headers: {
-              Authorization: `Bearer ${session?.accessToken}`,
+              Authorization: `Bearer ${user!.accessToken}`,
             },
             withCredentials: true,
           },

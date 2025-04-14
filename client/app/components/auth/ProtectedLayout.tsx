@@ -1,29 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { isProfileIncomplete } from '@/app/utils/isProfileIncomplete';
 import CompleteProfileModal from './CompleteProfileModal';
+import { useUserStore } from '@/app/store/useUserStore';
 
 export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
+  const user = useUserStore((state) => state.user);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (session?.user && isProfileIncomplete(session.user)) {
+    if (user && isProfileIncomplete(user)) {
       setShowModal(true);
     }
-  }, [session]);
+  }, [user]);
 
   return (
     <>
       {showModal && (
         <CompleteProfileModal
-          user={session!.user}
+          user={user!}
           onClose={() => setShowModal(false)}
         />
       )}

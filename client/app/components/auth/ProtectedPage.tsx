@@ -1,6 +1,4 @@
-'use client';
-
-import { useSession } from 'next-auth/react';
+import { useUserStore } from '@/app/store/useUserStore';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 import Loader from '../ui/Loader';
@@ -10,23 +8,16 @@ interface Props {
 }
 
 export default function ProtectedPage({ children }: Props) {
-  const { status } = useSession();
+  const { user } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!user) {
       router.push('/login');
     }
-  }, [status, router]);
+  }, [user, router]);
 
-  if (status === 'loading') {
-    // Tu peux afficher un spinner, une splash screen, ou rien du tout ici
-    return <Loader />;
-  }
+  if (!user) return <Loader />;
 
-  if (status === 'authenticated') {
-    return <>{children}</>;
-  }
-
-  return null;
+  return <>{children}</>;
 }

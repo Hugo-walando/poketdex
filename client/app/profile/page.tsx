@@ -1,15 +1,15 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import useUpdateUser from '@/app/hooks/useUpdateUser';
 import LogoutButton from '../components/ui/LogoutButton';
 import ProtectedPage from '../components/auth/ProtectedPage';
 import { updateUserSchema } from '@/lib/validation/user';
+import { useUserStore } from '../store/useUserStore';
 
 export default function Profile() {
-  const { data: session } = useSession();
   const { updateUser, error, success, loading } = useUpdateUser();
+  const user = useUserStore((state) => state.user);
 
   const [username, setUsername] = useState('');
   const [friendCode, setFriendCode] = useState('');
@@ -19,11 +19,11 @@ export default function Profile() {
   }>({});
 
   useEffect(() => {
-    if (session?.user) {
-      setUsername(session.user.username || '');
-      setFriendCode(session.user.friend_code || '');
+    if (user) {
+      setUsername(user.username || '');
+      setFriendCode(user.friend_code || '');
     }
-  }, [session]);
+  }, [user]);
 
   const handleSave = async () => {
     setFormErrors({}); // Réinitialise les erreurs
@@ -46,14 +46,12 @@ export default function Profile() {
     });
   };
 
-  if (!session) return null;
+  if (!user) return null;
 
   return (
     <ProtectedPage>
       <div className='p-4 max-w-md mx-auto space-y-4'>
-        <h2 className='text-xl font-semibold'>
-          Bienvenue {session.user.email}
-        </h2>
+        <h2 className='text-xl font-semibold'>Bienvenue {user.username}</h2>
         <LogoutButton />
 
         {success && <div className='text-green-600 font-medium'>{success}</div>}
