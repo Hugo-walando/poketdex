@@ -1,18 +1,17 @@
 'use client';
-'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import useFetchSets from '@/app/hooks/useFetchSets';
 import useFetchAllCards from '@/app/hooks/useFetchAllCards';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useSession } from 'next-auth/react';
 import { useUserStore } from '@/app/store/useUserStore';
+
 export default function GlobalDataLoader() {
   console.log('📦 GlobalDataLoader rendered');
 
-  const hasInitialized = useRef(false); // ✅ Ajout
-
   const { data: session, status } = useSession();
+
   const setUser = useUserStore((s) => s.setUser);
   const clearUser = useUserStore((s) => s.clearUser);
   const setUserLoading = useUserStore((s) => s.setLoading);
@@ -24,15 +23,12 @@ export default function GlobalDataLoader() {
   const { sets: fetchedSets, loading: setsLoading } = useFetchSets();
   const { cardsBySet, loading: cardsLoading } = useFetchAllCards();
 
+  // 🔐 Gestion user
   useEffect(() => {
-    if (hasInitialized.current) return;
-    hasInitialized.current = true;
-
-    console.log('✅ Initializing GlobalDataLoader');
-
     setUserLoading(true);
 
     if (status === 'authenticated' && session?.user?.id) {
+      console.log('🧍 Saving user to store');
       setUser({
         id: session.user.id,
         email: session.user.email ?? '',
@@ -45,30 +41,23 @@ export default function GlobalDataLoader() {
     if (status === 'unauthenticated') {
       clearUser();
     }
+  }, [status, session]);
 
+  // 📥 Stocker les sets
+  useEffect(() => {
     if (!setsLoading && fetchedSets.length > 0 && sets.length === 0) {
-      console.log('📝 Saving sets to global store...');
+      console.log('📦 Saving sets to store...');
       setSets(fetchedSets);
     }
+  }, [setsLoading, fetchedSets, sets.length]);
 
+  // 📥 Stocker les cartes
+  useEffect(() => {
     if (!cardsLoading && Object.keys(cardsBySet).length > 0) {
-      console.log('📝 Saving all cards to global store...');
+      console.log('🃏 Saving all cards to store...');
       setAllCardsBySet(cardsBySet);
     }
-  }, [
-    status,
-    session,
-    setUser,
-    clearUser,
-    setUserLoading,
-    setsLoading,
-    fetchedSets,
-    sets.length,
-    setSets,
-    cardsLoading,
-    cardsBySet,
-    setAllCardsBySet,
-  ]);
+  }, [cardsLoading, cardsBySet]);
 
   return null;
 }
