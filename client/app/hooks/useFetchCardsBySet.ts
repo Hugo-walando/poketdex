@@ -1,61 +1,47 @@
-import { useEffect, useState } from 'react';
+// hooks/useFetchCardsBySet.ts
+import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { Card, Set } from '@/app/types';
-import { useSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
+import { useUserStore } from '../store/useUserStore';
 
-type CardsBySet = Record<string, Card[]>;
-
-const useFetchCardsBySets = (sets: Set[]) => {
-  const { data: session } = useSession();
-
-  const [cardsBySet, setCardsBySet] = useState<CardsBySet>({});
+export default function useFetchCardsBySetsManual() {
+  const user = useUserStore((state) => state.user);
+  const [cardsBySet, setCardsBySet] = useState<Record<string, Card[]>>({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [hasFetched, setHasFetched] = useState(false);
 
-  useEffect(() => {
-    const fetchCards = async () => {
-      if (!session?.accessToken) {
-        setError('Utilisateur non authentifié');
-        toast.error('Utilisateur non authentifié');
-        return;
-      }
+  const triggerFetch = async (sets: Set[]) => {
+    if (sets.length === 0 || hasFetched) return;
 
-      setLoading(true);
-      const result: CardsBySet = {};
+    setLoading(true);
+    const fetched: Record<string, Card[]> = {};
 
-      try {
-        await Promise.all(
-          sets.map(async (set) => {
-            const response = await axiosClient.get<Card[]>(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/cards/set/${set.code}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${session.accessToken}`,
-                },
-                withCredentials: true,
-              },
-            );
-            result[set.code] = response.data;
-          }),
+    try {
+      for (const set of sets) {
+        console.log(`Fetching cards for set: ${set.code}`);
+        const res = await axiosClient.get<Card[]>(
+          `/api/cards/set/${set.code}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user!.accessToken}`,
+            },
+            withCredentials: true,
+          },
         );
-
-        setCardsBySet(result);
-      } catch (err) {
-        console.error(err);
-        setError('Erreur lors du chargement des cartes');
-        toast.error('Erreur lors du chargement des cartes');
-      } finally {
-        setLoading(false);
+        fetched[set.code] = res.data;
       }
-    };
-
-    if (sets.length > 0) {
-      fetchCards();
+      setCardsBySet(fetched);
+      setHasFetched(true);
+    } catch (err) {
+      console.error('❌ Error fetching cards by set:', err);
+    } finally {
+      setLoading(false);
     }
-  }, [sets, session]);
+  };
 
-  return { cardsBySet, loading, error };
-};
-
-export default useFetchCardsBySets;
+  return {
+    cardsBySet,
+    loading,
+    triggerFetch, // ✅ Tu contrôles quand ça s’exécute
+  };
+}

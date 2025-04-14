@@ -5,7 +5,6 @@ const getAllSets = async (req, res) => {
   try {
     console.log('Fetching all sets');
     const sets = await Set.find(); // Mongoose
-    console.log(sets);
     res.status(200).json(sets);
   } catch (err) {
     console.error('Error fetching sets:', err);
