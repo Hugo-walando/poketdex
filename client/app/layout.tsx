@@ -28,7 +28,7 @@ export default async function RootLayout({
   return (
     <html lang='fr' className={poppins.variable}>
       <body>
-        <SessionProvider session={session}>
+        <SessionProvider session={session} refetchOnWindowFocus={false}>
           <MaxWidthWrapper>
             <Navbar />
             <Toaster position='top-center' />
