@@ -9,7 +9,7 @@ const getAllCards = async (req, res) => {
 
     // Regroupe les cartes par setCode
     const grouped = cards.reduce((acc, card) => {
-      const setCode = card.setCode;
+      const setCode = card.set_code;
       if (!acc[setCode]) acc[setCode] = [];
       acc[setCode].push(card);
       return acc;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import CardSelector from '@/app/components/ui/CardSelector';
@@ -70,6 +70,11 @@ export default function CardPage() {
         : [...prev, rarity],
     );
   };
+
+  useEffect(() => {
+    console.log(sets, 'SETS');
+    console.log(cardsBySet, 'CARDS');
+  }, [sets, cardsBySet]);
 
   return (
     <ProtectedPage>
