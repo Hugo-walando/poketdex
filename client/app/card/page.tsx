@@ -1,41 +1,33 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
+
 import CardSelector from '@/app/components/ui/CardSelector';
-import SearchBar from '../components/ui/SearchBar';
-import SetFilterDropdown from '../components/ui/SetFilterDropDown';
-import RarityFilter from '../components/ui/RarityFilter';
-import ResetFilters from '../components/ui/ResetFilters';
-import { matchCard } from '../utils/matchCards';
-import { Card, Set } from '../types';
-import FiltersWrapper from '../components/layout/FiltersWrapper';
-import { FilterDropdownProvider } from '../context/FilterContext';
-import ProtectedPage from '../components/auth/ProtectedPage';
-// import useFetchCardsBySets from '@/app/hooks/useFetchCardsBySet';
-// import Loader from '../components/ui/Loader';
-// import { useSets } from '../context/SetsContext';
-// import useFetchSets from '../hooks/useFetchSets';
-import { useGlobalData } from '../store/useGlobalData';
+import SearchBar from '@/app/components/ui/SearchBar';
+import SetFilterDropdown from '@/app/components/ui/SetFilterDropDown';
+import RarityFilter from '@/app/components/ui/RarityFilter';
+import ResetFilters from '@/app/components/ui/ResetFilters';
+import FiltersWrapper from '@/app/components/layout/FiltersWrapper';
+import ProtectedPage from '@/app/components/auth/ProtectedPage';
+
+import { useGlobalData } from '@/app/store/useGlobalData';
+import { FilterDropdownProvider } from '@/app/context/FilterContext';
+import { matchCard } from '@/app/utils/matchCards';
+
+import { Card, Set } from '@/app/types';
 
 export default function CardPage() {
   console.log('📄 CardPage rendered');
 
-  const Sets = useGlobalData((state) => state.sets);
-  const cardsBySet = useGlobalData((state) => state.cardsBySet);
+  const sets = useGlobalData((s) => s.sets);
+  const cardsBySet = useGlobalData((s) => s.cardsBySet);
 
   const [ownedCards, setOwnedCards] = useState<string[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
-
-  console.log('🎯 CardPage mounted with Sets:', Sets);
-
-  useEffect(() => {
-    console.log('[🧪 TEST] Sets:', Sets);
-    console.log('[🧪 TEST] CardsBySet:', cardsBySet);
-  }, [Sets, cardsBySet]);
 
   const hasActiveFilters = useMemo(() => {
     return (
@@ -78,14 +70,6 @@ export default function CardPage() {
         : [...prev, rarity],
     );
   };
-  // if (setsLoading || cardsLoading) return <Loader />;
-
-  // if (setsError || cardsError)
-  //   return (
-  //     <div className='text-center mt-10 text-red-500'>
-  //       {setsError || cardsError}
-  //     </div>
-  //   );
 
   return (
     <ProtectedPage>
@@ -98,11 +82,11 @@ export default function CardPage() {
         </div>
         <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
           <FilterDropdownProvider>
-            {Sets.length > 0 && (
+            {sets.length > 0 && (
               <SetFilterDropdown
                 selectedSets={selectedSets}
                 onToggleSet={toggleSet}
-                sets={Sets}
+                sets={sets}
               />
             )}
             <RarityFilter
@@ -116,24 +100,9 @@ export default function CardPage() {
           />
         </div>
       </FiltersWrapper>
-      {Sets.map((set: Set) => {
-        return (
-          <div key={set.code}>
-            <div className='flex items-center justify-center md:justify-normal w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
-              <Image
-                src={set.img_url}
-                alt={set.name}
-                width={0}
-                height={0}
-                sizes='100vw'
-                className='w-auto h-[50px]'
-              />
-            </div>
-          </div>
-        );
-      })}
+
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
-        {Sets.map((set: Set) => {
+        {sets.map((set: Set) => {
           const cards = cardsBySet[set.code]?.filter(
             (card: Card) =>
               matchCard(card, set, searchQuery) &&
@@ -147,7 +116,7 @@ export default function CardPage() {
 
           return (
             <section key={set.code} className='mb-12'>
-              <div className='flex items-center justify-center md:justify-normal w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
+              <div className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
                 <Image
                   src={set.img_url}
                   alt={set.name}
@@ -156,7 +125,9 @@ export default function CardPage() {
                   sizes='100vw'
                   className='w-auto h-[50px]'
                 />
+                <span className='font-medium text-lg'>{set.name}</span>
               </div>
+
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                 {cards.map((card: Card) => (
                   <div key={card.official_id} className='justify-self-center'>
