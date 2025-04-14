@@ -3,7 +3,6 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-  reactStrictMode: false,
   images: {
     domains: ['ptcgp-wiki.metainnovation.site'],
   },
