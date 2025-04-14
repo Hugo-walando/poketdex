@@ -1,6 +1,17 @@
 const Card = require('../models/Card');
 
 // controllers/cardController.ts
+const getAllCards = async (req, res) => {
+  try {
+    console.log('Fetching all Cards');
+    const cards = await Card.find(); // Mongoose
+    res.status(200).json(cards);
+  } catch (err) {
+    console.error('Error fetching Cards:', err);
+    res.status(500).json({ error: 'Erreur lors de la récupération des Cards' });
+  }
+};
+
 const getCardsBySet = async (req, res) => {
   const { set_code } = req.params;
   try {
@@ -29,6 +40,7 @@ const getCardById = async (req, res) => {
 };
 
 module.exports = {
+  getAllCards,
   getCardsBySet,
   getCardById,
 };
