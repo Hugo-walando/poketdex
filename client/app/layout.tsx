@@ -25,11 +25,13 @@ export default function RootLayout({
   return (
     <html lang='fr' className={poppins.variable}>
       <body>
-        <MaxWidthWrapper>
-          <Navbar />
-          <Toaster position='top-center' />
-          <ClientProviders>{children}</ClientProviders>
-        </MaxWidthWrapper>
+        <ClientProviders>
+          <MaxWidthWrapper>
+            <Navbar />
+            <Toaster position='top-center' />
+            {children}
+          </MaxWidthWrapper>
+        </ClientProviders>
       </body>
     </html>
   );

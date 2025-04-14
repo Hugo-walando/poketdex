@@ -116,6 +116,22 @@ export default function CardPage() {
           />
         </div>
       </FiltersWrapper>
+      {Sets.map((set: Set) => {
+        return (
+          <div key={set.code}>
+            <div className='flex items-center justify-center md:justify-normal w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
+              <Image
+                src={set.img_url}
+                alt={set.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className='w-auto h-[50px]'
+              />
+            </div>
+          </div>
+        );
+      })}
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         {Sets.map((set: Set) => {
           const cards = cardsBySet[set.code]?.filter(

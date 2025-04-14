@@ -8,16 +8,16 @@ interface Props {
 }
 
 export default function ProtectedPage({ children }: Props) {
-  const { user } = useUserStore();
+  const { user, isLoading } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       router.push('/login');
     }
-  }, [user, router]);
+  }, [isLoading, user, router]);
 
-  if (!user) return <Loader />;
+  if (isLoading || !user) return <Loader />;
 
   return <>{children}</>;
 }
