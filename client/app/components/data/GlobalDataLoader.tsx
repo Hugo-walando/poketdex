@@ -22,7 +22,6 @@ export default function GlobalDataLoader() {
 
   const { sets: fetchedSets, loading: setsLoading } = useFetchSets();
   const { cardsBySet, loading: cardsLoading } = useFetchAllCards();
-
   // 🔐 Gestion user
   useEffect(() => {
     setUserLoading(true);
@@ -41,7 +40,7 @@ export default function GlobalDataLoader() {
     if (status === 'unauthenticated') {
       clearUser();
     }
-  }, [status, session]);
+  }, [status, session, clearUser, setUser, setUserLoading]);
 
   // 📥 Stocker les sets
   useEffect(() => {
@@ -49,7 +48,7 @@ export default function GlobalDataLoader() {
       console.log('📦 Saving sets to store...');
       setSets(fetchedSets);
     }
-  }, [setsLoading, fetchedSets, sets.length]);
+  }, [setsLoading, fetchedSets, sets, setSets]);
 
   // 📥 Stocker les cartes
   useEffect(() => {
@@ -57,7 +56,7 @@ export default function GlobalDataLoader() {
       console.log('🃏 Saving all cards to store...');
       setAllCardsBySet(cardsBySet);
     }
-  }, [cardsLoading, cardsBySet]);
+  }, [cardsLoading, cardsBySet, setAllCardsBySet]);
 
   return null;
 }
