@@ -3,8 +3,10 @@ import { Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/layout/NavBar';
+import { SessionProvider } from 'next-auth/react';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import ClientProviders from './ClientProviders';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: 'PoketDex',
@@ -17,21 +19,22 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang='fr' className={poppins.variable}>
       <body>
-        <ClientProviders>
+        <SessionProvider session={session}>
           <MaxWidthWrapper>
             <Navbar />
             <Toaster position='top-center' />
-            {children}
+            <ClientProviders>{children}</ClientProviders>
           </MaxWidthWrapper>
-        </ClientProviders>
+        </SessionProvider>
       </body>
     </html>
   );

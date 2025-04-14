@@ -18,6 +18,8 @@ export default function useFetchAllCards() {
     if (user) {
       const fetchCards = async () => {
         try {
+          console.log('Fetching cards...');
+
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/api/cards`,
             {
