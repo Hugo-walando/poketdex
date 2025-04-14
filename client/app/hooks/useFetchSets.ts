@@ -15,6 +15,7 @@ const useFetchSets = () => {
   const hasFetched = useRef(false);
 
   useEffect(() => {
+    console.log('[🔥 useFetchSets] useEffect triggered');
     if (hasFetched.current) return; // Ne pas refetch si déjà fait
 
     if (user) {
