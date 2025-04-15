@@ -91,9 +91,8 @@ export default function CardPage() {
   };
 
   useEffect(() => {
-    console.log(sets, 'SETS');
-    console.log(cardsBySet, 'CARDS');
-  }, [sets, cardsBySet]);
+    console.log('Wishlist cards:', wishlistCards);
+  }, [wishlistCards]);
 
   return (
     <ProtectedPage>

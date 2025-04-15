@@ -4,7 +4,10 @@ const Card = require('../models/Card');
 // POST /api/wishlist-cards
 const addWishlistCard = async (req, res) => {
   try {
-    const userId = req.user.id;
+    console.log('🔧 Requête d’ajout à la wishlist');
+    console.log(req.user);
+    console.log(req.user.sub);
+    const userId = req.user.sub;
     const { cardId } = req.body;
 
     const wish = await WishlistCard.create({
