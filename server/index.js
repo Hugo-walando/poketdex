@@ -45,8 +45,8 @@ const errorHandler = require('./middlewares/errorHandler');
 // const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
 // app.use('/api/trade-requests', tradeRequestRoutes);
 
-// const duplicatesRoutes = require('./routes/duplicatesRoutes');
-// app.use('/api/duplicates', duplicatesRoutes);
+// const listedCardRoutes = require('./routes/listedCardRoutes');
+// app.use('/api/listed-cards', listedCardRoutes);
 
 // const matchRoutes = require('./routes/matchRoutes');
 // app.use('/api/matches', matchRoutes);
