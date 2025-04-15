@@ -1,10 +1,10 @@
 export interface Card {
-  id: string;
+  _id: string;
   name: string;
   img_url: string;
   rarity: number;
   set_code: string;
-  official_id: number;
+  official_id: string;
   created_at: string;
   updated_at: string;
 }
