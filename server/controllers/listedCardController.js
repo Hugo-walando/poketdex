@@ -42,9 +42,14 @@ const getListedCards = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const listedCards = await ListedCard.find({ user: userId }).populate(
-      'card',
-    );
+    const listedCards = await ListedCard.find({ user: userId })
+      .populate({
+        path: 'card',
+      })
+      .populate({
+        path: 'user',
+        select: 'username profile_picture', // ✅ seulement les infos nécessaires
+      });
 
     res.status(200).json(listedCards);
   } catch (err) {

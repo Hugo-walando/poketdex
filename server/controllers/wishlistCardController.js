@@ -44,15 +44,22 @@ const getWishlistCards = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const wishlistCards = await WishlistCard.find({ user: userId }).populate(
-      'card',
-    );
+    const wishlistCards = await WishlistCard.find({ user: userId })
+      .populate({
+        path: 'card',
+      })
+      .populate({
+        path: 'user',
+        select: 'username avatar_url', // ✅ pareil ici
+      });
 
     res.status(200).json(wishlistCards);
   } catch (err) {
-    console.error('Erreur lors de la récupération de la wishlist :', err);
+    console.error(
+      'Erreur lors de la récupération des cartes souhaitées :',
+      err,
+    );
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
-
 module.exports = { addWishlistCard, removeWishlistCard, getWishlistCards };
