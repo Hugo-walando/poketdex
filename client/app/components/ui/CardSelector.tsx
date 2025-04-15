@@ -2,38 +2,42 @@
 
 interface CardSelectorProps {
   cardId: string;
-  ownedCards: string[];
-  wishlist: string[];
-  toggleOwned: (id: string) => void;
-  toggleWishlist: (id: string) => void;
+  listedCardIds: string[];
+  wishlistCardIds: string[];
+  toggleListedCard: (id: string) => void;
+  toggleWishlistCard: (id: string) => void;
 }
 
 export default function CardSelector({
   cardId,
-  ownedCards,
-  wishlist,
-  toggleOwned,
-  toggleWishlist,
+  listedCardIds,
+  wishlistCardIds,
+  toggleListedCard,
+  toggleWishlistCard,
 }: CardSelectorProps) {
   return (
     <div className='flex gap-2 mt-4'>
       <button
-        onClick={() => toggleOwned(cardId)}
+        onClick={() => toggleListedCard(cardId)}
         className={`px-4 py-1 rounded-full text-sm font-medium border-2 transition-all duration-200 ${
-          ownedCards.includes(cardId)
+          listedCardIds.includes(cardId)
             ? 'bg-primarygreen text-white border-primarygreen'
             : 'border-grayblue text-grayblue'
         }`}
-      ></button>
+      >
+        Listed
+      </button>
 
       <button
-        onClick={() => toggleWishlist(cardId)}
+        onClick={() => toggleWishlistCard(cardId)}
         className={`px-4 py-1 rounded-full text-sm font-medium border-2 transition-all duration-200 ${
-          wishlist.includes(cardId)
+          wishlistCardIds.includes(cardId)
             ? 'bg-primarygreen text-white border-primarygreen'
             : 'border-grayblue text-grayblue'
         }`}
-      ></button>
+      >
+        Wishlist
+      </button>
     </div>
   );
 }
