@@ -152,15 +152,11 @@ export default function CardPage() {
                     )}
 
                     <CardSelector
-                      cardId={card.official_id.toString()}
-                      ownedCards={ownedCards}
-                      wishlist={wishlist}
-                      toggleOwned={(id) =>
-                        toggleCard(id, ownedCards, setOwnedCards)
-                      }
-                      toggleWishlist={(id) =>
-                        toggleCard(id, wishlist, setWishlist)
-                      }
+                      cardId={card.official_id}
+                      listedCardIds={listedCardIds}
+                      wishlistCardIds={wishlistCardIds}
+                      toggleListedCard={toggleListedCard}
+                      toggleWishlistCard={toggleWishlistCard}
                     />
                   </div>
                 ))}

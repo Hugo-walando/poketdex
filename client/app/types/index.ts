@@ -20,28 +20,20 @@ export interface Set {
 }
 
 export interface ListedCard {
-  duplicate_id: string;
-  user: {
-    id: string;
-    username: string;
-    profile_picture: string;
-  };
-  card: {
-    id: string;
-    name: string;
-    img_url: string;
-    rarity: number;
-    set_code: string;
-    official_id: number;
-  };
+  _id: string;
+  user: User;
+  card: Card;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface WishlistCard {
-  id: string;
-  name: string;
-  img_url: string;
+  _id: string;
+  user: User;
+  card: Card;
+  createdAt: string;
+  updatedAt: string;
 }
-
 export interface MatchTrade {
   id: string;
   offered_card: Card;
