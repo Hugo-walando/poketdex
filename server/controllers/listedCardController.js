@@ -1,42 +1,60 @@
 const ListedCard = require('../models/ListedCard');
-const User = require('../models/User');
 const Card = require('../models/Card');
 
-const listedCardController = {
-  // Ajouter une carte en double
-  addListedCard: async (req, res) => {
-    try {
-      const { userId, cardId } = req.body;
+// POST /api/listed-cards
+const addListedCard = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { cardId } = req.body;
 
-      // Vérifier que l'utilisateur et la carte existent
-      const user = await User.findById(userId);
-      const card = await Card.findById(cardId);
+    const listedCard = await ListedCard.create({
+      user: userId,
+      card: cardId,
+    });
 
-      if (!user || !card) {
-        return res
-          .status(404)
-          .json({ message: 'Utilisateur ou carte introuvable' });
-      }
-
-      const newListedCard = new ListedCard({ user: userId, card: cardId });
-      await newListedCard.save();
-      res.status(201).json(newListedCard);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+    res.status(201).json(listedCard);
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'Carte déjà listée.' });
     }
-  },
-
-  // Récupérer les doublons d'un utilisateur
-  getUserListedCard: async (req, res) => {
-    try {
-      const listedCard = await ListedCard.find({
-        user: req.params.userId,
-      }).populate('card');
-      res.json(listedCard);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+    console.error('Erreur lors de l’ajout d’une carte listée :', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
 };
 
-module.exports = listedCardController;
+// DELETE /api/listed-cards/:cardId
+const removeListedCard = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const cardId = req.params.cardId;
+
+    await ListedCard.findOneAndDelete({ user: userId, card: cardId });
+
+    res.status(204).end();
+  } catch (err) {
+    console.error('Erreur lors de la suppression d’une carte listée :', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
+// GET /api/listed-cards
+const getListedCards = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const listedCards = await ListedCard.find({ user: userId }).populate(
+      'card',
+    );
+
+    res.status(200).json(listedCards);
+  } catch (err) {
+    console.error('Erreur lors de la récupération des cartes listées :', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
+module.exports = {
+  addListedCard,
+  removeListedCard,
+  getListedCards,
+};

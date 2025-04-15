@@ -21,17 +21,22 @@ app.use(express.json());
 // Connect to database
 connectDB();
 
+const errorHandler = require('./middlewares/errorHandler');
 // Routes
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
 const setRoutes = require('./routes/setRoutes');
 app.use('/api/sets', setRoutes);
-// const setRoutes = require('./routes/setRoutes');
+
 const cardRoutes = require('./routes/cardRoutes');
 app.use('/api/cards', cardRoutes);
-const errorHandler = require('./middlewares/errorHandler');
-// app.use('/api/sets', setRoutes);
+
+const listedCardRoutes = require('./routes/listedCardRoutes');
+app.use('/api/listed-cards', listedCardRoutes);
+
+const wishlistCardRoutes = require('./routes/wishlistCardRoutes');
+app.use('/api/wishlist-cards', wishlistCardRoutes);
 
 // const boosterRoutes = require('./routes/boosterRoutes');
 // app.use('/api/boosters', boosterRoutes);
@@ -39,14 +44,8 @@ const errorHandler = require('./middlewares/errorHandler');
 // const cardBoosterRoutes = require('./routes/cardBoosterRoutes');
 // app.use('/api/card-booster', cardBoosterRoutes);
 
-// const wishlistRoutes = require('./routes/wishlistRoutes');
-// app.use('/api/wishlist', wishlistRoutes);
-
 // const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
 // app.use('/api/trade-requests', tradeRequestRoutes);
-
-// const listedCardRoutes = require('./routes/listedCardRoutes');
-// app.use('/api/listed-cards', listedCardRoutes);
 
 // const matchRoutes = require('./routes/matchRoutes');
 // app.use('/api/matches', matchRoutes);

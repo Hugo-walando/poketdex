@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const listedCardSchema = new mongoose.Schema(
+const wishlistCardSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -16,6 +16,6 @@ const listedCardSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-listedCardSchema.index({ user: 1, card: 1 }, { unique: true });
+wishlistCardSchema.index({ user: 1, card: 1 }, { unique: true });
 
-module.exports = mongoose.model('ListedCard', listedCardSchema);
+module.exports = mongoose.model('WishlistCard', wishlistCardSchema);
