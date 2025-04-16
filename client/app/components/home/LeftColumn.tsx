@@ -113,13 +113,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         ) : (
           filteredListedCards.map((item) => (
             <ListedCardItem
-              key={item.duplicate_id}
+              key={item._id}
               data={item}
               onClick={() => {
                 onCardClick(item);
-                setSelectedCardId(item.card.id);
+                setSelectedCardId(item.card._id);
               }}
-              isSelected={selectedCardId === item.card.id}
+              isSelected={selectedCardId === item.card._id}
             />
           ))
         )}
