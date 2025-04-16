@@ -46,6 +46,7 @@ async function authenticateToken(req, res, next) {
 
     // Étape 4 : Injecter le user complet dans la requête
     req.user = user;
+    req.googleSub = decoded.sub;
     next();
   } catch (err) {
     console.error(

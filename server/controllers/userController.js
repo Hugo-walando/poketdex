@@ -3,7 +3,7 @@ const Account = require('../models/Account'); // le modèle pour la collection "
 
 const getCurrentUser = async (req, res) => {
   try {
-    const googleId = req.user.sub;
+    const googleId = req.googleSub;
 
     // Étape 1 : retrouver le compte lié à ce Google ID
     const account = await Account.findOne({
@@ -56,7 +56,7 @@ const updateUser = async (req, res) => {
     // Étape 1 : retrouver le compte "Google" lié au token
     const account = await Account.findOne({
       provider: 'google',
-      providerAccountId: req.user.sub, // sub = ID Google unique
+      providerAccountId: req.googleSub, // sub = ID Google unique
     });
 
     if (!account) {
