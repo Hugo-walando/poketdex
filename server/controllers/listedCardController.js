@@ -12,6 +12,8 @@ const addListedCard = async (req, res) => {
       card: cardId,
     });
 
+    await wish.populate('card');
+
     res.status(201).json(listedCard);
   } catch (err) {
     if (err.code === 11000) {

@@ -19,6 +19,8 @@ const addWishlistCard = async (req, res) => {
       card: cardId,
     });
 
+    await wish.populate('card');
+
     res.status(201).json(wish);
   } catch (err) {
     if (err.code === 11000) {
