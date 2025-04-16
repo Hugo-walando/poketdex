@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
-import { useCollectionStore } from '@/app/store/useCollectionStore';
 import toast from 'react-hot-toast';
 
 const useAddWishlistCard = () => {
   console.log('🔵 useAddWishlistCard appelé');
 
   const { user } = useUserStore();
-  const addWishlistCardToStore = useCollectionStore(
-    (s) => s.addWishlistCardToStore,
-  );
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +20,7 @@ const useAddWishlistCard = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('🔵 Envoi de la requête pour ajouter à la wishlist', cardId);
 
       const res = await axiosClient.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/wishlist-cards`,
@@ -35,10 +32,9 @@ const useAddWishlistCard = () => {
         },
       );
 
-      // ✅ Ajout direct au store Zustand
       toast.success('✅ Carte ajoutée à la collection');
 
-      addWishlistCardToStore(res.data);
+      console.log('🎯 res.data (wishlist added):', res.data);
 
       return res.data;
     } catch (err) {

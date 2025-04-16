@@ -60,7 +60,12 @@ export default function CardPage() {
 
     if (!wishlistCardIds.includes(officialId)) {
       const added = await addWishlistCard(cardId);
-      if (added) addWishlistCardToStore(added);
+      if (added) {
+        addWishlistCardToStore(added);
+        console.log('➕ Ajout au store de :', added);
+      } else {
+        console.log('❌ Déjà présent dans wishlist → skip');
+      }
     }
   };
 
