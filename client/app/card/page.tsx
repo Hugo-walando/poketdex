@@ -12,22 +12,84 @@ import FiltersWrapper from '@/app/components/layout/FiltersWrapper';
 import ProtectedPage from '@/app/components/auth/ProtectedPage';
 
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useCollectionStore } from '@/app/store/useCollectionStore';
+
+import useAddListedCard from '@/app/hooks/useAddListedCard';
+import useAddWishlistCard from '@/app/hooks/useAddWishlistCard';
+
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { matchCard } from '@/app/utils/matchCards';
 
 import { Card, Set } from '@/app/types';
+import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
+import useRemoveListedCard from '../hooks/useRemoveListedCard';
 
 export default function CardPage() {
-  console.log('📄 CardPage rendered');
-
   const sets = useGlobalData((s) => s.sets);
   const cardsBySet = useGlobalData((s) => s.cardsBySet);
 
-  const [ownedCards, setOwnedCards] = useState<string[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  const listedCards = useCollectionStore((s) => s.listedCards);
+  const wishlistCards = useCollectionStore((s) => s.wishlistCards);
+  const addListedCardToStore = useCollectionStore(
+    (s) => s.addListedCardToStore,
+  );
+  const addWishlistCardToStore = useCollectionStore(
+    (s) => s.addWishlistCardToStore,
+  );
+  const removeWishlistCardFromStore = useCollectionStore(
+    (s) => s.removeWishlistCardFromStore,
+  );
+  const removeListedCardFromStore = useCollectionStore(
+    (s) => s.removeListedCardFromStore,
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+
+  const { addListedCard } = useAddListedCard();
+  const { addWishlistCard } = useAddWishlistCard();
+
+  const { removeListedCard } = useRemoveListedCard();
+  const { removeWishlistCard } = useRemoveWishlistCard();
+
+  // Extraire les ID pour `CardSelector`
+  const listedCardIds = listedCards.map((item) => item.card.official_id);
+  const wishlistCardIds = wishlistCards.map((item) => item.card.official_id);
+
+  const toggleListedCard = async (officialId: string, cardId: string) => {
+    console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
+
+    if (listedCardIds.includes(officialId)) {
+      // 👉 Elle est déjà dans la liste → on la retire
+      await removeListedCard(cardId);
+      removeListedCardFromStore(cardId);
+      console.log('🗑️ Carte retirée des doublons');
+    } else {
+      // 👉 Elle n'est pas encore listée → on l'ajoute
+      const added = await addListedCard(cardId);
+      if (added) {
+        addListedCardToStore(added);
+        console.log('➕ Ajout au store de :', added);
+      }
+    }
+  };
+
+  const toggleWishlistCard = async (officialId: string, cardId: string) => {
+    console.log('🟢 toggleWishlistCard appelé avec :', { officialId, cardId });
+
+    if (wishlistCardIds.includes(officialId)) {
+      await removeWishlistCard(cardId);
+      removeWishlistCardFromStore(cardId);
+      console.log('🗑️ Carte retirée de la wishlist');
+    } else {
+      const added = await addWishlistCard(cardId);
+      if (added) {
+        addWishlistCardToStore(added);
+        console.log('➕ Ajout à la wishlist :', added);
+      }
+    }
+  };
 
   const hasActiveFilters = useMemo(() => {
     return (
@@ -41,18 +103,6 @@ export default function CardPage() {
     setSearchQuery('');
     setSelectedSets([]);
     setSelectedRarities([]);
-  };
-
-  const toggleCard = (
-    cardId: string,
-    list: string[],
-    setList: (val: string[]) => void,
-  ) => {
-    if (list.includes(cardId)) {
-      setList(list.filter((id) => id !== cardId));
-    } else {
-      setList([...list, cardId]);
-    }
   };
 
   const toggleSet = (setId: string) => {
@@ -72,20 +122,23 @@ export default function CardPage() {
   };
 
   useEffect(() => {
-    console.log(sets, 'SETS');
-    console.log(cardsBySet, 'CARDS');
-  }, [sets, cardsBySet]);
+    console.log('Wishlist cards:', wishlistCards);
+    Object.entries(cardsBySet).forEach(([set, cards]) => {
+      console.log(`Set ${set} a ${cards.length} cartes`);
+      console.log(cards.map((c) => c._id));
+    });
+  }, [wishlistCards, cardsBySet]);
 
   return (
     <ProtectedPage>
       <FiltersWrapper className='my-10 md:flex gap-6'>
-        <div className='w-full md:w-[600px] mx-auto md:mx-0 '>
+        <div className='w-full md:w-[600px] mx-auto md:mx-0'>
           <SearchBar
             placeholder='Rechercher une carte...'
             onSearch={(query) => setSearchQuery(query.toLowerCase())}
           />
         </div>
-        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex '>
+        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex'>
           <FilterDropdownProvider>
             {sets.length > 0 && (
               <SetFilterDropdown
@@ -135,7 +188,10 @@ export default function CardPage() {
 
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                 {cards.map((card: Card) => (
-                  <div key={card.official_id} className='justify-self-center'>
+                  <div
+                    key={card.official_id}
+                    className='justify-self-center relative'
+                  >
                     {card.img_url ? (
                       <Image
                         src={card.img_url}
@@ -143,7 +199,7 @@ export default function CardPage() {
                         width={0}
                         height={0}
                         sizes='100vw'
-                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto shadow-base mx-auto'
+                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
                       />
                     ) : (
                       <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
@@ -152,14 +208,14 @@ export default function CardPage() {
                     )}
 
                     <CardSelector
-                      cardId={card.official_id.toString()}
-                      ownedCards={ownedCards}
-                      wishlist={wishlist}
-                      toggleOwned={(id) =>
-                        toggleCard(id, ownedCards, setOwnedCards)
+                      cardId={card.official_id}
+                      listedCardIds={listedCardIds}
+                      wishlistCardIds={wishlistCardIds}
+                      toggleListedCard={() =>
+                        toggleListedCard(card.official_id, card._id)
                       }
-                      toggleWishlist={(id) =>
-                        toggleCard(id, wishlist, setWishlist)
+                      toggleWishlistCard={() =>
+                        toggleWishlistCard(card.official_id, card._id)
                       }
                     />
                   </div>
