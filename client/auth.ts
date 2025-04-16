@@ -6,7 +6,7 @@ import axiosClient from './lib/axios';
 
 export const authConfig = {
   adapter: MongoDBAdapter(clientPromise), // On utilise MongoDBAdapter
-  // useSecureCookies: process.env.NODE_ENV === 'production',
+  useSecureCookies: process.env.NODE_ENV === 'production',
   session: { strategy: 'jwt', maxAge: 60 * 60 },
   pages: {
     signIn: '/login', // Page de connexion personnalisée
