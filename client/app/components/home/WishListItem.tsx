@@ -16,14 +16,14 @@ export default function WishlistItem({
 }: WishlistItemProps) {
   return (
     <div
-      onClick={() => onClick(card.id)}
+      onClick={() => onClick(card.card.official_id)}
       className={cn(
         'shadow-base relative items-center cursor-pointer transition-all',
       )}
     >
       <Image
-        src={card.img_url}
-        alt={card.name}
+        src={card.card.img_url}
+        alt={card.card.name}
         width={0}
         height={0}
         sizes='100vw'
