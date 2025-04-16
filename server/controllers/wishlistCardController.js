@@ -36,7 +36,7 @@ const addWishlistCard = async (req, res) => {
 // DELETE /api/wishlist-cards/:cardId
 const removeWishlistCard = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
     const cardId = req.params.cardId;
 
     await WishlistCard.findOneAndDelete({ user: userId, card: cardId });
@@ -51,7 +51,7 @@ const removeWishlistCard = async (req, res) => {
 // GET /api/wishlist-cards
 const getWishlistCards = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const wishlistCards = await WishlistCard.find({ user: userId })
       .populate({

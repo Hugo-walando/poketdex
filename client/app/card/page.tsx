@@ -166,7 +166,10 @@ export default function CardPage() {
 
               <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                 {cards.map((card: Card) => (
-                  <div key={card.official_id} className='justify-self-center'>
+                  <div
+                    key={card.official_id}
+                    className='justify-self-center relative'
+                  >
                     {card.img_url ? (
                       <Image
                         src={card.img_url}
@@ -174,7 +177,7 @@ export default function CardPage() {
                         width={0}
                         height={0}
                         sizes='100vw'
-                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto shadow-base mx-auto'
+                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
                       />
                     ) : (
                       <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>

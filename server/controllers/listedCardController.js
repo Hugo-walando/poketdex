@@ -4,7 +4,10 @@ const Card = require('../models/Card');
 // POST /api/listed-cards
 const addListedCard = async (req, res) => {
   try {
-    const userId = req.user.id;
+    console.log('🔧 Requête d’ajout à la wishlist');
+    console.log('USer', req.user);
+    console.log('User ID:', req.user._id);
+    const userId = req.user._id;
     const { cardId } = req.body;
 
     const listed = await ListedCard.create({
@@ -27,7 +30,7 @@ const addListedCard = async (req, res) => {
 // DELETE /api/listed-cards/:cardId
 const removeListedCard = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
     const cardId = req.params.cardId;
 
     await ListedCard.findOneAndDelete({ user: userId, card: cardId });
@@ -42,7 +45,7 @@ const removeListedCard = async (req, res) => {
 // GET /api/listed-cards
 const getListedCards = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const listedCards = await ListedCard.find({ user: userId })
       .populate({
