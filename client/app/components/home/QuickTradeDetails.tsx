@@ -26,7 +26,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
 
     console.log({
       toUserId: card.user.id,
-      listedCardId: card.card.id,
+      listedCardId: card.card._id,
       myCardOfferedId: selectedWishlistCardId,
     });
   };
@@ -101,13 +101,13 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
           {mockWishlists.map((wish) => (
             <div
-              key={wish.id}
+              key={wish._id}
               className='flex items-center justify-center hover:scale-110 transition-all hover:cursor-pointer'
             >
               <WishlistItem
-                key={wish.id}
+                key={wish._id}
                 card={wish}
-                isSelected={selectedWishlistCardId === wish.id}
+                isSelected={selectedWishlistCardId === wish._id}
                 onClick={setSelectedWishlistCardId}
               />
             </div>
