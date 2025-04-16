@@ -36,6 +36,12 @@ export default function CardPage() {
   const addWishlistCardToStore = useCollectionStore(
     (s) => s.addWishlistCardToStore,
   );
+  const removeWishlistCardFromStore = useCollectionStore(
+    (s) => s.removeWishlistCardFromStore,
+  );
+  const removeListedCardFromStore = useCollectionStore(
+    (s) => s.removeListedCardFromStore,
+  );
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -52,31 +58,35 @@ export default function CardPage() {
   const wishlistCardIds = wishlistCards.map((item) => item.card.official_id);
 
   const toggleListedCard = async (officialId: string, cardId: string) => {
-    console.log('🟢 toggleWishlistCard appelé avec :', { officialId, cardId });
+    console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
 
-    if (!listedCardIds.includes(officialId)) {
+    if (listedCardIds.includes(officialId)) {
+      // 👉 Elle est déjà dans la liste → on la retire
+      await removeListedCard(cardId);
+      removeListedCardFromStore(cardId);
+      console.log('🗑️ Carte retirée des doublons');
+    } else {
+      // 👉 Elle n'est pas encore listée → on l'ajoute
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
         console.log('➕ Ajout au store de :', added);
-      } else {
-        await removeListedCard(cardId);
-        console.log('❌ Déjà présent dans les cartes listées → skip');
       }
     }
   };
 
   const toggleWishlistCard = async (officialId: string, cardId: string) => {
-    console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
+    console.log('🟢 toggleWishlistCard appelé avec :', { officialId, cardId });
 
-    if (!wishlistCardIds.includes(officialId)) {
+    if (wishlistCardIds.includes(officialId)) {
+      await removeWishlistCard(cardId);
+      removeWishlistCardFromStore(cardId);
+      console.log('🗑️ Carte retirée de la wishlist');
+    } else {
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);
-        console.log('➕ Ajout au store de :', added);
-      } else {
-        await removeWishlistCard(cardId);
-        console.log('❌ Déjà présent dans wishlist → skip');
+        console.log('➕ Ajout à la wishlist :', added);
       }
     }
   };
