@@ -10,6 +10,10 @@ const addWishlistCard = async (req, res) => {
     const userId = req.user.sub;
     const { cardId } = req.body;
 
+    console.log('User ID:', userId);
+    console.log('Card ID:', cardId);
+    console.log('Ajout de la carte à la wishlist');
+
     const wish = await WishlistCard.create({
       user: userId,
       card: cardId,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useCollectionStore } from '@/app/store/useCollectionStore';
+import toast from 'react-hot-toast';
 
 const useAddListedCard = () => {
   const { user } = useUserStore();
@@ -33,6 +34,7 @@ const useAddListedCard = () => {
       );
 
       // ✅ Ajouter au store local
+      toast.success('✅ Carte ajoutée à la collection');
       addListedCardToStore(res.data);
 
       return res.data;

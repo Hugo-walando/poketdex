@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useCollectionStore } from '@/app/store/useCollectionStore';
+import toast from 'react-hot-toast';
 
 const useAddWishlistCard = () => {
   const { user } = useUserStore();
@@ -33,6 +34,8 @@ const useAddWishlistCard = () => {
       );
 
       // ✅ Ajout direct au store Zustand
+      toast.success('✅ Carte ajoutée à la collection');
+
       addWishlistCardToStore(res.data);
 
       return res.data;
