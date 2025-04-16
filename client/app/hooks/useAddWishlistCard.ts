@@ -5,6 +5,8 @@ import { useCollectionStore } from '@/app/store/useCollectionStore';
 import toast from 'react-hot-toast';
 
 const useAddWishlistCard = () => {
+  console.log('🔵 useAddWishlistCard appelé');
+
   const { user } = useUserStore();
   const addWishlistCardToStore = useCollectionStore(
     (s) => s.addWishlistCardToStore,
