@@ -36,10 +36,19 @@ const addWishlistCard = async (req, res) => {
 // DELETE /api/wishlist-cards/:cardId
 const removeWishlistCard = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user._id; // <-- doit être l'ObjectId du user
     const cardId = req.params.cardId;
 
-    await WishlistCard.findOneAndDelete({ user: userId, card: cardId });
+    const deleted = await WishlistCard.findOneAndDelete({
+      user: userId,
+      card: cardId,
+    });
+
+    if (!deleted) {
+      return res
+        .status(404)
+        .json({ message: 'Carte non trouvée dans la wishlist.' });
+    }
 
     res.status(204).end();
   } catch (err) {

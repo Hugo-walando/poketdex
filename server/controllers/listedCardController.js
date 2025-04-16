@@ -30,14 +30,23 @@ const addListedCard = async (req, res) => {
 // DELETE /api/listed-cards/:cardId
 const removeListedCard = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user._id; // <-- doit être l'ObjectId du user
     const cardId = req.params.cardId;
 
-    await ListedCard.findOneAndDelete({ user: userId, card: cardId });
+    const deleted = await ListedCard.findOneAndDelete({
+      user: userId,
+      card: cardId,
+    });
+
+    if (!deleted) {
+      return res
+        .status(404)
+        .json({ message: 'Carte non trouvée dans les cartes listées.' });
+    }
 
     res.status(204).end();
   } catch (err) {
-    console.error('Erreur lors de la suppression d’une carte listée :', err);
+    console.error('Erreur lors de la suppression de la carte listée :', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
