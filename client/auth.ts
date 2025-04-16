@@ -21,7 +21,6 @@ export const authConfig = {
       if (account) {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
-        token.sub = account.providerAccountId;
       }
 
       // 🧠 Récupérer les infos supplémentaires de l'utilisateur via ton backend Express
@@ -55,7 +54,6 @@ export const authConfig = {
       session.user.email = token.email as string;
       session.user.username = token.username as string;
       session.user.friend_code = token.friend_code as string;
-      session.user.sub = token.sub as string;
       session.accessToken = token.accessToken as string;
 
       // MongoDBAdapter gère automatiquement la création ou la mise à jour de l'utilisateur,

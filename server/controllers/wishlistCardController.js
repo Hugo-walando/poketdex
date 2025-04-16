@@ -5,9 +5,9 @@ const Card = require('../models/Card');
 const addWishlistCard = async (req, res) => {
   try {
     console.log('🔧 Requête d’ajout à la wishlist');
-    console.log(req.user);
-    console.log(req.user.sub);
-    const userId = req.user.sub;
+    console.log('USer', req.user);
+    console.log('User ID:', req.user._id);
+    const userId = req.user._id;
     const { cardId } = req.body;
 
     console.log('User ID:', userId);

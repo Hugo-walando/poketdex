@@ -47,6 +47,8 @@ export default function CardPage() {
   const wishlistCardIds = wishlistCards.map((item) => item.card.official_id);
 
   const toggleListedCard = async (officialId: string, cardId: string) => {
+    console.log('🟢 toggleWishlistCard appelé avec :', { officialId, cardId });
+
     if (!listedCardIds.includes(officialId)) {
       const added = await addListedCard(cardId);
       if (added) addListedCardToStore(added);
@@ -54,6 +56,8 @@ export default function CardPage() {
   };
 
   const toggleWishlistCard = async (officialId: string, cardId: string) => {
+    console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
+
     if (!wishlistCardIds.includes(officialId)) {
       const added = await addWishlistCard(cardId);
       if (added) addWishlistCardToStore(added);
@@ -92,7 +96,11 @@ export default function CardPage() {
 
   useEffect(() => {
     console.log('Wishlist cards:', wishlistCards);
-  }, [wishlistCards]);
+    Object.entries(cardsBySet).forEach(([set, cards]) => {
+      console.log(`Set ${set} a ${cards.length} cartes`);
+      console.log(cards.map((c) => c._id));
+    });
+  }, [wishlistCards, cardsBySet]);
 
   return (
     <ProtectedPage>

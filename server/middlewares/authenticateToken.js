@@ -1,8 +1,9 @@
 const axios = require('axios');
+const Account = require('../models/Account');
+const User = require('../models/User');
 
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-
   const token = authHeader?.split(' ')[1]; // format "Bearer <token>"
 
   console.log('\n🔐 Middleware authenticateToken');
@@ -11,26 +12,49 @@ async function authenticateToken(req, res, next) {
   console.log('🧪 Token extrait:', token);
 
   if (!token) {
-    console.warn('❗Aucun token fourni');
+    console.warn('❗ Aucun token fourni');
     return res.status(401).json({ message: 'Token manquant' });
   }
 
   try {
-    // Vérification du token via l'API Google
+    // Étape 1 : Vérifier le token Google
     const response = await axios.get(
       `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`,
     );
+
     const decoded = response.data;
+    console.log('✅ Token Google valide, sub =', decoded.sub);
 
-    console.log('✅ Token valide, payload décodé ');
+    // Étape 2 : Trouver le compte lié à ce sub (Google ID)
+    const account = await Account.findOne({
+      provider: 'google',
+      providerAccountId: decoded.sub,
+    });
 
-    // Ajoute les informations de l'utilisateur dans la requête
-    req.user = decoded; // L'ID et l'email de l'utilisateur sont dans `decoded`
-    // console.log(req);
+    if (!account) {
+      console.warn('❌ Aucun compte lié à ce sub');
+      return res.status(401).json({ message: 'Compte non reconnu' });
+    }
+
+    // Étape 3 : Récupérer le user Mongo lié
+    const user = await User.findById(account.userId);
+
+    if (!user) {
+      console.warn('❌ Utilisateur non trouvé');
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Étape 4 : Injecter le user complet dans la requête
+    req.user = user;
     next();
   } catch (err) {
-    console.error('❌ Token invalide ou expiré');
-    return res.status(401).json({ message: 'Token invalide' });
+    console.error(
+      '❌ Erreur lors de la vérification du token ou de la récupération de l’utilisateur',
+      err,
+    );
+    return res
+      .status(401)
+      .json({ message: 'Token invalide ou erreur serveur' });
   }
 }
 

@@ -8,7 +8,6 @@ declare module 'next-auth' {
     friend_code?: string;
     profile_picture?: string;
     role?: 'user' | 'admin';
-    sub?: string;
     accessToken?: string;
   }
 
