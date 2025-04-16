@@ -8,6 +8,8 @@ interface CollectionState {
   setWishlistCards: (cards: WishlistCard[]) => void;
   addListedCardToStore: (card: ListedCard) => void;
   addWishlistCardToStore: (card: WishlistCard) => void;
+  removeListedCardFromStore: (cardId: string) => void;
+  removeWishlistCardFromStore: (cardId: string) => void;
   resetCollections: () => void;
 }
 
@@ -20,5 +22,17 @@ export const useCollectionStore = create<CollectionState>((set) => ({
     set((state) => ({ listedCards: [...state.listedCards, card] })),
   addWishlistCardToStore: (card) =>
     set((state) => ({ wishlistCards: [...state.wishlistCards, card] })),
+  removeListedCardFromStore: (cardId) =>
+    set((state) => ({
+      listedCards: state.listedCards.filter((item) => item.card._id !== cardId),
+    })),
+
+  removeWishlistCardFromStore: (cardId) =>
+    set((state) => ({
+      wishlistCards: state.wishlistCards.filter(
+        (item) => item.card._id !== cardId,
+      ),
+    })),
+
   resetCollections: () => set({ listedCards: [], wishlistCards: [] }),
 }));

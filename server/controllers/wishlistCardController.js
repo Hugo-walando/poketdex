@@ -36,6 +36,7 @@ const addWishlistCard = async (req, res) => {
 // DELETE /api/wishlist-cards/:cardId
 const removeWishlistCard = async (req, res) => {
   try {
+    console.log('🔧 Requête de suppression de carte de la wishlist');
     const userId = req.user._id; // <-- doit être l'ObjectId du user
     const cardId = req.params.cardId;
 

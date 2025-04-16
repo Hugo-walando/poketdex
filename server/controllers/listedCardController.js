@@ -30,6 +30,7 @@ const addListedCard = async (req, res) => {
 // DELETE /api/listed-cards/:cardId
 const removeListedCard = async (req, res) => {
   try {
+    console.log('🔧 Requête de suppression de carte listée');
     const userId = req.user._id; // <-- doit être l'ObjectId du user
     const cardId = req.params.cardId;
 

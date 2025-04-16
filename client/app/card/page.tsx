@@ -21,6 +21,8 @@ import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { matchCard } from '@/app/utils/matchCards';
 
 import { Card, Set } from '@/app/types';
+import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
+import useRemoveListedCard from '../hooks/useRemoveListedCard';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -42,6 +44,9 @@ export default function CardPage() {
   const { addListedCard } = useAddListedCard();
   const { addWishlistCard } = useAddWishlistCard();
 
+  const { removeListedCard } = useRemoveListedCard();
+  const { removeWishlistCard } = useRemoveWishlistCard();
+
   // Extraire les ID pour `CardSelector`
   const listedCardIds = listedCards.map((item) => item.card.official_id);
   const wishlistCardIds = wishlistCards.map((item) => item.card.official_id);
@@ -51,7 +56,13 @@ export default function CardPage() {
 
     if (!listedCardIds.includes(officialId)) {
       const added = await addListedCard(cardId);
-      if (added) addListedCardToStore(added);
+      if (added) {
+        addListedCardToStore(added);
+        console.log('➕ Ajout au store de :', added);
+      } else {
+        await removeListedCard(cardId);
+        console.log('❌ Déjà présent dans les cartes listées → skip');
+      }
     }
   };
 
@@ -64,6 +75,7 @@ export default function CardPage() {
         addWishlistCardToStore(added);
         console.log('➕ Ajout au store de :', added);
       } else {
+        await removeWishlistCard(cardId);
         console.log('❌ Déjà présent dans wishlist → skip');
       }
     }
