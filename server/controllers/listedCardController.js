@@ -7,14 +7,14 @@ const addListedCard = async (req, res) => {
     const userId = req.user.id;
     const { cardId } = req.body;
 
-    const listedCard = await ListedCard.create({
+    const listed = await ListedCard.create({
       user: userId,
       card: cardId,
     });
 
-    await wish.populate('card');
+    await listed.populate('card');
 
-    res.status(201).json(listedCard);
+    res.status(201).json(listed);
   } catch (err) {
     if (err.code === 11000) {
       return res.status(409).json({ message: 'Carte déjà listée.' });

@@ -32,9 +32,7 @@ const useAddWishlistCard = () => {
         },
       );
 
-      toast.success('✅ Carte ajoutée à la collection');
-
-      console.log('🎯 res.data (wishlist added):', res.data);
+      toast.success('✅ Carte Ajouté à la wishlist');
 
       return res.data;
     } catch (err) {

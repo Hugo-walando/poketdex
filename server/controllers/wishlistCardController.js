@@ -14,14 +14,14 @@ const addWishlistCard = async (req, res) => {
     console.log('Card ID:', cardId);
     console.log('Ajout de la carte à la wishlist');
 
-    const wish = await WishlistCard.create({
+    const wishlist = await WishlistCard.create({
       user: userId,
       card: cardId,
     });
 
-    await wish.populate('card');
+    await wishlist.populate('card');
 
-    res.status(201).json(wish);
+    res.status(201).json(wishlist);
   } catch (err) {
     if (err.code === 11000) {
       return res
