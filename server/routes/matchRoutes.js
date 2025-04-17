@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { createMatch } = require('../controllers/matchController');
+const matchController = require('../controllers/matchController');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
 // Protéger la route par authentification
-router.post('/', authenticateToken, createMatch);
+router.post('/', authenticateToken, matchController.createMatch);
+
+router.get('/me', authenticateToken, matchController.getMatchesForCurrentUser);
 
 module.exports = router;
