@@ -34,10 +34,73 @@ export interface WishlistCard {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Match {
+  _id: string;
+  user_1: {
+    _id: string;
+    name: string;
+    email: string;
+    image: string;
+    emailVerified: string | null;
+    friend_code: string;
+    updatedAt: string;
+    username: string;
+    role: 'user' | 'admin';
+    is_connected: boolean;
+  };
+  user_2: {
+    _id: string;
+    name: string;
+    email: string;
+    image: string;
+    emailVerified: string | null;
+    friend_code: string;
+    updatedAt: string;
+    username: string;
+    role: 'user' | 'admin';
+    is_connected: boolean;
+  };
+  card_offered_by_user_1: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  card_offered_by_user_2: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  status: 'pending' | 'accepted' | 'cancelled';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MatchTrade {
   id: string;
-  offered_card: Card;
-  requested_card: Card;
+  offered_card: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  requested_card: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  status: 'pending' | 'accepted' | 'cancelled' | 'completed';
 }
 
 export interface MatchGroup {

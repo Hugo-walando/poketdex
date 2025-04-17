@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useMatchStore } from '@/app/store/useMatchStore';
 import { useUserStore } from '@/app/store/useUserStore';
+import { groupMatchesByUser } from '@/app/utils/groupMatches'; // 🆕 à importer
 
 const useFetchMatches = () => {
   const { user } = useUserStore();
@@ -17,6 +18,7 @@ const useFetchMatches = () => {
       setError('Non authentifié');
       return;
     }
+
     const fetchMatches = async () => {
       setLoading(true);
       setError(null);
@@ -29,8 +31,15 @@ const useFetchMatches = () => {
           },
         });
 
-        setMatches(res.data);
-        console.log('✅ Matches récupérés :', res.data.length, 'matchs');
+        // 🆕 Ici : grouper les matchs récupérés avant de set
+        const groupedMatches = groupMatchesByUser(res.data, user.id);
+
+        setMatches(groupedMatches); // 🆕 on stocke directement les MatchGroup
+        console.log(
+          '✅ Matches récupérés et groupés :',
+          groupedMatches.length,
+          'groupes',
+        );
       } catch (err) {
         console.error('❌ Erreur fetch matches :', err);
         setError('Erreur lors de la récupération des matchs');

@@ -10,11 +10,14 @@ import MatchList from './components/home/MatchList';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProtectedPage from './components/auth/ProtectedPage';
 import ProtectedLayout from './components/auth/ProtectedLayout';
+import useFetchMatches from './hooks/useFetchMatches';
 
 export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
   const [viewMode, setViewMode] = useState<'default' | 'matchs'>('default');
   const isMobile = useIsMobile();
+  const { loading } = useFetchMatches(); // ici une seule fois
+
   return (
     <ProtectedPage>
       <ProtectedLayout>
@@ -40,6 +43,7 @@ export default function Home() {
             <RightColumn
               selectedCard={selectedCard}
               onClose={() => setSelectedCard(null)}
+              loadingMatches={loading}
             />
           )}
         </div>
@@ -66,7 +70,7 @@ export default function Home() {
               <ChevronLeft className='w-4 h-4 md:w-6 md:h-6 mr-2' />
               Retour aux cartes
             </button>
-            <MatchList />
+            <MatchList loading={loading} />
           </div>
         )}
       </ProtectedLayout>
