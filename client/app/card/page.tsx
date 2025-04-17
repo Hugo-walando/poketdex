@@ -161,14 +161,16 @@ export default function CardPage() {
 
       <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
         {sets.map((set: Set) => {
-          const cards = cardsBySet[set.code]?.filter(
-            (card: Card) =>
-              matchCard(card, set, searchQuery) &&
-              (selectedSets.length === 0 ||
-                selectedSets.includes(card.set_code)) &&
-              (selectedRarities.length === 0 ||
-                selectedRarities.includes(card.rarity)),
-          );
+          const cards = cardsBySet[set.code]
+            ?.filter(
+              (card: Card) =>
+                matchCard(card, set, searchQuery) &&
+                (selectedSets.length === 0 ||
+                  selectedSets.includes(card.set_code)) &&
+                (selectedRarities.length === 0 ||
+                  selectedRarities.includes(card.rarity)),
+            )
+            ?.sort((a, b) => a.official_id.localeCompare(b.official_id));
 
           if (!cards || cards.length === 0) return null;
 
