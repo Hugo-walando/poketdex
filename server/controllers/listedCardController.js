@@ -15,6 +15,9 @@ const addListedCard = async (req, res) => {
       card: cardId,
     });
 
+    // 🧠 Lancer la recherche de match
+    await findAndCreateMatch(userId, cardId, 'listed');
+
     await listed.populate('card');
 
     res.status(201).json(listed);
