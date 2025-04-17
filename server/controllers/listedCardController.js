@@ -1,5 +1,6 @@
 const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
+const { findAndCreateMatch } = require('../services/matchService');
 
 // POST /api/listed-cards
 const addListedCard = async (req, res) => {

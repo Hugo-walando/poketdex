@@ -1,72 +1,64 @@
-const Match = require('../models/Match');
+// /server/services/matchService.js
+
 const ListedCard = require('../models/ListedCard');
 const WishlistCard = require('../models/WishlistCard');
+const Match = require('../models/Match');
+const User = require('../models/User');
 
-/**
- * Fonction pour chercher un match potentiel et le créer si trouvé
- */
-async function findAndCreateMatch(userId, cardId, mode) {
-  // userId → L'utilisateur qui vient d'ajouter une carte
-  // cardId → La carte qu'il a ajoutée
-  // mode → 'wishlist' ou 'listed'
+async function findAndCreateMatch(userId) {
+  console.log('\n🔍 Recherche de match pour l`utilisateur :', userId);
 
   try {
-    console.log(
-      `🔎 Recherche de match pour user=${userId}, card=${cardId}, mode=${mode}`,
+    const userListedCards = await ListedCard.find({ user: userId }).populate(
+      'card',
     );
+    const userWishlistCards = await WishlistCard.find({
+      user: userId,
+    }).populate('card');
 
-    if (mode === 'wishlist') {
-      // L'utilisateur a ajouté une carte dans sa wishlist
-      // On cherche un utilisateur qui a cette carte dans ses listedCards (doublons)
-      const listedCard = await ListedCard.findOne({
-        card: cardId,
-        user: { $ne: userId }, // pas lui-même !
-      });
-
-      if (!listedCard) {
-        console.log('😕 Aucun utilisateur ne possède cette carte en doublon');
-        return;
-      }
-
-      console.log('✅ Carte trouvée chez un autre utilisateur pour échange');
-
-      // Créer un match
-      await Match.create({
-        user_1: userId,
-        user_2: listedCard.user,
-        card_offered_by_user_1: null, // il n'offre rien encore
-        card_offered_by_user_2: cardId, // l'autre a cette carte
-        status: 'pending',
-      });
-    } else if (mode === 'listed') {
-      // L'utilisateur a ajouté une carte dans ses doublons
-      // On cherche un utilisateur qui cherche cette carte dans sa wishlist
-      const wishlistCard = await WishlistCard.findOne({
-        card: cardId,
-        user: { $ne: userId },
-      });
-
-      if (!wishlistCard) {
-        console.log('😕 Aucun utilisateur ne cherche cette carte');
-        return;
-      }
-
-      console.log('✅ Un utilisateur cherche cette carte');
-
-      // Créer un match
-      await Match.create({
-        user_1: userId,
-        user_2: wishlistCard.user,
-        card_offered_by_user_1: cardId, // lui possède cette carte
-        card_offered_by_user_2: null, // l'autre n'offre rien
-        status: 'pending',
-      });
-    } else {
-      console.error('❌ Mode inconnu pour la recherche de match');
+    if (userListedCards.length === 0 && userWishlistCards.length === 0) {
+      console.log(
+        '⛔ Aucun listedCard ou wishlistCard, pas de match possible.',
+      );
       return;
     }
 
-    // (Recherche + création du match ici)
+    const otherUsers = await User.find({ _id: { $ne: userId } });
+
+    for (const otherUser of otherUsers) {
+      const otherListedCards = await ListedCard.find({
+        user: otherUser._id,
+      }).populate('card');
+      const otherWishlistCards = await WishlistCard.find({
+        user: otherUser._id,
+      }).populate('card');
+
+      const userCardWantedByOther = userListedCards.find((listed) =>
+        otherWishlistCards.some(
+          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
+        ),
+      );
+
+      const otherCardWantedByUser = otherListedCards.find((listed) =>
+        userWishlistCards.some(
+          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
+        ),
+      );
+
+      if (userCardWantedByOther && otherCardWantedByUser) {
+        console.log(`✅ Match trouvé entre ${userId} et ${otherUser._id}`);
+
+        await Match.create({
+          user_1: userId,
+          user_2: otherUser._id,
+          card_offered_by_user_1: userCardWantedByOther.card._id,
+          card_offered_by_user_2: otherCardWantedByUser.card._id,
+          status: 'pending',
+        });
+      } else {
+        console.log(`⛔ Pas de match avec ${otherUser._id}`);
+      }
+    }
   } catch (error) {
     console.error('❌ Erreur dans findAndCreateMatch:', error);
   }
