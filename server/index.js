@@ -38,6 +38,9 @@ app.use('/api/listed-cards', listedCardRoutes);
 const wishlistCardRoutes = require('./routes/wishlistCardRoutes');
 app.use('/api/wishlist-cards', wishlistCardRoutes);
 
+const matchRoutes = require('./routes/matchRoutes');
+app.use('/api/matches', matchRoutes);
+
 // const boosterRoutes = require('./routes/boosterRoutes');
 // app.use('/api/boosters', boosterRoutes);
 
@@ -46,9 +49,6 @@ app.use('/api/wishlist-cards', wishlistCardRoutes);
 
 // const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
 // app.use('/api/trade-requests', tradeRequestRoutes);
-
-// const matchRoutes = require('./routes/matchRoutes');
-// app.use('/api/matches', matchRoutes);
 
 // const notificationRoutes = require('./routes/notificationRoutes');
 // app.use('/api/notifications', notificationRoutes);

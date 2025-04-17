@@ -1,5 +1,6 @@
 const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
+const { findAndCreateMatch } = require('../services/matchService');
 
 // POST /api/listed-cards
 const addListedCard = async (req, res) => {
@@ -14,6 +15,9 @@ const addListedCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
+    // 🧠 Lancer la recherche de match
+    await findAndCreateMatch(userId, cardId, 'listed');
 
     await listed.populate('card');
 

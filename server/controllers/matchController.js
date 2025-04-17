@@ -1,38 +1,51 @@
 const Match = require('../models/Match');
 
-const matchController = {
-  // Créer un match
-  createMatch: async (req, res) => {
-    try {
-      const { user1, user2, card1, card2 } = req.body;
-      
-      const newMatch = new Match({
-        user_1: user1,
-        user_2: user2,
-        card_offered_by_user_1: card1,
-        card_offered_by_user_2: card2
-      });
+const createMatch = async (req, res) => {
+  try {
+    const { user_1, user_2, card_offered_by_user_1, card_offered_by_user_2 } =
+      req.body;
 
-      await newMatch.save();
-      res.status(201).json(newMatch);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+    if (
+      !user_1 ||
+      !user_2 ||
+      !card_offered_by_user_1 ||
+      !card_offered_by_user_2
+    ) {
+      return res.status(400).json({ message: 'Tous les champs sont requis.' });
     }
-  },
 
-  // Mettre à jour le statut d'un match
-  updateMatchStatus: async (req, res) => {
-    try {
-      const updatedMatch = await Match.findByIdAndUpdate(
-        req.params.id,
-        { status: req.body.status },
-        { new: true }
-      );
-      res.json(updatedMatch);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
+    const match = await Match.create({
+      user_1,
+      user_2,
+      card_offered_by_user_1,
+      card_offered_by_user_2,
+    });
+
+    res.status(201).json(match);
+  } catch (error) {
+    console.error('Erreur création match :', error);
+    res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
 
-module.exports = matchController;
+const getMatchesForCurrentUser = async (req, res) => {
+  try {
+    const userId = req.user._id; // Injecté par authenticateToken
+
+    const matches = await Match.find({
+      $or: [{ user_1: userId }, { user_2: userId }],
+    }).populate('user_1 user_2 card_offered_by_user_1 card_offered_by_user_2');
+
+    res.status(200).json(matches);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des matchs:', error);
+    res
+      .status(500)
+      .json({ message: 'Erreur serveur lors de la récupération des matchs.' });
+  }
+};
+
+module.exports = {
+  createMatch,
+  getMatchesForCurrentUser,
+};

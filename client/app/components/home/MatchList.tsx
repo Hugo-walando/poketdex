@@ -1,40 +1,36 @@
 'use client';
 
-import { MatchGroup } from '@/app/types';
+import { useMatchStore } from '@/app/store/useMatchStore';
 import MatchGroupItem from './MatchGroupItem';
-import { useEffect, useState } from 'react';
-import { fetchMatchGroups } from '@/app/api/matches/matches';
 
-export default function MatchList() {
-  const [matchGroups, setMatchGroups] = useState<MatchGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+interface MatchListProps {
+  loading: boolean;
+}
 
-  useEffect(() => {
-    fetchMatchGroups().then((data) => {
-      setMatchGroups(data);
-      setLoading(false);
-    });
-  }, []);
+export default function MatchList({ loading }: MatchListProps) {
+  const matchGroups = useMatchStore((state) => state.matchGroups);
 
   if (loading) {
     return (
-      <p className='text-gray-xl text-center mt-20 md:mt-10'>
-        Chargement des matchs...
-      </p>
+      <div className='flex justify-center items-center h-[300px]'>
+        <p className='text-gray-xl'>Chargement des matchs...</p>
+      </div>
     );
   }
 
-  if (matchGroups.length === 0) {
+  if (!matchGroups.length) {
     return (
       <p className='text-gray-xl text-center mt-20 md:mt-10'>
         Aucun match disponible.
       </p>
     );
   }
+
   return (
     <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
       <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>Matchs</h2>
-      <div className='  flex flex-col gap-2'>
+
+      <div className='flex flex-col gap-2'>
         {matchGroups.map((group) => (
           <MatchGroupItem key={group.user.id} group={group} />
         ))}
