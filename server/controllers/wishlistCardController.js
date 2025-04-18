@@ -1,5 +1,6 @@
 const WishlistCard = require('../models/WishlistCard');
 const Card = require('../models/Card');
+const Match = require('../models/Match');
 const { findAndCreateMatch } = require('../services/matchService');
 
 // POST /api/wishlist-cards
