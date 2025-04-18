@@ -1,5 +1,7 @@
 const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
+const Match = require('../models/Match');
+
 const { findAndCreateMatch } = require('../services/matchService');
 
 // POST /api/listed-cards
@@ -35,7 +37,7 @@ const addListedCard = async (req, res) => {
 const removeListedCard = async (req, res) => {
   try {
     console.log('🔧 Requête de suppression de carte listée');
-    const userId = req.user._id; // <-- doit être l'ObjectId du user
+    const userId = req.user._id;
     const cardId = req.params.cardId;
 
     const deleted = await ListedCard.findOneAndDelete({
@@ -48,6 +50,19 @@ const removeListedCard = async (req, res) => {
         .status(404)
         .json({ message: 'Carte non trouvée dans les cartes listées.' });
     }
+
+    console.log('✅ Carte listée supprimée');
+
+    const deletedMatches = await Match.deleteMany({
+      $or: [
+        { user_1: userId, card_offered_by_user_1: cardId },
+        { user_2: userId, card_offered_by_user_2: cardId },
+      ],
+    });
+
+    console.log(
+      `🗑️ ${deletedMatches.deletedCount} match(s) supprimé(s) car liés à cette carte et à cet utilisateur`,
+    );
 
     res.status(204).end();
   } catch (err) {

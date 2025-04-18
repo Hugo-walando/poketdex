@@ -23,6 +23,7 @@ import { matchCard } from '@/app/utils/matchCards';
 import { Card, Set } from '@/app/types';
 import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
 import useRemoveListedCard from '../hooks/useRemoveListedCard';
+import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -42,6 +43,8 @@ export default function CardPage() {
   const removeListedCardFromStore = useCollectionStore(
     (s) => s.removeListedCardFromStore,
   );
+
+  const { removeMatchesByCard } = useRemoveMatchesByCard();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -64,6 +67,7 @@ export default function CardPage() {
       // 👉 Elle est déjà dans la liste → on la retire
       await removeListedCard(cardId);
       removeListedCardFromStore(cardId);
+      removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée des doublons');
     } else {
       // 👉 Elle n'est pas encore listée → on l'ajoute
@@ -81,6 +85,7 @@ export default function CardPage() {
     if (wishlistCardIds.includes(officialId)) {
       await removeWishlistCard(cardId);
       removeWishlistCardFromStore(cardId);
+      removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée de la wishlist');
     } else {
       const added = await addWishlistCard(cardId);
