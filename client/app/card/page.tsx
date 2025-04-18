@@ -44,6 +44,13 @@ export default function CardPage() {
     (s) => s.removeListedCardFromStore,
   );
 
+  const removeWishlistCardByOfficialId = useCollectionStore(
+    (s) => s.removeWishlistCardByOfficialId,
+  );
+  const removeListedCardByOfficialId = useCollectionStore(
+    (s) => s.removeListedCardByOfficialId,
+  );
+
   const { removeMatchesByCard } = useRemoveMatchesByCard();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +78,7 @@ export default function CardPage() {
       console.log('🗑️ Carte retirée des doublons');
     } else {
       // 👉 Elle n'est pas encore listée → on l'ajoute
+      removeWishlistCardByOfficialId(officialId);
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
@@ -88,6 +96,8 @@ export default function CardPage() {
       removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée de la wishlist');
     } else {
+      removeListedCardByOfficialId(officialId);
+
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);

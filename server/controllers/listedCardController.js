@@ -1,4 +1,5 @@
 const ListedCard = require('../models/ListedCard');
+const WishlistCard = require('../models/WishlistCard');
 const Card = require('../models/Card');
 const Match = require('../models/Match');
 
@@ -13,10 +14,35 @@ const addListedCard = async (req, res) => {
     const userId = req.user._id;
     const { cardId } = req.body;
 
+    // ⚡ Étape 1 : vérifier si la carte est déjà dans Wishlist
+    const wishlistCard = await WishlistCard.findOne({
+      user: userId,
+      card: cardId,
+    });
+
+    if (wishlistCard) {
+      console.log('🧹 Carte présente dans Wishlist → suppression');
+      await WishlistCard.findOneAndDelete({ user: userId, card: cardId });
+    }
+
+    // ⚡ Étape 2 : vérifier si elle est déjà listée
+    const listedExists = await ListedCard.findOne({
+      user: userId,
+      card: cardId,
+    });
+    if (listedExists) {
+      return res
+        .status(409)
+        .json({ message: 'Carte déjà présente dans la liste.' });
+    }
+
+    // ⚡ Étape 3 : ajouter dans Listed
     const listed = await ListedCard.create({
       user: userId,
       card: cardId,
     });
+
+    console.log('✅ Carte ajoutée à la liste');
 
     // 🧠 Lancer la recherche de match
     await findAndCreateMatch(userId, cardId, 'listed');

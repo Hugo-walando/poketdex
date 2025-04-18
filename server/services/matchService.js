@@ -5,80 +5,158 @@ const WishlistCard = require('../models/WishlistCard');
 const Match = require('../models/Match');
 const User = require('../models/User');
 
-async function findAndCreateMatch(userId) {
-  console.log('\n🔍 Recherche de match pour l`utilisateur :', userId);
+async function isValidTrade(user1Card, user2Card) {
+  return user1Card && user2Card && user1Card.rarity === user2Card.rarity;
+}
 
+async function findAndCreateMatch(userId, cardId, mode = 'listed') {
   try {
-    const userListedCards = await ListedCard.find({ user: userId }).populate(
-      'card',
-    );
-    const userWishlistCards = await WishlistCard.find({
-      user: userId,
-    }).populate('card');
-
-    if (userListedCards.length === 0 && userWishlistCards.length === 0) {
-      console.log(
-        '⛔ Aucun listedCard ou wishlistCard, pas de match possible.',
-      );
-      return;
-    }
-
-    const otherUsers = await User.find({ _id: { $ne: userId } });
-
-    for (const otherUser of otherUsers) {
-      const otherListedCards = await ListedCard.find({
-        user: otherUser._id,
-      }).populate('card');
-      const otherWishlistCards = await WishlistCard.find({
-        user: otherUser._id,
+    if (mode === 'listed') {
+      const currentUserCard = await ListedCard.findOne({
+        user: userId,
+        card: cardId,
       }).populate('card');
 
-      const userCardWantedByOther = userListedCards.find((listed) =>
-        otherWishlistCards.some(
-          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
-        ),
-      );
+      if (!currentUserCard) return;
 
-      const otherCardWantedByUser = otherListedCards.find((listed) =>
-        userWishlistCards.some(
-          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
-        ),
-      );
-
-      if (userCardWantedByOther && otherCardWantedByUser) {
-        console.log(`✅ Match trouvé entre ${userId} et ${otherUser._id}`);
-
-        const existingMatch = await Match.findOne({
-          $or: [
-            {
-              user_1: userId,
-              user_2: otherUser._id,
-              card_offered_by_user_1: userCardWantedByOther.card._id,
-              card_offered_by_user_2: otherCardWantedByUser.card._id,
-            },
-            {
-              user_1: userId,
-              user_2: otherUser._id,
-              card_offered_by_user_1: userCardWantedByOther.card._id,
-              card_offered_by_user_2: otherCardWantedByUser.card._id,
-            },
-          ],
+      const potentialMatches = await WishlistCard.find({
+        card: cardId,
+        user: { $ne: userId },
+      })
+        .populate('card')
+        .populate({
+          path: 'user',
+          select: '_id username profile_picture',
         });
 
-        if (existingMatch) {
-          console.log('⚠️ Match déjà existant, création annulée');
-          return; // ❌ on arrête ici, pas besoin de créer
+      for (const wishlistEntry of potentialMatches) {
+        const otherUserId = wishlistEntry.user._id;
+
+        const otherUserCards = await ListedCard.find({
+          user: otherUserId,
+        }).populate('card');
+
+        for (const theirCard of otherUserCards) {
+          const userWantsTheirCard = await WishlistCard.findOne({
+            user: userId,
+            card: theirCard.card._id,
+          }).populate('card');
+
+          if (!userWantsTheirCard) continue;
+
+          const sameRarity = await isValidTrade(
+            currentUserCard.card,
+            theirCard.card,
+          );
+          if (sameRarity) {
+            console.log(
+              `✅ Matchpotential : ${userWantsTheirCard.card.name} et ${listedEntry.card.name} ont la même rareté`,
+            );
+          }
+          if (!sameRarity) continue;
+
+          const existingMatch = await Match.findOne({
+            $or: [
+              {
+                user_1: userId,
+                user_2: otherUserId,
+                card_offered_by_user_1: currentUserCard.card._id,
+                card_offered_by_user_2: theirCard.card._id,
+              },
+              {
+                user_1: otherUserId,
+                user_2: userId,
+                card_offered_by_user_1: theirCard.card._id,
+                card_offered_by_user_2: currentUserCard.card._id,
+              },
+            ],
+          });
+
+          if (!existingMatch) {
+            await Match.create({
+              user_1: userId,
+              user_2: otherUserId,
+              card_offered_by_user_1: currentUserCard.card._id,
+              card_offered_by_user_2: theirCard.card._id,
+              status: 'pending',
+            });
+            console.log(`✅ Match trouvé entre ${userId} et ${otherUserId}`);
+          }
         }
+      }
+    } else if (mode === 'wishlist') {
+      const currentUserWishlistCard = await WishlistCard.findOne({
+        user: userId,
+        card: cardId,
+      }).populate('card');
 
-        await Match.create({
-          user_1: userId,
-          user_2: otherUser._id,
-          card_offered_by_user_1: userCardWantedByOther.card._id,
-          card_offered_by_user_2: otherCardWantedByUser.card._id,
-          status: 'pending',
+      if (!currentUserWishlistCard) return;
+
+      const potentialMatches = await ListedCard.find({
+        card: cardId,
+        user: { $ne: userId },
+      })
+        .populate('card')
+        .populate({
+          path: 'user',
+          select: '_id username profile_picture',
         });
-      } else {
-        console.log(`⛔ Pas de match avec ${otherUser._id}`);
+
+      for (const listedEntry of potentialMatches) {
+        const otherUserId = listedEntry.user._id;
+
+        const otherUserWishlist = await WishlistCard.find({
+          user: otherUserId,
+        }).populate('card');
+
+        for (const theirWishlistCard of otherUserWishlist) {
+          const userOwnsListedCard = await ListedCard.findOne({
+            user: userId,
+            card: theirWishlistCard.card._id,
+          }).populate('card');
+
+          if (!userOwnsListedCard) continue;
+
+          const sameRarity = await isValidTrade(
+            userOwnsListedCard.card,
+            listedEntry.card,
+          );
+          if (sameRarity) {
+            console.log(
+              `✅ Matchpotential : ${userOwnsListedCard.card.name} et ${listedEntry.card.name} ont la même rareté`,
+            );
+          }
+
+          if (!sameRarity) continue;
+
+          const existingMatch = await Match.findOne({
+            $or: [
+              {
+                user_1: userId,
+                user_2: otherUserId,
+                card_offered_by_user_1: userOwnsListedCard.card._id,
+                card_offered_by_user_2: listedEntry.card._id,
+              },
+              {
+                user_1: otherUserId,
+                user_2: userId,
+                card_offered_by_user_1: listedEntry.card._id,
+                card_offered_by_user_2: userOwnsListedCard.card._id,
+              },
+            ],
+          });
+
+          if (!existingMatch) {
+            await Match.create({
+              user_1: userId,
+              user_2: otherUserId,
+              card_offered_by_user_1: userOwnsListedCard.card._id,
+              card_offered_by_user_2: listedEntry.card._id,
+              status: 'pending',
+            });
+            console.log(`✅ Match trouvé entre ${userId} et ${otherUserId}`);
+          }
+        }
       }
     }
   } catch (error) {
