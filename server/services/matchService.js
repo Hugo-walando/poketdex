@@ -5,80 +5,87 @@ const WishlistCard = require('../models/WishlistCard');
 const Match = require('../models/Match');
 const User = require('../models/User');
 
-async function findAndCreateMatch(userId) {
-  console.log('\n🔍 Recherche de match pour l`utilisateur :', userId);
+async function isValidTrade(user1Card, user2Card) {
+  return user1Card && user2Card && user1Card.rarity === user2Card.rarity;
+}
 
+async function findAndCreateMatch(userId, cardId) {
   try {
-    const userListedCards = await ListedCard.find({ user: userId }).populate(
-      'card',
-    );
-    const userWishlistCards = await WishlistCard.find({
+    const currentUserCard = await ListedCard.findOne({
       user: userId,
+      card: cardId,
     }).populate('card');
 
-    if (userListedCards.length === 0 && userWishlistCards.length === 0) {
-      console.log(
-        '⛔ Aucun listedCard ou wishlistCard, pas de match possible.',
-      );
-      return;
-    }
+    if (!currentUserCard) return;
 
-    const otherUsers = await User.find({ _id: { $ne: userId } });
+    const potentialMatches = await WishlistCard.find({
+      card: cardId,
+      user: { $ne: userId },
+    }).populate({
+      path: 'user',
+      select: '_id username profile_picture',
+    });
 
-    for (const otherUser of otherUsers) {
-      const otherListedCards = await ListedCard.find({
-        user: otherUser._id,
+    for (const wishlistEntry of potentialMatches) {
+      const otherUserId = wishlistEntry.user._id;
+
+      const otherUserCards = await ListedCard.find({
+        user: otherUserId,
       }).populate('card');
-      const otherWishlistCards = await WishlistCard.find({
-        user: otherUser._id,
-      }).populate('card');
 
-      const userCardWantedByOther = userListedCards.find((listed) =>
-        otherWishlistCards.some(
-          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
-        ),
-      );
+      for (const theirCard of otherUserCards) {
+        const userWantsTheirCard = await WishlistCard.findOne({
+          user: userId,
+          card: theirCard.card._id,
+        });
 
-      const otherCardWantedByUser = otherListedCards.find((listed) =>
-        userWishlistCards.some(
-          (wishlist) => String(wishlist.card._id) === String(listed.card._id),
-        ),
-      );
+        if (!userWantsTheirCard) continue;
 
-      if (userCardWantedByOther && otherCardWantedByUser) {
-        console.log(`✅ Match trouvé entre ${userId} et ${otherUser._id}`);
+        const sameRarity = await isValidTrade(
+          currentUserCard.card,
+          theirCard.card,
+        );
+
+        if (sameRarity) {
+          console.log(
+            `✅ Matchpotential : ${currentUserCard.card.name} et ${theirCard.card.name} ont la même rareté`,
+          );
+        }
+
+        if (!sameRarity) {
+          console.log(
+            `❌ Pas de match : ${currentUserCard.card.name} et ${theirCard.card.name} n'ont pas la même rareté`,
+          );
+          continue;
+        }
 
         const existingMatch = await Match.findOne({
           $or: [
             {
               user_1: userId,
-              user_2: otherUser._id,
-              card_offered_by_user_1: userCardWantedByOther.card._id,
-              card_offered_by_user_2: otherCardWantedByUser.card._id,
+              user_2: otherUserId,
+              card_offered_by_user_1: currentUserCard.card._id,
+              card_offered_by_user_2: theirCard.card._id,
             },
             {
-              user_1: userId,
-              user_2: otherUser._id,
-              card_offered_by_user_1: userCardWantedByOther.card._id,
-              card_offered_by_user_2: otherCardWantedByUser.card._id,
+              user_1: otherUserId,
+              user_2: userId,
+              card_offered_by_user_1: theirCard.card._id,
+              card_offered_by_user_2: currentUserCard.card._id,
             },
           ],
         });
 
-        if (existingMatch) {
-          console.log('⚠️ Match déjà existant, création annulée');
-          return; // ❌ on arrête ici, pas besoin de créer
+        if (!existingMatch) {
+          await Match.create({
+            user_1: userId,
+            user_2: otherUserId,
+            card_offered_by_user_1: currentUserCard.card._id,
+            card_offered_by_user_2: theirCard.card._id,
+            status: 'pending',
+          });
+          console.log(`✅ Match trouvé entre ${userId} et ${otherUserId}`);
         }
-
-        await Match.create({
-          user_1: userId,
-          user_2: otherUser._id,
-          card_offered_by_user_1: userCardWantedByOther.card._id,
-          card_offered_by_user_2: otherCardWantedByUser.card._id,
-          status: 'pending',
-        });
-      } else {
-        console.log(`⛔ Pas de match avec ${otherUser._id}`);
       }
     }
   } catch (error) {
