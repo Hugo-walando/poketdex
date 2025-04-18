@@ -48,6 +48,28 @@ async function findAndCreateMatch(userId) {
       if (userCardWantedByOther && otherCardWantedByUser) {
         console.log(`✅ Match trouvé entre ${userId} et ${otherUser._id}`);
 
+        const existingMatch = await Match.findOne({
+          $or: [
+            {
+              user_1: userId,
+              user_2: otherUser._id,
+              card_offered_by_user_1: userCardWantedByOther.card._id,
+              card_offered_by_user_2: otherCardWantedByUser.card._id,
+            },
+            {
+              user_1: userId,
+              user_2: otherUser._id,
+              card_offered_by_user_1: userCardWantedByOther.card._id,
+              card_offered_by_user_2: otherCardWantedByUser.card._id,
+            },
+          ],
+        });
+
+        if (existingMatch) {
+          console.log('⚠️ Match déjà existant, création annulée');
+          return; // ❌ on arrête ici, pas besoin de créer
+        }
+
         await Match.create({
           user_1: userId,
           user_2: otherUser._id,
