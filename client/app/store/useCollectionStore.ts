@@ -10,6 +10,8 @@ interface CollectionState {
   addWishlistCardToStore: (card: WishlistCard) => void;
   removeListedCardFromStore: (cardId: string) => void;
   removeWishlistCardFromStore: (cardId: string) => void;
+  removeListedCardByOfficialId: (officialId: string) => void; // 👈 ajouté
+  removeWishlistCardByOfficialId: (officialId: string) => void; // 👈 ajouté
   resetCollections: () => void;
 }
 
@@ -18,19 +20,34 @@ export const useCollectionStore = create<CollectionState>((set) => ({
   wishlistCards: [],
   setListedCards: (cards) => set({ listedCards: cards }),
   setWishlistCards: (cards) => set({ wishlistCards: cards }),
+
   addListedCardToStore: (card) =>
     set((state) => ({ listedCards: [...state.listedCards, card] })),
   addWishlistCardToStore: (card) =>
     set((state) => ({ wishlistCards: [...state.wishlistCards, card] })),
+
   removeListedCardFromStore: (cardId) =>
     set((state) => ({
       listedCards: state.listedCards.filter((item) => item.card._id !== cardId),
     })),
-
   removeWishlistCardFromStore: (cardId) =>
     set((state) => ({
       wishlistCards: state.wishlistCards.filter(
         (item) => item.card._id !== cardId,
+      ),
+    })),
+
+  // 👇 Ajouté pour pouvoir retirer par official_id
+  removeListedCardByOfficialId: (officialId) =>
+    set((state) => ({
+      listedCards: state.listedCards.filter(
+        (item) => item.card.official_id !== officialId,
+      ),
+    })),
+  removeWishlistCardByOfficialId: (officialId) =>
+    set((state) => ({
+      wishlistCards: state.wishlistCards.filter(
+        (item) => item.card.official_id !== officialId,
       ),
     })),
 
