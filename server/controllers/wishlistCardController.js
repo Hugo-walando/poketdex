@@ -1,4 +1,5 @@
 const WishlistCard = require('../models/WishlistCard');
+const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
 const Match = require('../models/Match');
 const { findAndCreateMatch } = require('../services/matchService');
