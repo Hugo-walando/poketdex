@@ -11,4 +11,6 @@ router.patch(
   tradeRequestController.updateTradeRequest,
 );
 
+router.get('/me', authenticateToken, tradeRequestController.getMyTradeRequests);
+
 module.exports = router;

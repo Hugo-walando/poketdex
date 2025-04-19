@@ -110,7 +110,33 @@ const updateTradeRequest = async (req, res) => {
   }
 };
 
+const getMyTradeRequests = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const tradeRequests = await TradeRequest.find({
+      $or: [{ sender: userId }, { receiver: userId }],
+    })
+      .populate('sender', 'username profile_picture friend_code')
+      .populate('receiver', 'username profile_picture friend_code')
+      .populate('card_offered')
+      .populate('card_requested')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(tradeRequests);
+  } catch (error) {
+    console.error(
+      '❌ Erreur lors de la récupération des TradeRequests :',
+      error,
+    );
+    res
+      .status(500)
+      .json({ message: 'Erreur serveur lors de la récupération.' });
+  }
+};
+
 module.exports = {
   createTradeRequest,
   updateTradeRequest,
+  getMyTradeRequests,
 };
