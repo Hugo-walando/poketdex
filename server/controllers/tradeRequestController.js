@@ -78,6 +78,10 @@ const updateTradeRequest = async (req, res) => {
     const userId = req.user._id; // connecté
     const tradeRequestId = req.params.id;
     const { status } = req.body; // 'accepted' ou 'declined'
+    console.log('Requête de mise à jour de TradeRequest');
+    console.log('ID de l’utilisateur connecté :', userId);
+    console.log('ID de la demande d’échange :', tradeRequestId);
+    console.log('Statut de la demande d’échange :', status);
 
     if (!['accepted', 'declined'].includes(status)) {
       return res.status(400).json({ message: 'Statut invalide.' });
