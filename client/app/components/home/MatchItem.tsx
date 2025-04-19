@@ -3,42 +3,40 @@
 import { MatchTrade, Set } from '@/app/types';
 import Image from 'next/image';
 import TradeIcon from '../svgs/TradeIcon';
-import { useEffect, useState } from 'react';
-import { mockSets } from '@/app/data/mockSets';
 import { rarityIcons } from '@/app/data/rarities';
 
 interface Props {
   match: MatchTrade;
   isSelected: boolean;
   onSelect: (matchId: string) => void;
+  sets: Set[]; // 🆕 tu passes la liste des Sets ici
 }
 
-export default function MatchItem({ match, isSelected, onSelect }: Props) {
-  const [Sets, setSets] = useState<Set[]>([]);
-
-  useEffect(() => {
-    // Plus tard un fetch ici
-    // fetch('/api/sets').then(...)
-
-    setSets(mockSets); // pour l’instant on simule
-  }, []);
-
-  const requestedCardSet = Sets.find(
-    (s) => s.id === match.requested_card.set_code,
+export default function MatchItem({
+  match,
+  isSelected,
+  onSelect,
+  sets,
+}: Props) {
+  const requestedCardSet = sets.find(
+    (s) => s.code === match.requested_card.set_code,
   );
-  const offeredCardSet = Sets.find((s) => s.id === match.offered_card.set_code);
+  const offeredCardSet = sets.find(
+    (s) => s.code === match.offered_card.set_code,
+  );
 
   return (
     <>
-      {/* Input */}
+      {/* Input Checkbox */}
       <input
         type='checkbox'
         checked={isSelected}
         onChange={() => onSelect(match.id)}
         className='w-4 h-4 accent-primarygreen'
       />
+
       {/* Requested Card */}
-      <div className='flex items-center gap-2 '>
+      <div className='flex items-center gap-2'>
         <Image
           src={match.requested_card.img_url}
           alt={match.requested_card.name}
@@ -58,12 +56,13 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
               width={0}
               height={0}
               sizes='100vw'
-              className='h-5 w-auto object-contain'
+              className='h-auto w-16 object-contain'
             />
           )}
         </div>
       </div>
-      {/* Icon & Rarity */}
+
+      {/* Trade Icon & Rarity */}
       <div className='flex flex-col items-center w-full gap-1 mx-auto'>
         <TradeIcon className='w-6 h-6 text-primarygreen' />
         <Image
@@ -77,8 +76,9 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
           className='h-5 w-auto object-contain'
         />
       </div>
+
       {/* Offered Card */}
-      <div className='flex items-center gap-2 '>
+      <div className='flex items-center gap-2'>
         <div className='flex flex-col gap-2 w-full'>
           <span className='text-gray-sm text-right'>
             {match.offered_card.official_id}
@@ -90,7 +90,7 @@ export default function MatchItem({ match, isSelected, onSelect }: Props) {
               width={0}
               height={0}
               sizes='100vw'
-              className=' h-5 w-auto object-contain'
+              className='h-auto w-16 object-contain'
             />
           )}
         </div>

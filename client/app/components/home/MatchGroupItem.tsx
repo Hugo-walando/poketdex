@@ -1,6 +1,6 @@
 'use client';
 
-import { MatchGroup } from '@/app/types';
+import { MatchGroup, Set } from '@/app/types';
 import Image from 'next/image';
 import { useState } from 'react';
 import MatchItem from './MatchItem';
@@ -8,9 +8,10 @@ import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
+  sets: Set[];
 }
 
-export default function MatchGroupItem({ group }: MatchGroupItemProps) {
+export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMatchIds, setSelectedMatchIds] = useState<string[]>([]);
 
@@ -69,6 +70,7 @@ export default function MatchGroupItem({ group }: MatchGroupItemProps) {
                 match={match}
                 isSelected={selectedMatchIds.includes(match.id)}
                 onSelect={toggleMatchSelection}
+                sets={sets} // 🆕 passe la liste des Sets ici
               />
             ))}
           </div>

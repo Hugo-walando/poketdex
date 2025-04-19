@@ -2,6 +2,7 @@
 
 import { useMatchStore } from '@/app/store/useMatchStore';
 import MatchGroupItem from './MatchGroupItem';
+import { useGlobalData } from '@/app/store/useGlobalData';
 
 interface MatchListProps {
   loading: boolean;
@@ -9,6 +10,7 @@ interface MatchListProps {
 
 export default function MatchList({ loading }: MatchListProps) {
   const matchGroups = useMatchStore((state) => state.matchGroups);
+  const { sets } = useGlobalData();
 
   if (loading) {
     return (
@@ -32,7 +34,7 @@ export default function MatchList({ loading }: MatchListProps) {
 
       <div className='flex flex-col gap-2'>
         {matchGroups.map((group) => (
-          <MatchGroupItem key={group.user.id} group={group} />
+          <MatchGroupItem key={group.user.id} group={group} sets={sets} />
         ))}
       </div>
     </div>
