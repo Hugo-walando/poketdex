@@ -33,7 +33,7 @@ const createTradeRequest = async (req, res) => {
     }
 
     // Déterminer si l'utilisateur est user_1 ou user_2
-    const isUser1 = match.user_1._id.toString() === userId.toString();
+    const isUser1 = match.user_1._id.toString() === senderId.toString();
 
     const sender = isUser1 ? match.user_1 : match.user_2;
     const receiver = isUser1 ? match.user_2 : match.user_1;
