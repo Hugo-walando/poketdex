@@ -62,14 +62,14 @@ const createTradeRequest = async (req, res) => {
     // ✅ Créer la demande si pas de doublon
 
     // Créer la demande
-    const tradeRequest = await TradeRequest.create({
-      sender: senderId,
-      receiver: receiverId,
-      card_offered: cardOffered,
-      card_requested: cardRequested,
+    const newTrade = await TradeRequest.create({
+      sender: sender._id,
+      receiver: receiver._id,
+      card_offered: offered_card._id,
+      card_requested: requested_card._id,
     });
 
-    res.status(201).json(tradeRequest);
+    res.status(201).json(newTrade);
   } catch (err) {
     console.error("Erreur création demande d'échange :", err);
     res.status(500).json({ message: 'Erreur serveur.' });
