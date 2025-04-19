@@ -26,7 +26,7 @@ const useFetchTradeRequests = () => {
 
       try {
         console.log('📡 Fetching trade requests...');
-        const res = await axiosClient.get('/api/trades/me', {
+        const res = await axiosClient.get('/api/trade-requests/me', {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,
           },

@@ -39,7 +39,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
         <div className='flex items-center gap-3'>
           <Image
             src={group.user.profile_picture}
-            alt={group.user.username}
+            alt='USERNAME'
             width={32}
             height={32}
             className='rounded-full'
