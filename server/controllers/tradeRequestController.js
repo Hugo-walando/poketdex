@@ -4,6 +4,7 @@ const Match = require('../models/Match');
 // POST /api/trade-requests
 const createTradeRequest = async (req, res) => {
   try {
+    console.log('🔧 Requête de création d’une demande d’échange');
     const { matchId } = req.body;
     const senderId = req.user._id; // On récupère l'id du joueur connecté
     console.log('User connecté :', req.user);
@@ -54,6 +55,7 @@ const createTradeRequest = async (req, res) => {
     });
 
     if (existingTrade) {
+      console.log('⚠️ Une demande d’échange similaire existe déjà.');
       return res
         .status(409)
         .json({ message: "Une demande d'échange similaire existe déjà." });
@@ -68,7 +70,7 @@ const createTradeRequest = async (req, res) => {
       card_offered: offered_card._id,
       card_requested: requested_card._id,
     });
-
+    console.log('✅ Demande d’échange créée avec succès :', newTrade);
     res.status(201).json(newTrade);
   } catch (err) {
     console.error("Erreur création demande d'échange :", err);

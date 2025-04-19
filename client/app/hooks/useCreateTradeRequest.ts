@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore'; // 🆕 pour récupérer le token
+import toast from 'react-hot-toast';
+import { AxiosError } from 'axios';
 
 const useCreateTradeRequests = () => {
   const [loading, setLoading] = useState(false);
@@ -37,9 +39,16 @@ const useCreateTradeRequests = () => {
       );
 
       console.log('✅ Tous les TradeRequests ont été créés');
+      toast.success('Demandes envoyées avec succès !');
     } catch (err) {
-      console.error('❌ Erreur en créant les TradeRequests', err);
-      setError('Erreur lors de la création des échanges.');
+      const axiosError = err as AxiosError<{ message: string }>; // 🛡️ typage sûr
+
+      const backendMessage =
+        axiosError.response?.data?.message ||
+        'Erreur lors de la création des échanges.';
+
+      setError(backendMessage);
+      toast.error(backendMessage);
     } finally {
       setLoading(false);
     }
