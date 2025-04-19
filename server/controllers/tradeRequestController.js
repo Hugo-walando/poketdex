@@ -32,31 +32,34 @@ const createTradeRequest = async (req, res) => {
         .json({ message: 'Non autorisé à envoyer une demande pour ce match.' });
     }
 
-    // Définir qui envoie / qui reçoit + les cartes
-    const isSenderUser1 = match.user_1._id.equals(senderId);
+    // Déterminer si l'utilisateur est user_1 ou user_2
+    const isUser1 = match.user_1._id.toString() === userId.toString();
 
-    const receiverId = isSenderUser1 ? match.user_2._id : match.user_1._id;
-    const cardOffered = isSenderUser1
-      ? match.card_offered_by_user_1._id
-      : match.card_offered_by_user_2._id;
-    const cardRequested = isSenderUser1
-      ? match.card_offered_by_user_2._id
-      : match.card_offered_by_user_1._id;
+    const sender = isUser1 ? match.user_1 : match.user_2;
+    const receiver = isUser1 ? match.user_2 : match.user_1;
+    const offered_card = isUser1
+      ? match.card_offered_by_user_1
+      : match.card_offered_by_user_2;
+    const requested_card = isUser1
+      ? match.card_offered_by_user_2
+      : match.card_offered_by_user_1;
 
-    // Vérifier qu'une TradeRequest identique n'existe pas déjà
-    const existingRequest = await TradeRequest.findOne({
-      sender: senderId,
-      receiver: receiverId,
-      card_offered: cardOffered,
-      card_requested: cardRequested,
-      status: 'pending',
+    // 🛑 Vérification doublon
+    const existingTrade = await TradeRequest.findOne({
+      sender: sender._id,
+      receiver: receiver._id,
+      card_offered: offered_card._id,
+      card_requested: requested_card._id,
+      status: { $in: ['pending', 'accepted'] }, // Ne considérer que les actifs
     });
 
-    if (existingRequest) {
+    if (existingTrade) {
       return res
         .status(409)
-        .json({ message: "Demande d'échange déjà envoyée." });
+        .json({ message: "Une demande d'échange similaire existe déjà." });
     }
+
+    // ✅ Créer la demande si pas de doublon
 
     // Créer la demande
     const tradeRequest = await TradeRequest.create({
