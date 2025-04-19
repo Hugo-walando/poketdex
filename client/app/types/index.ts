@@ -113,46 +113,49 @@ export interface MatchGroup {
 }
 
 export interface TradeRequest {
-  id: string;
-  sender_id: string;
-  receiver_id: string;
-  status: 'pending' | 'accepted' | 'declined' | 'cancelled';
-  is_active: boolean;
-  sent_by_sender: boolean;
-  sent_by_receiver: boolean;
-  created_at: string;
-  updated_at: string;
-
+  _id: string;
   sender: {
-    id: string;
+    _id: string;
     username: string;
     profile_picture: string;
     friend_code: string;
   };
   receiver: {
+    _id: string;
+    username: string;
+    profile_picture: string;
+    friend_code: string;
+  };
+  card_offered: {
+    _id: string;
+    name: string;
+    img_url: string;
+    official_id: string;
+    rarity: number;
+    set_code: string;
+  };
+  card_requested: {
+    _id: string;
+    name: string;
+    img_url: string;
+    official_id: string;
+    rarity: number;
+    set_code: string;
+  };
+  status: 'pending' | 'accepted' | 'declined' | 'cancelled';
+  is_active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TradeGroup {
+  user: {
     id: string;
     username: string;
     profile_picture: string;
     friend_code: string;
   };
-
-  offered_card: {
-    id: string;
-    name: string;
-    img_url: string;
-    official_id: string;
-    rarity: number;
-    set_id: string;
-  };
-
-  requested_card: {
-    id: string;
-    name: string;
-    img_url: string;
-    official_id: string;
-    rarity: number;
-    set_id: string;
-  };
+  trades: TradeRequest[];
 }
 
 export interface User {

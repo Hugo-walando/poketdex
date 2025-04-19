@@ -27,7 +27,7 @@ export default function TradeListSection({
         <div className='space-y-4 '>
           {mockTrades.map((trade) => (
             <TradeItem
-              key={trade.id}
+              key={trade._id}
               trade={trade}
               currentUserId={selectedUser.id}
             />
