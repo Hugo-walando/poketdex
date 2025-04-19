@@ -78,4 +78,5 @@ const getSimilarMatches = async (req, res) => {
 module.exports = {
   createMatch,
   getMatchesForCurrentUser,
+  getSimilarMatches,
 };
