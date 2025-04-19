@@ -6,6 +6,8 @@ const createTradeRequest = async (req, res) => {
   try {
     const { matchId } = req.body;
     const senderId = req.user._id; // On récupère l'id du joueur connecté
+    console.log('User connecté :', req.user);
+    console.log('ID de l’utilisateur connecté :', senderId);
 
     if (!matchId) {
       return res.status(400).json({ message: 'ID du match manquant.' });
