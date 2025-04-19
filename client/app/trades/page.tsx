@@ -14,7 +14,7 @@ export default function TradePage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const { tradeGroups } = useTradeRequestStore();
-  const { loading, error } = useFetchTradeRequests(); // 👈 fetch trades dès l'arrivée
+  const { loading } = useFetchTradeRequests(); // 👈 fetch trades dès l'arrivée
 
   const selectedGroup =
     tradeGroups.find((group) => group.user.id === selectedUserId) || null;

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import MatchItem from './MatchItem';
 import { MinusIcon, PlusIcon } from 'lucide-react';
+import useCreateTradeRequests from '@/app/hooks/useCreateTradeRequest';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
@@ -14,11 +15,19 @@ interface MatchGroupItemProps {
 export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMatchIds, setSelectedMatchIds] = useState<string[]>([]);
+  const { createRequests, loading } = useCreateTradeRequests();
 
   const toggleMatchSelection = (id: string) => {
     setSelectedMatchIds((prev) =>
       prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
     );
+  };
+
+  const handleSendRequests = async () => {
+    if (selectedMatchIds.length === 0) return;
+    await createRequests(selectedMatchIds);
+    setSelectedMatchIds([]); // 🧹 reset après envoi
+    setIsOpen(false); // 🧹 referme le groupe pour feedback visuel
   };
 
   return (
@@ -79,12 +88,13 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
 
       {selectedMatchIds.length > 0 && (
         <button
-          onClick={() =>
-            console.log('Envoyer les demandes pour :', selectedMatchIds)
-          }
+          onClick={handleSendRequests}
+          disabled={loading}
           className='mt-4 w-full py-2 bg-primarygreen text-white rounded-xl font-semibold'
         >
-          Envoyer {selectedMatchIds.length} demande(s)
+          {loading
+            ? 'Envoi en cours...'
+            : `Envoyer ${selectedMatchIds.length} demande(s)`}
         </button>
       )}
     </div>
