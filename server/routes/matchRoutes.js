@@ -8,4 +8,6 @@ router.post('/', authenticateToken, matchController.createMatch);
 
 router.get('/me', authenticateToken, matchController.getMatchesForCurrentUser);
 
+router.get('/similar', authenticateToken, matchController.getSimilarMatches);
+
 module.exports = router;
