@@ -73,6 +73,40 @@ const createTradeRequest = async (req, res) => {
   }
 };
 
+const updateTradeRequest = async (req, res) => {
+  try {
+    const userId = req.user._id; // connecté
+    const tradeRequestId = req.params.id;
+    const { status } = req.body; // 'accepted' ou 'declined'
+
+    if (!['accepted', 'declined'].includes(status)) {
+      return res.status(400).json({ message: 'Statut invalide.' });
+    }
+
+    const tradeRequest = await TradeRequest.findById(tradeRequestId);
+
+    if (!tradeRequest) {
+      return res.status(404).json({ message: 'TradeRequest non trouvée.' });
+    }
+
+    // 👇 Vérifier que c'est bien le receiver qui agit
+    if (String(tradeRequest.receiver) !== String(userId)) {
+      return res.status(403).json({ message: 'Non autorisé.' });
+    }
+
+    tradeRequest.status = status;
+    tradeRequest.is_active = false;
+
+    await tradeRequest.save();
+
+    res.status(200).json(tradeRequest);
+  } catch (error) {
+    console.error('Erreur updateTradeRequest:', error);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
 module.exports = {
   createTradeRequest,
+  updateTradeRequest,
 };
