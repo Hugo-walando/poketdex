@@ -2,9 +2,13 @@ import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
+import { AxiosError } from 'axios';
+import { useUIModalStore } from '../store/useUIModalStore';
 
 const useAddListedCard = () => {
   const { user } = useUserStore();
+
+  const { openCompleteProfileModal } = useUIModalStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +18,6 @@ const useAddListedCard = () => {
       setError('Non authentifié');
       return;
     }
-
     try {
       setLoading(true);
       setError(null);
@@ -34,8 +37,14 @@ const useAddListedCard = () => {
 
       return res.data;
     } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+
       console.error('❌ Erreur lors de l’ajout :', err);
       setError('Erreur lors de l’ajout à la collection');
+      if (axiosError.response?.data?.message?.includes('Profil incomplet')) {
+        // 🔥 Afficher ta popup
+        openCompleteProfileModal();
+      }
     } finally {
       setLoading(false);
     }
