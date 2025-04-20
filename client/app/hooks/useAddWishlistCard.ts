@@ -43,9 +43,11 @@ const useAddWishlistCard = () => {
       const axiosError = err as AxiosError<{ message: string }>;
 
       console.error('❌ Erreur lors de l’ajout :', err);
+      console.log('🔴 Erreur lors de l’ajout :', axiosError.response?.data);
       setError('Erreur lors de l’ajout à la collection');
       if (axiosError.response?.data?.message?.includes('Profil incomplet')) {
         // 🔥 Afficher ta popup
+        toast.error('⚠️ Veuillez compléter votre profil pour continuer');
         openCompleteProfileModal();
       }
     } finally {

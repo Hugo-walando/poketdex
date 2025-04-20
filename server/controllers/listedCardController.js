@@ -15,6 +15,9 @@ const addListedCard = async (req, res) => {
     const { cardId } = req.body;
 
     if (!req.user.username || !req.user.friend_code) {
+      console.log(
+        'Profil incomplet. Veuillez renseigner votre pseudo et votre code ami.',
+      );
       return res.status(400).json({
         message:
           'Profil incomplet. Veuillez renseigner votre pseudo et votre code ami.',
