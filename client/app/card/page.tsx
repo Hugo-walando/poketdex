@@ -24,6 +24,7 @@ import { Card, Set } from '@/app/types';
 import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
 import useRemoveListedCard from '../hooks/useRemoveListedCard';
 import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
+import ProtectedLayout from '../components/auth/ProtectedLayout';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -146,102 +147,104 @@ export default function CardPage() {
 
   return (
     <ProtectedPage>
-      <FiltersWrapper className='my-10 md:flex gap-6'>
-        <div className='w-full md:w-[600px] mx-auto md:mx-0'>
-          <SearchBar
-            placeholder='Rechercher une carte...'
-            onSearch={(query) => setSearchQuery(query.toLowerCase())}
-          />
-        </div>
-        <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex'>
-          <FilterDropdownProvider>
-            {sets.length > 0 && (
-              <SetFilterDropdown
-                selectedSets={selectedSets}
-                onToggleSet={toggleSet}
-                sets={sets}
-              />
-            )}
-            <RarityFilter
-              selectedRarities={selectedRarities}
-              onToggleRarity={toggleRarity}
+      <ProtectedLayout>
+        <FiltersWrapper className='my-10 md:flex gap-6'>
+          <div className='w-full md:w-[600px] mx-auto md:mx-0'>
+            <SearchBar
+              placeholder='Rechercher une carte...'
+              onSearch={(query) => setSearchQuery(query.toLowerCase())}
             />
-          </FilterDropdownProvider>
-          <ResetFilters
-            onClick={resetAllFilters}
-            disabled={!hasActiveFilters}
-          />
-        </div>
-      </FiltersWrapper>
-
-      <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
-        {sets.map((set: Set) => {
-          const cards = cardsBySet[set.code]
-            ?.filter(
-              (card: Card) =>
-                matchCard(card, set, searchQuery) &&
-                (selectedSets.length === 0 ||
-                  selectedSets.includes(card.set_code)) &&
-                (selectedRarities.length === 0 ||
-                  selectedRarities.includes(card.rarity)),
-            )
-            ?.sort((a, b) => a.official_id.localeCompare(b.official_id));
-
-          if (!cards || cards.length === 0) return null;
-
-          return (
-            <section key={set.code} className='mb-12'>
-              <div className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
-                <Image
-                  src={set.img_url}
-                  alt={set.name}
-                  width={0}
-                  height={0}
-                  sizes='100vw'
-                  className='w-auto h-[50px]'
+          </div>
+          <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex'>
+            <FilterDropdownProvider>
+              {sets.length > 0 && (
+                <SetFilterDropdown
+                  selectedSets={selectedSets}
+                  onToggleSet={toggleSet}
+                  sets={sets}
                 />
-                <span className='font-medium text-lg'>{set.name}</span>
-              </div>
+              )}
+              <RarityFilter
+                selectedRarities={selectedRarities}
+                onToggleRarity={toggleRarity}
+              />
+            </FilterDropdownProvider>
+            <ResetFilters
+              onClick={resetAllFilters}
+              disabled={!hasActiveFilters}
+            />
+          </div>
+        </FiltersWrapper>
 
-              <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                {cards.map((card: Card) => (
-                  <div
-                    key={card.official_id}
-                    className='justify-self-center relative'
-                  >
-                    {card.img_url ? (
-                      <Image
-                        src={card.img_url}
-                        alt={card.name || 'Carte'}
-                        width={0}
-                        height={0}
-                        sizes='100vw'
-                        className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+        <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
+          {sets.map((set: Set) => {
+            const cards = cardsBySet[set.code]
+              ?.filter(
+                (card: Card) =>
+                  matchCard(card, set, searchQuery) &&
+                  (selectedSets.length === 0 ||
+                    selectedSets.includes(card.set_code)) &&
+                  (selectedRarities.length === 0 ||
+                    selectedRarities.includes(card.rarity)),
+              )
+              ?.sort((a, b) => a.official_id.localeCompare(b.official_id));
+
+            if (!cards || cards.length === 0) return null;
+
+            return (
+              <section key={set.code} className='mb-12'>
+                <div className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
+                  <Image
+                    src={set.img_url}
+                    alt={set.name}
+                    width={0}
+                    height={0}
+                    sizes='100vw'
+                    className='w-auto h-[50px]'
+                  />
+                  <span className='font-medium text-lg'>{set.name}</span>
+                </div>
+
+                <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+                  {cards.map((card: Card) => (
+                    <div
+                      key={card.official_id}
+                      className='justify-self-center relative'
+                    >
+                      {card.img_url ? (
+                        <Image
+                          src={card.img_url}
+                          alt={card.name || 'Carte'}
+                          width={0}
+                          height={0}
+                          sizes='100vw'
+                          className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                        />
+                      ) : (
+                        <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                          Image manquante
+                        </div>
+                      )}
+
+                      <CardSelector
+                        cardId={card.official_id}
+                        listedCardIds={listedCardIds}
+                        wishlistCardIds={wishlistCardIds}
+                        toggleListedCard={() =>
+                          toggleListedCard(card.official_id, card._id)
+                        }
+                        toggleWishlistCard={() =>
+                          toggleWishlistCard(card.official_id, card._id)
+                        }
                       />
-                    ) : (
-                      <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
-                        Image manquante
-                      </div>
-                    )}
-
-                    <CardSelector
-                      cardId={card.official_id}
-                      listedCardIds={listedCardIds}
-                      wishlistCardIds={wishlistCardIds}
-                      toggleListedCard={() =>
-                        toggleListedCard(card.official_id, card._id)
-                      }
-                      toggleWishlistCard={() =>
-                        toggleWishlistCard(card.official_id, card._id)
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      </ProtectedLayout>
     </ProtectedPage>
   );
 }
