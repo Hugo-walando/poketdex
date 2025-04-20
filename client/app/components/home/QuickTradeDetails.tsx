@@ -1,10 +1,9 @@
 'use client';
 
-import { mockSets } from '@/app/data/mockSets';
 import { mockWishlists } from '@/app/data/mockWishlists';
-import { ListedCard, Set } from '@/app/types';
+import { ListedCard } from '@/app/types';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
@@ -16,7 +15,6 @@ interface Props {
 }
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
-  const [Sets, setSets] = useState<Set[]>([]);
   const [selectedWishlistCardId, setSelectedWishlistCardId] = useState<
     string | null
   >(null);
@@ -30,15 +28,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       myCardOfferedId: selectedWishlistCardId,
     });
   };
-  useEffect(() => {
-    // Plus tard un fetch ici
-    // fetch('/api/sets').then(...)
-    console.log('fetch QuickeTradeDetails');
-
-    setSets(mockSets); // pour l’instant on simule
-  }, []);
-
-  const cardSet = Sets.find((s) => s.id === card.card.set_code);
 
   return (
     <div className='p-4 rounded-xl'>
@@ -61,7 +50,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         <div className='w-1/2 flex justify-start'>
           <div className='text-gray-xl'>
             {card.card.official_id}
-            {cardSet && (
+            {/* {cardSet && (
               <Image
                 src={cardSet.img_url}
                 alt={cardSet.name}
@@ -70,7 +59,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
                 sizes='100vw'
                 className='h-8 w-auto'
               />
-            )}
+            )} */}
             <Image
               src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
               alt={`Rareté ${card.card.rarity}`}

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { User } from 'next-auth';
 import useUpdateUser from '@/app/hooks/useUpdateUser';
 import { updateUserSchema } from '@/lib/validation/user';
+import { useUIModalStore } from '@/app/store/useUIModalStore';
 
 interface CompleteProfileModalProps {
   user: User;
@@ -13,10 +14,11 @@ interface CompleteProfileModalProps {
 
 export default function CompleteProfileModal({
   user,
-  onClose,
 }: CompleteProfileModalProps) {
+  const { isCompleteProfileModalOpen, closeCompleteProfileModal } =
+    useUIModalStore(); // 👈
+
   const { updateUser, loading, error, success } = useUpdateUser();
-  const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState(user.username ?? '');
   const [friendCode, setFriendCode] = useState(user.friend_code ?? '');
 
@@ -24,11 +26,6 @@ export default function CompleteProfileModal({
     username?: string[];
     friend_code?: string[];
   }>({});
-
-  useEffect(() => {
-    const missingFields = !user.username || !user.friend_code;
-    setIsOpen(missingFields);
-  }, [user]);
 
   const handleSubmit = async () => {
     setFormErrors({}); // reset erreurs
@@ -52,7 +49,11 @@ export default function CompleteProfileModal({
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className='relative z-50'>
+    <Dialog
+      open={isCompleteProfileModalOpen}
+      onClose={closeCompleteProfileModal}
+      className='relative z-50'
+    >
       <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
       <div className='fixed inset-0 flex items-center justify-center p-4'>
         <Dialog.Panel className='bg-white max-w-md w-full p-6 rounded-xl shadow-lg space-y-4'>

@@ -33,7 +33,7 @@ const useRemoveWishlistCard = () => {
       );
 
       removeWishlistCardFromStore(cardId);
-      toast.success('❌ Carte supprimée de la wishlist');
+      toast.success('🗑️ Carte supprimée de la wishlist');
     } catch (err) {
       console.error('❌ Erreur lors de la suppression :', err);
       setError('Erreur lors de la suppression');

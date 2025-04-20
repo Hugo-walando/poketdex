@@ -33,7 +33,7 @@ const useRemoveListedCard = () => {
       );
 
       removeListedCardFromStore(cardId);
-      toast.success('❌ Carte retirée des doublons');
+      toast.success('🗑️ Carte retirée des doublons');
     } catch (err) {
       console.error('❌ Erreur lors de la suppression :', err);
       setError('Erreur lors de la suppression');

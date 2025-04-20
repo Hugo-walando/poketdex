@@ -41,14 +41,14 @@ app.use('/api/wishlist-cards', wishlistCardRoutes);
 const matchRoutes = require('./routes/matchRoutes');
 app.use('/api/matches', matchRoutes);
 
+const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
+app.use('/api/trade-requests', tradeRequestRoutes);
+
 // const boosterRoutes = require('./routes/boosterRoutes');
 // app.use('/api/boosters', boosterRoutes);
 
 // const cardBoosterRoutes = require('./routes/cardBoosterRoutes');
 // app.use('/api/card-booster', cardBoosterRoutes);
-
-// const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
-// app.use('/api/trade-requests', tradeRequestRoutes);
 
 // const notificationRoutes = require('./routes/notificationRoutes');
 // app.use('/api/notifications', notificationRoutes);

@@ -1,17 +1,18 @@
 'use client';
 
-import { mockTrades } from '@/app/data/mockTrades';
 import TradeItem from './TradeItem';
-import { User } from '@/app/types';
+import { TradeRequest, User } from '@/app/types';
 import CloseButton from '../ui/CloseButton';
 
 interface TradeListSectionProps {
   selectedUser: User;
+  trades: TradeRequest[];
   onBack: () => void;
 }
 
 export default function TradeListSection({
   selectedUser,
+  trades,
   onBack,
 }: TradeListSectionProps) {
   return (
@@ -24,10 +25,10 @@ export default function TradeListSection({
           onClick={onBack}
           className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
         />
-        <div className='space-y-4 '>
-          {mockTrades.map((trade) => (
+        <div className='space-y-4'>
+          {trades.map((trade) => (
             <TradeItem
-              key={trade.id}
+              key={trade._id}
               trade={trade}
               currentUserId={selectedUser.id}
             />
