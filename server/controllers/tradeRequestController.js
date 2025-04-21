@@ -72,6 +72,11 @@ const createTradeRequest = async (req, res) => {
     });
 
     console.log('✅ Demande d’échange créée avec succès :', newTrade._id);
+
+    // ➔ SUPPRIMER le match maintenant ✅
+    await Match.deleteOne({ _id: matchId });
+    console.log('🗑️ Match supprimé après création de la TradeRequest');
+
     res.status(201).json(newTrade);
   } catch (err) {
     console.error("Erreur création demande d'échange :", err);
