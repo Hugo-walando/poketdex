@@ -6,15 +6,13 @@ const createTradeRequest = async (req, res) => {
   try {
     console.log('🔧 Requête de création d’une demande d’échange');
     const { matchId } = req.body;
-    const senderId = req.user._id; // On récupère l'id du joueur connecté
-    console.log('User connecté :', req.user);
-    console.log('ID de l’utilisateur connecté :', senderId);
+    const senderId = req.user._id; // User connecté
 
     if (!matchId) {
       return res.status(400).json({ message: 'ID du match manquant.' });
     }
 
-    // On récupère le match
+    // ➔ Récupérer le match
     const match = await Match.findById(matchId).populate(
       'user_1 user_2 card_offered_by_user_1 card_offered_by_user_2',
     );
@@ -23,7 +21,7 @@ const createTradeRequest = async (req, res) => {
       return res.status(404).json({ message: 'Match non trouvé.' });
     }
 
-    // Vérifier que l'utilisateur connecté est bien un des deux joueurs
+    // ➔ Vérifier que l'utilisateur connecté participe bien au match
     if (
       !match.user_1._id.equals(senderId) &&
       !match.user_2._id.equals(senderId)
@@ -33,25 +31,29 @@ const createTradeRequest = async (req, res) => {
         .json({ message: 'Non autorisé à envoyer une demande pour ce match.' });
     }
 
-    // Déterminer si l'utilisateur est user_1 ou user_2
-    const isUser1 = match.user_1._id.toString() === senderId.toString();
+    // ➔ Déterminer correctement sender et receiver
+    const sender = match.user_1._id.equals(senderId)
+      ? match.user_1
+      : match.user_2;
+    const receiver = match.user_1._id.equals(senderId)
+      ? match.user_2
+      : match.user_1;
 
-    const sender = isUser1 ? match.user_1 : match.user_2;
-    const receiver = isUser1 ? match.user_2 : match.user_1;
-    const offered_card = isUser1
+    // ➔ Déterminer les cartes
+    const offered_card = match.user_1._id.equals(senderId)
       ? match.card_offered_by_user_1
       : match.card_offered_by_user_2;
-    const requested_card = isUser1
+    const requested_card = match.user_1._id.equals(senderId)
       ? match.card_offered_by_user_2
       : match.card_offered_by_user_1;
 
-    // 🛑 Vérification doublon
+    // ➔ Vérification doublon
     const existingTrade = await TradeRequest.findOne({
       sender: sender._id,
       receiver: receiver._id,
       card_offered: offered_card._id,
       card_requested: requested_card._id,
-      status: { $in: ['pending', 'accepted'] }, // Ne considérer que les actifs
+      status: { $in: ['pending', 'accepted'] }, // uniquement échanges actifs
     });
 
     if (existingTrade) {
@@ -61,16 +63,15 @@ const createTradeRequest = async (req, res) => {
         .json({ message: "Une demande d'échange similaire existe déjà." });
     }
 
-    // ✅ Créer la demande si pas de doublon
-
-    // Créer la demande
+    // ➔ Création de la TradeRequest
     const newTrade = await TradeRequest.create({
       sender: sender._id,
       receiver: receiver._id,
       card_offered: offered_card._id,
       card_requested: requested_card._id,
     });
-    console.log('✅ Demande d’échange créée avec succès :', newTrade);
+
+    console.log('✅ Demande d’échange créée avec succès :', newTrade._id);
     res.status(201).json(newTrade);
   } catch (err) {
     console.error("Erreur création demande d'échange :", err);
@@ -86,20 +87,25 @@ const updateTradeRequest = async (req, res) => {
     console.log('Requête de mise à jour de TradeRequest');
     console.log('ID de l’utilisateur connecté :', userId);
     console.log('ID de la demande d’échange :', tradeRequestId);
-    console.log('Statut de la demande d’échange :', status);
+    console.log('Status dans la requete :', status);
 
     if (!['accepted', 'declined'].includes(status)) {
+      console.log('Statut invalide.');
       return res.status(400).json({ message: 'Statut invalide.' });
     }
 
     const tradeRequest = await TradeRequest.findById(tradeRequestId);
 
     if (!tradeRequest) {
+      console.log('TradeRequest non trouvée.');
       return res.status(404).json({ message: 'TradeRequest non trouvée.' });
     }
 
     // 👇 Vérifier que c'est bien le receiver qui agit
     if (String(tradeRequest.receiver) !== String(userId)) {
+      console.log('Trade Request receiver', tradeRequest.receiver);
+      console.log('User connecté', userId);
+      console.log('Non autorisé à mettre à jour cette demande.');
       return res.status(403).json({ message: 'Non autorisé.' });
     }
 

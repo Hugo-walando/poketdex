@@ -8,6 +8,9 @@ export function groupTradeRequestsByUser(
   const groups: Record<string, TradeGroup> = {};
 
   for (const trade of trades) {
+    console.log('trade:', trade);
+    console.log('currentUserId:', currentUserId);
+    console.log('trade.sender._id:', trade.sender._id);
     const otherUser =
       trade.sender._id === currentUserId ? trade.receiver : trade.sender;
 
