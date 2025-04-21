@@ -151,8 +151,50 @@ const getMyTradeRequests = async (req, res) => {
   }
 };
 
+const markTradeRequestAsSent = async (req, res) => {
+  try {
+    const tradeRequestId = req.params.id;
+    const userId = req.user._id; // user connecté
+
+    const trade = await TradeRequest.findById(tradeRequestId);
+
+    if (!trade) {
+      return res.status(404).json({ message: 'TradeRequest non trouvée.' });
+    }
+
+    // Vérifier si l'utilisateur est bien impliqué
+    if (
+      String(trade.sender) !== String(userId) &&
+      String(trade.receiver) !== String(userId)
+    ) {
+      return res.status(403).json({ message: 'Non autorisé.' });
+    }
+
+    // Marquer l'envoi selon le rôle
+    if (String(trade.sender) === String(userId)) {
+      trade.sent_by_sender = true;
+    } else if (String(trade.receiver) === String(userId)) {
+      trade.sent_by_receiver = true;
+    }
+
+    // Si les deux ont envoyé → échange terminé
+    if (trade.sent_by_sender && trade.sent_by_receiver) {
+      trade.completed = true;
+      trade.is_active = false;
+    }
+
+    await trade.save();
+
+    res.status(200).json(trade);
+  } catch (error) {
+    console.error('Erreur markTradeRequestAsSent:', error);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
 module.exports = {
   createTradeRequest,
   updateTradeRequest,
   getMyTradeRequests,
+  markTradeRequestAsSent,
 };

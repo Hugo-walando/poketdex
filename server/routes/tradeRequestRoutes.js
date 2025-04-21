@@ -11,6 +11,12 @@ router.patch(
   tradeRequestController.updateTradeRequest,
 );
 
+router.patch(
+  '/:id/mark-as-sent',
+  authenticateToken,
+  tradeRequestController.markTradeRequestAsSent,
+);
+
 router.get('/me', authenticateToken, tradeRequestController.getMyTradeRequests);
 
 module.exports = router;
