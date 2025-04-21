@@ -144,6 +144,9 @@ export interface TradeRequest {
   };
   status: 'pending' | 'accepted' | 'declined' | 'cancelled';
   is_active: boolean;
+  sent_by_sender: boolean;
+  sent_by_receiver: boolean;
+  completed: boolean;
   createdAt: string;
   updatedAt: string;
 }
