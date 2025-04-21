@@ -15,14 +15,12 @@ interface TradeItemProps {
 }
 
 export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
-  console.log('SelecetedUserId:', selectedUserId);
-  console.log('senderId:', trade.sender._id);
-  console.log('receiverId:', trade.receiver._id);
+  console.log('Selected user ID:', selectedUserId);
   const currentUserId = useUserStore((state) => state.user?.id);
-
-  console.log('currentUserId:', currentUserId);
-  const { acceptTradeRequest, declineTradeRequest } = useTradeRequestActions();
+  const { acceptTradeRequest, declineTradeRequest, markTradeRequestAsSent } =
+    useTradeRequestActions();
   const [loadingAction, setLoadingAction] = useState(false);
+  const [loadingMarkSent, setLoadingMarkSent] = useState(false);
 
   const isSender = trade.sender._id === currentUserId;
   const isReceiver = trade.receiver._id === currentUserId;
@@ -30,6 +28,9 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
 
   const receivedCard = isSender ? trade.card_requested : trade.card_offered;
   const offeredCard = isSender ? trade.card_offered : trade.card_requested;
+
+  const sentByMe = isSender ? trade.sent_by_sender : trade.sent_by_receiver;
+  const sentByOther = isSender ? trade.sent_by_receiver : trade.sent_by_sender;
 
   const handleAccept = async () => {
     try {
@@ -46,6 +47,15 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       await declineTradeRequest(trade._id);
     } finally {
       setLoadingAction(false);
+    }
+  };
+
+  const handleMarkAsSent = async () => {
+    try {
+      setLoadingMarkSent(true);
+      await markTradeRequestAsSent(trade._id);
+    } finally {
+      setLoadingMarkSent(false);
     }
   };
 
@@ -149,9 +159,44 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
               </button>
             </div>
           )}
+
+          {/* Si accepté → montrer "Marquer comme envoyé" */}
+          {trade.status === 'accepted' && !sentByMe && (
+            <div className='flex gap-2 mt-2'>
+              <button
+                onClick={handleMarkAsSent}
+                disabled={loadingMarkSent}
+                className='px-4 py-1 rounded-full bg-gray-200 text-dark text-sm hover:bg-gray-300 transition'
+              >
+                {loadingMarkSent ? '...' : 'Marquer ma carte comme envoyée'}
+              </button>
+            </div>
+          )}
+
+          {/* Status carte envoyée */}
+          {trade.status === 'accepted' && (
+            <div className='flex flex-col text-xs gap-1 mt-2'>
+              <div>
+                Vous :{' '}
+                {sentByMe ? (
+                  <span className='text-green-600'>✔️ Envoyée</span>
+                ) : (
+                  <span className='text-gray-500'>❌ Non envoyée</span>
+                )}
+              </div>
+              <div>
+                {isSender ? 'Receveur' : 'Envoyeur'} :{' '}
+                {sentByOther ? (
+                  <span className='text-green-600'>✔️ Envoyée</span>
+                ) : (
+                  <span className='text-gray-500'>❌ Non envoyée</span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Optionnel : qui est qui */}
+        {/* Qui est qui */}
         <span className='text-xs'>
           {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
         </span>
