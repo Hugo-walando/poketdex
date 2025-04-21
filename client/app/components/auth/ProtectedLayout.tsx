@@ -30,7 +30,7 @@ export default function ProtectedLayout({
       console.log('🟢 Profil complet');
       closeModal();
     }
-  }, [user?.username, user?.friend_code, openModal, closeModal]);
+  }, [user, user?.username, user?.friend_code, openModal, closeModal]);
 
   return (
     <>

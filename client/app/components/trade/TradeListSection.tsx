@@ -30,7 +30,7 @@ export default function TradeListSection({
             <TradeItem
               key={trade._id}
               trade={trade}
-              currentUserId={selectedUser.id}
+              selectedUserId={selectedUser.id}
             />
           ))}
         </div>
