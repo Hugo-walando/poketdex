@@ -64,7 +64,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   return (
     <div
       className={cn(
-        'bg-white rounded-xl p-2 xl:p-4 flex flex-col gap-2 transition-all shadow-base border-2',
+        'bg-white rounded-xl p-2 xl:p-4 flex flex-col gap-2 transition-all shadow-base border-2 relative',
         trade.is_active
           ? 'border-primarygreen ring-2 ring-primarygreen'
           : 'border-transparent',
@@ -76,8 +76,13 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       )}
 
       {isCompleted && (
-        <div className='absolute inset-0 bg-green-100 bg-opacity-60 flex items-start justify-start p-2 z-10'>
-          <CheckCircle className='text-green-600 w-8 h-8' />
+        <div className='absolute inset-0 bg-primarygreen/20 flex items-start justify-start p-2 z-10 rounded-xl'>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3'>
+            <span className='text-green-base text-lg font-bold'>
+              Échange complété
+            </span>
+            <CheckCircle className='text-primarygreen w-8 h-8' />
+          </div>
         </div>
       )}
 

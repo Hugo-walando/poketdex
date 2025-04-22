@@ -44,14 +44,21 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
         trades: group.trades.map((trade) => {
           if (trade._id !== tradeId) return trade;
 
-          // Détecter si c'est le sender ou receiver qui a envoyé
           const isSender = trade.sender._id === currentUserId;
 
-          return {
+          const updatedTrade = {
             ...trade,
             sent_by_sender: isSender ? true : trade.sent_by_sender,
             sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
           };
+
+          // 🟢 Si les deux ont envoyé leur carte => on marque completed
+          if (updatedTrade.sent_by_sender && updatedTrade.sent_by_receiver) {
+            updatedTrade.status = 'completed';
+            updatedTrade.is_active = false; // Optionnel, tu peux désactiver l'échange aussi
+          }
+
+          return updatedTrade;
         }),
       })),
     })),
