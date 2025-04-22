@@ -39,7 +39,7 @@ export function useTradeRequestActions() {
   const markTradeRequestAsSent = async (tradeRequestId: string) => {
     try {
       await axiosClient.patch(
-        `/api/trade-requests/${tradeRequestId}/mark-sent`,
+        `/api/trade-requests/${tradeRequestId}/mark-as-sent`,
         {},
         {
           headers: {

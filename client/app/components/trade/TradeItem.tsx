@@ -8,6 +8,7 @@ import { cn } from '@/app/utils/cn';
 import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
+import { CheckCircle } from 'lucide-react';
 
 interface TradeItemProps {
   trade: TradeRequest;
@@ -25,6 +26,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const isSender = trade.sender._id === currentUserId;
   const isReceiver = trade.receiver._id === currentUserId;
   const isPending = trade.status === 'pending';
+  const isCompleted = trade.status === 'completed';
 
   const receivedCard = isSender ? trade.card_requested : trade.card_offered;
   const offeredCard = isSender ? trade.card_offered : trade.card_requested;
@@ -71,6 +73,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       {/* Badge échange actif */}
       {trade.is_active && (
         <span className='text-green-base mb-1'>Échange en cours</span>
+      )}
+
+      {isCompleted && (
+        <div className='absolute inset-0 bg-green-100 bg-opacity-60 flex items-start justify-start p-2 z-10'>
+          <CheckCircle className='text-green-600 w-8 h-8' />
+        </div>
       )}
 
       <div className='flex items-center justify-between'>

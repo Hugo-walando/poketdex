@@ -30,7 +30,6 @@ const tradeRequestSchema = new mongoose.Schema(
     is_active: { type: Boolean, default: true },
     sent_by_sender: { type: Boolean, default: false },
     sent_by_receiver: { type: Boolean, default: false },
-    completed: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
