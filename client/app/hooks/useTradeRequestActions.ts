@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 export function useTradeRequestActions() {
   const { user } = useUserStore();
-  const { updateTradeStatus } = useTradeRequestStore();
+  const { updateTradeStatus, markAsSent } = useTradeRequestStore();
 
   const respondToTradeRequest = async (
     tradeRequestId: string,
@@ -36,6 +36,31 @@ export function useTradeRequestActions() {
     }
   };
 
+  const markTradeRequestAsSent = async (tradeRequestId: string) => {
+    try {
+      await axiosClient.patch(
+        `/api/trade-requests/${tradeRequestId}/mark-sent`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${user?.accessToken}`,
+          },
+        },
+      );
+      if (user?.id) {
+        markAsSent(tradeRequestId, user.id); // On met à jour dans le store en local
+      }
+      toast.success('Carte marquée comme envoyée ✅');
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      const backendMessage =
+        axiosError.response?.data?.message ||
+        'Erreur lors du marquage de la carte comme envoyée';
+      toast.error(backendMessage);
+      throw error;
+    }
+  };
+
   const acceptTradeRequest = (tradeRequestId: string) =>
     respondToTradeRequest(tradeRequestId, 'accepted');
   const declineTradeRequest = (tradeRequestId: string) =>
@@ -47,5 +72,6 @@ export function useTradeRequestActions() {
     acceptTradeRequest,
     declineTradeRequest,
     cancelTradeRequest,
+    markTradeRequestAsSent,
   };
 }

@@ -1,3 +1,5 @@
+// app/store/useTradeRequestStore.ts
+
 import { create } from 'zustand';
 import { TradeGroup } from '@/app/types';
 
@@ -9,6 +11,7 @@ interface TradeRequestStore {
     tradeId: string,
     newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled',
   ) => void;
+  markAsSent: (tradeId: string, currentUserId: string) => void;
 }
 
 export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
@@ -31,6 +34,25 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
               }
             : trade,
         ),
+      })),
+    })),
+
+  markAsSent: (tradeId, currentUserId) =>
+    set((state) => ({
+      tradeGroups: state.tradeGroups.map((group) => ({
+        ...group,
+        trades: group.trades.map((trade) => {
+          if (trade._id !== tradeId) return trade;
+
+          // Détecter si c'est le sender ou receiver qui a envoyé
+          const isSender = trade.sender._id === currentUserId;
+
+          return {
+            ...trade,
+            sent_by_sender: isSender ? true : trade.sent_by_sender,
+            sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
+          };
+        }),
       })),
     })),
 }));
