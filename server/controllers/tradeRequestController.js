@@ -94,7 +94,7 @@ const updateTradeRequest = async (req, res) => {
     console.log('ID de la demande d’échange :', tradeRequestId);
     console.log('Status dans la requete :', status);
 
-    if (!['accepted', 'declined'].includes(status)) {
+    if (!['accepted', 'declined', 'cancelled'].includes(status)) {
       console.log('Statut invalide.');
       return res.status(400).json({ message: 'Statut invalide.' });
     }
@@ -107,11 +107,21 @@ const updateTradeRequest = async (req, res) => {
     }
 
     // 👇 Vérifier que c'est bien le receiver qui agit
-    if (String(tradeRequest.receiver) !== String(userId)) {
-      console.log('Trade Request receiver', tradeRequest.receiver);
-      console.log('User connecté', userId);
-      console.log('Non autorisé à mettre à jour cette demande.');
-      return res.status(403).json({ message: 'Non autorisé.' });
+    if (status === 'cancelled') {
+      // Annulation : sender OU receiver a le droit
+      if (
+        String(tradeRequest.receiver) !== String(userId) &&
+        String(tradeRequest.sender) !== String(userId)
+      ) {
+        console.log('Non autorisé à annuler cette demande.');
+        return res.status(403).json({ message: 'Non autorisé.' });
+      }
+    } else {
+      // Acceptation ou Refus : seulement le receiver peut
+      if (String(tradeRequest.receiver) !== String(userId)) {
+        console.log('Non autorisé à mettre à jour cette demande.');
+        return res.status(403).json({ message: 'Non autorisé.' });
+      }
     }
 
     tradeRequest.status = status;

@@ -18,8 +18,12 @@ interface TradeItemProps {
 export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   console.log('Selected user ID:', selectedUserId);
   const currentUserId = useUserStore((state) => state.user?.id);
-  const { acceptTradeRequest, declineTradeRequest, markTradeRequestAsSent } =
-    useTradeRequestActions();
+  const {
+    acceptTradeRequest,
+    declineTradeRequest,
+    markTradeRequestAsSent,
+    cancelTradeRequest,
+  } = useTradeRequestActions();
   const [loadingAction, setLoadingAction] = useState(false);
   const [loadingMarkSent, setLoadingMarkSent] = useState(false);
 
@@ -60,6 +64,14 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       setLoadingMarkSent(false);
     }
   };
+  const handleCancel = async () => {
+    try {
+      setLoadingAction(true);
+      await cancelTradeRequest(trade._id);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
 
   return (
     <div
@@ -76,8 +88,8 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       )}
 
       {isCompleted && (
-        <div className='absolute inset-0 bg-primarygreen/20 flex items-start justify-start p-2 z-10 rounded-xl'>
-          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3'>
+        <div className='absolute inset-0 bg-primarygreen/20 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
             <span className='text-green-base text-lg font-bold'>
               Échange complété
             </span>
@@ -213,6 +225,16 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
         <span className='text-xs'>
           {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
         </span>
+        {(isSender || isReceiver) &&
+          (trade.status === 'pending' || trade.status === 'accepted') && (
+            <button
+              onClick={handleCancel}
+              disabled={loadingAction}
+              className='px-4 py-1 rounded-full bg-yellow-500 text-white text-sm hover:opacity-90 transition'
+            >
+              {loadingAction ? '...' : 'Annuler'}
+            </button>
+          )}
       </div>
     </div>
   );
