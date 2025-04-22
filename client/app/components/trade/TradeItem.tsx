@@ -8,7 +8,7 @@ import { cn } from '@/app/utils/cn';
 import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
-import { CheckCircle } from 'lucide-react';
+import { Check, CheckCircle, CircleX } from 'lucide-react';
 
 interface TradeItemProps {
   trade: TradeRequest;
@@ -31,6 +31,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const isReceiver = trade.receiver._id === currentUserId;
   const isPending = trade.status === 'pending';
   const isCompleted = trade.status === 'completed';
+  const isCancelled = trade.status === 'cancelled';
 
   const receivedCard = isSender ? trade.card_requested : trade.card_offered;
   const offeredCard = isSender ? trade.card_offered : trade.card_requested;
@@ -94,6 +95,17 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
               Échange complété
             </span>
             <CheckCircle className='text-primarygreen w-8 h-8' />
+          </div>
+        </div>
+      )}
+
+      {isCancelled && (
+        <div className='absolute inset-0 bg-redalert/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-red-base text-lg font-bold'>
+              Échange annulé
+            </span>
+            <CircleX className='text-redalert w-8 h-8' />
           </div>
         </div>
       )}
@@ -163,6 +175,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
             {trade.status === 'accepted' && 'Accepté ✅'}
             {trade.status === 'declined' && 'Refusé ❌'}
             {trade.status === 'cancelled' && 'Annulé 🚫'}
+            {trade.status === 'completed' && 'Échange complété ✅'}
           </span>
 
           {/* Si pending + receiver -> montrer les boutons */}
@@ -201,18 +214,22 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           {/* Status carte envoyée */}
           {trade.status === 'accepted' && (
             <div className='flex flex-col text-xs gap-1 mt-2'>
-              <div>
+              <div className='flex items-center gap-1'>
                 Vous :{' '}
                 {sentByMe ? (
-                  <span className='text-green-600'>✔️ Envoyée</span>
+                  <span className='text-green-600 flex items-center gap-1'>
+                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                  </span>
                 ) : (
                   <span className='text-gray-500'>❌ Non envoyée</span>
                 )}
               </div>
-              <div>
+              <div className='flex items-center gap-1'>
                 {isSender ? 'Receveur' : 'Envoyeur'} :{' '}
                 {sentByOther ? (
-                  <span className='text-green-600'>✔️ Envoyée</span>
+                  <span className='text-green-600 flex items-center gap-1'>
+                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                  </span>
                 ) : (
                   <span className='text-gray-500'>❌ Non envoyée</span>
                 )}
@@ -222,19 +239,21 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
         </div>
 
         {/* Qui est qui */}
-        <span className='text-xs'>
-          {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
-        </span>
-        {(isSender || isReceiver) &&
-          (trade.status === 'pending' || trade.status === 'accepted') && (
-            <button
-              onClick={handleCancel}
-              disabled={loadingAction}
-              className='px-4 py-1 rounded-full bg-yellow-500 text-white text-sm hover:opacity-90 transition'
-            >
-              {loadingAction ? '...' : 'Annuler'}
-            </button>
-          )}
+        <div className='flex flex-col items-end gap-1'>
+          <span className='text-xs'>
+            {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
+          </span>
+          {(isSender || isReceiver) &&
+            (trade.status === 'pending' || trade.status === 'accepted') && (
+              <button
+                onClick={handleCancel}
+                disabled={loadingAction}
+                className='px-4 py-1 rounded-full bg-redalert text-white text-sm hover:opacity-90 transition'
+              >
+                {loadingAction ? '...' : 'Annuler'}
+              </button>
+            )}
+        </div>
       </div>
     </div>
   );
