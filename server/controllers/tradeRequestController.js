@@ -70,7 +70,7 @@ const createTradeRequest = async (req, res) => {
       ],
       is_active: true,
     });
-
+    console.log('alreadyActive:', alreadyActive);
     const isActive = !alreadyActive;
 
     // ➔ Création de la TradeRequest
@@ -115,6 +115,12 @@ const updateTradeRequest = async (req, res) => {
     if (!tradeRequest) {
       console.log('TradeRequest non trouvée.');
       return res.status(404).json({ message: 'TradeRequest non trouvée.' });
+    }
+
+    if (!tradeRequest.is_active) {
+      return res.status(403).json({
+        message: "Impossible de modifier une demande d'échange inactive.",
+      });
     }
 
     // 👇 Vérifier que c'est bien le receiver qui agit
