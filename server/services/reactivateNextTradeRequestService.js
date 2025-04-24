@@ -20,3 +20,5 @@ async function reactivateNextTradeRequest(senderId, receiverId) {
     );
   }
 }
+
+module.exports = reactivateNextTradeRequest;
