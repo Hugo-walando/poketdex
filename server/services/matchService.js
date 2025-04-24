@@ -11,7 +11,9 @@ async function isValidTrade(user1Card, user2Card) {
 
 async function findAndCreateMatch(userId, cardId, mode = 'listed') {
   try {
+    console.log('🔧 Recherche de match pour l’utilisateur :', userId);
     if (mode === 'listed') {
+      console.log('🔧 Mode : listed');
       const currentUserCard = await ListedCard.findOne({
         user: userId,
         card: cardId,
@@ -85,6 +87,7 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
         }
       }
     } else if (mode === 'wishlist') {
+      console.log('🔧 Mode : wishlist');
       const currentUserWishlistCard = await WishlistCard.findOne({
         user: userId,
         card: cardId,
@@ -114,6 +117,9 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
             user: userId,
             card: theirWishlistCard.card._id,
           }).populate('card');
+          console.log(
+            `userOwnsListedCard: ${userOwnsListedCard} et ${theirWishlistCard.card._id}`,
+          );
 
           if (!userOwnsListedCard) continue;
 
