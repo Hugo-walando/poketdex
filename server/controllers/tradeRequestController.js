@@ -1,5 +1,6 @@
 const TradeRequest = require('../models/TradeRequest');
 const Match = require('../models/Match');
+const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
 
 // POST /api/trade-requests
 const createTradeRequest = async (req, res) => {
@@ -145,6 +146,12 @@ const updateTradeRequest = async (req, res) => {
     tradeRequest.is_active = false;
 
     await tradeRequest.save();
+    if (['declined', 'cancelled'].includes(status)) {
+      reactivateNextTradeRequestService(
+        tradeRequest.sender,
+        tradeRequest.receiver,
+      );
+    }
 
     res.status(200).json(tradeRequest);
   } catch (error) {
@@ -213,6 +220,9 @@ const markTradeRequestAsSent = async (req, res) => {
 
     await trade.save();
 
+    if (trade.status === 'completed') {
+      await reactivateNextTradeRequestService(trade.sender, trade.receiver);
+    }
     res.status(200).json(trade);
   } catch (error) {
     console.error('Erreur markTradeRequestAsSent:', error);

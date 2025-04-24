@@ -33,6 +33,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const isPending = trade.status === 'pending';
   const isCompleted = trade.status === 'completed';
   const isCancelled = trade.status === 'cancelled';
+  const isActive = trade.is_active;
 
   const canMarkAsSent =
     trade.is_active && trade.status === 'accepted' && !trade.completed;
@@ -132,6 +133,16 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
         </div>
       )}
 
+      {!isActive && (
+        <div className='absolute inset-0 bg-gray-200/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-gray-base text-lg font-bold'>
+              Échange en attente ...
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className='flex items-center justify-between'>
         {/* Vous recevez */}
         <div className='flex flex-col gap-1 lg:gap-2'>
@@ -201,7 +212,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           </span>
 
           {/* Si pending + receiver -> montrer les boutons */}
-          {isReceiver && isPending && (
+          {isReceiver && isPending && isActive && (
             <div className='flex gap-2 mt-2'>
               <button
                 onClick={handleAccept}
