@@ -213,6 +213,7 @@ const markTradeRequestAsSent = async (req, res) => {
 
     // Si les deux ont envoyé → échange terminé
     if (trade.sent_by_sender && trade.sent_by_receiver) {
+      console.log('Echange terminé !');
       trade.status = 'completed';
       trade.completed = true;
       trade.is_active = false;
