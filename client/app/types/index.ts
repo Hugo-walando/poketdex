@@ -82,35 +82,35 @@ export interface Match {
   updatedAt: string;
 }
 
-// export interface MatchTrade {
-//   id: string;
-//   offered_card: {
-//     _id: string;
-//     official_id: string;
-//     name: string;
-//     img_url: string;
-//     rarity: number;
-//     set_code: string;
-//   };
-//   requested_card: {
-//     _id: string;
-//     official_id: string;
-//     name: string;
-//     img_url: string;
-//     rarity: number;
-//     set_code: string;
-//   };
-//   status: 'pending' | 'accepted' | 'cancelled' | 'completed';
-// }
+export interface MatchTrade {
+  id: string;
+  offered_card: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  requested_card: {
+    _id: string;
+    official_id: string;
+    name: string;
+    img_url: string;
+    rarity: number;
+    set_code: string;
+  };
+  status: 'pending' | 'accepted' | 'cancelled' | 'completed';
+}
 
-// export interface MatchGroup {
-//   user: {
-//     id: string;
-//     username: string;
-//     profile_picture: string;
-//   };
-//   trades: MatchTrade[];
-// }
+export interface MatchGroup {
+  user: {
+    id: string;
+    username: string;
+    profile_picture: string;
+  };
+  trades: MatchTrade[];
+}
 
 export interface TradeRequest {
   _id: string;
