@@ -63,12 +63,23 @@ const createTradeRequest = async (req, res) => {
         .json({ message: "Une demande d'échange similaire existe déjà." });
     }
 
+    const alreadyActive = await TradeRequest.findOne({
+      $or: [
+        { sender: sender._id, receiver: receiver._id },
+        { sender: receiver._id, receiver: sender._id },
+      ],
+      is_active: true,
+    });
+
+    const isActive = !alreadyActive;
+
     // ➔ Création de la TradeRequest
     const newTrade = await TradeRequest.create({
       sender: sender._id,
       receiver: receiver._id,
       card_offered: offered_card._id,
       card_requested: requested_card._id,
+      is_active: isActive,
     });
 
     console.log('✅ Demande d’échange créée avec succès :', newTrade._id);
