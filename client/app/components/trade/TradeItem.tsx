@@ -9,6 +9,7 @@ import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
 import { Check, CheckCircle, CircleX } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface TradeItemProps {
   trade: TradeRequest;
@@ -33,6 +34,9 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const isCompleted = trade.status === 'completed';
   const isCancelled = trade.status === 'cancelled';
 
+  const canMarkAsSent =
+    trade.is_active && trade.status === 'accepted' && !trade.completed;
+
   const receivedCard = isSender ? trade.card_requested : trade.card_offered;
   const offeredCard = isSender ? trade.card_offered : trade.card_requested;
 
@@ -40,6 +44,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const sentByOther = isSender ? trade.sent_by_receiver : trade.sent_by_sender;
 
   const handleAccept = async () => {
+    if (!isReceiver) {
+      toast.error(
+        "Vous ne pouvez pas accepter cet échange car vous n'êtes pas le receveur.",
+      );
+      return;
+    }
     try {
       setLoadingAction(true);
       await acceptTradeRequest(trade._id);
@@ -49,6 +59,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   };
 
   const handleDecline = async () => {
+    if (!isReceiver) {
+      toast.error(
+        "Vous ne pouvez pas refuser cet échange car vous n'êtes pas le receveur.",
+      );
+      return;
+    }
     try {
       setLoadingAction(true);
       await declineTradeRequest(trade._id);
@@ -58,6 +74,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   };
 
   const handleMarkAsSent = async () => {
+    if (!canMarkAsSent) {
+      toast.error(
+        "Vous ne pouvez pas marquer cet échange comme envoyé car il n'est pas actif ou a déjà été complété.",
+      );
+      return;
+    }
     try {
       setLoadingMarkSent(true);
       await markTradeRequestAsSent(trade._id);
@@ -199,7 +221,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           )}
 
           {/* Si accepté → montrer "Marquer comme envoyé" */}
-          {trade.status === 'accepted' && !sentByMe && (
+          {canMarkAsSent && (
             <div className='flex gap-2 mt-2'>
               <button
                 onClick={handleMarkAsSent}

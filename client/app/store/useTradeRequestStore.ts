@@ -9,7 +9,7 @@ interface TradeRequestStore {
   resetTradeGroups: () => void;
   updateTradeStatus: (
     tradeId: string,
-    newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled',
+    newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed',
   ) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
 }
