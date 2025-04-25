@@ -51,7 +51,7 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
           );
           if (sameRarity) {
             console.log(
-              `✅ Matchpotential : ${userWantsTheirCard.card.name} et ${listedEntry.card.name} ont la même rareté`,
+              `✅ Matchpotential : ${userWantsTheirCard.card.name} et ${theirCard.card.name} ont la même rareté`,
             );
           }
           if (!sameRarity) continue;
