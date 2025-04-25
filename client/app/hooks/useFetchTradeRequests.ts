@@ -1,7 +1,6 @@
-// app/hooks/useFetchTradeRequests.ts
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axiosClient from '@/lib/axios';
 import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 import { useUserStore } from '@/app/store/useUserStore';
@@ -14,40 +13,40 @@ const useFetchTradeRequests = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchTrades = useCallback(async () => {
     if (!user?.accessToken) {
       setError('Non authentifié');
       return;
     }
 
-    const fetchTrades = async () => {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
 
-      try {
-        console.log('📡 Fetching trade requests...');
-        const res = await axiosClient.get('/api/trade-requests/me', {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-          },
-        });
+    try {
+      console.log('📡 Fetching trade requests...');
+      const res = await axiosClient.get('/api/trade-requests/me', {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
 
-        const grouped = groupTradeRequestsByUser(res.data, user.id);
-        setTradeGroups(grouped);
+      const grouped = groupTradeRequestsByUser(res.data, user.id);
+      setTradeGroups(grouped);
 
-        console.log('✅ Trade requests récupérés et groupés :', grouped.length);
-      } catch (err) {
-        console.error('❌ Erreur fetch trades :', err);
-        setError('Erreur lors de la récupération des échanges');
-      } finally {
-        setLoading(false);
-      }
-    };
+      console.log('✅ Trade requests récupérés et groupés :', grouped.length);
+    } catch (err) {
+      console.error('❌ Erreur fetch trades :', err);
+      setError('Erreur lors de la récupération des échanges');
+    } finally {
+      setLoading(false);
+    }
+  }, [user, setTradeGroups]);
 
+  useEffect(() => {
     fetchTrades();
-  }, [user]);
+  }, [fetchTrades]);
 
-  return { loading, error };
+  return { loading, error, refetch: fetchTrades };
 };
 
 export default useFetchTradeRequests;

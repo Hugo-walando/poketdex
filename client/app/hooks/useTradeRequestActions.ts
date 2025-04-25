@@ -5,10 +5,12 @@ import { useUserStore } from '@/app/store/useUserStore';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import useFetchTradeRequests from './useFetchTradeRequests';
 
 export function useTradeRequestActions() {
   const { user } = useUserStore();
   const { updateTradeStatus, markAsSent } = useTradeRequestStore();
+  const { refetch } = useFetchTradeRequests();
 
   const respondToTradeRequest = async (
     tradeRequestId: string,
@@ -51,6 +53,7 @@ export function useTradeRequestActions() {
         markAsSent(tradeRequestId, user.id); // On met à jour dans le store en local
       }
       toast.success('Carte marquée comme envoyée ✅');
+      await refetch(); // On refait un fetch pour mettre à jour l'état
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       const backendMessage =
