@@ -143,7 +143,6 @@ const updateTradeRequest = async (req, res) => {
     }
 
     tradeRequest.status = status;
-    tradeRequest.is_active = false;
 
     await tradeRequest.save();
     if (['declined', 'cancelled'].includes(status)) {
