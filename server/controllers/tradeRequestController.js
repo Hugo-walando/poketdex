@@ -231,9 +231,85 @@ const markTradeRequestAsSent = async (req, res) => {
   }
 };
 
+const createMultipleTradeRequests = async (req, res) => {
+  try {
+    const { matchIds } = req.body;
+    const senderId = req.user._id;
+
+    if (!Array.isArray(matchIds) || matchIds.length === 0) {
+      return res.status(400).json({ message: 'Aucun match fourni.' });
+    }
+
+    const trades = [];
+
+    for (const matchId of matchIds) {
+      const match = await Match.findById(matchId).populate(
+        'user_1 user_2 card_offered_by_user_1 card_offered_by_user_2',
+      );
+
+      if (!match) {
+        return res.status(404).json({ message: 'Match non trouvé.' });
+        continue;
+      }
+
+      const sender = match.user_1._id.equals(senderId)
+        ? match.user_1
+        : match.user_2;
+      const receiver = match.user_1._id.equals(senderId)
+        ? match.user_2
+        : match.user_1;
+
+      const offered_card = match.user_1._id.equals(senderId)
+        ? match.card_offered_by_user_1
+        : match.card_offered_by_user_2;
+
+      const requested_card = match.user_1._id.equals(senderId)
+        ? match.card_offered_by_user_2
+        : match.card_offered_by_user_1;
+
+      const existing = await TradeRequest.findOne({
+        sender: sender._id,
+        receiver: receiver._id,
+        card_offered: offered_card._id,
+        card_requested: requested_card._id,
+        status: { $in: ['pending', 'accepted'] },
+      });
+
+      if (existing) continue;
+
+      const alreadyActive = await TradeRequest.findOne({
+        $or: [
+          { sender: sender._id, receiver: receiver._id },
+          { sender: receiver._id, receiver: sender._id },
+        ],
+        is_active: true,
+      });
+
+      const isActive = !alreadyActive;
+
+      const newTrade = await TradeRequest.create({
+        sender: sender._id,
+        receiver: receiver._id,
+        card_offered: offered_card._id,
+        card_requested: requested_card._id,
+        is_active: isActive,
+      });
+
+      await Match.deleteOne({ _id: matchId });
+      trades.push(newTrade);
+    }
+
+    res.status(201).json(trades);
+  } catch (err) {
+    console.error('Erreur création multiple TradeRequests :', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
 module.exports = {
   createTradeRequest,
   updateTradeRequest,
   getMyTradeRequests,
   markTradeRequestAsSent,
+  createMultipleTradeRequests,
 };
