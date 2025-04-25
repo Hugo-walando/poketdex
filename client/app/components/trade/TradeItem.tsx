@@ -33,6 +33,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const isPending = trade.status === 'pending';
   const isCompleted = trade.status === 'completed';
   const isCancelled = trade.status === 'cancelled';
+  const isDeclined = trade.status === 'declined';
   const isActive = trade.is_active;
 
   const canMarkAsSent =
@@ -133,7 +134,18 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
         </div>
       )}
 
-      {!isActive && (
+      {isDeclined && (
+        <div className='absolute inset-0 bg-redalert/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-red-base text-lg font-bold'>
+              Échange refusé
+            </span>
+            <CircleX className='text-redalert w-8 h-8' />
+          </div>
+        </div>
+      )}
+
+      {!isActive && !isCompleted && !isCancelled && !isDeclined && (
         <div className='absolute inset-0 bg-gray-200/60 flex items-start justify-start p-2 z-10 rounded-xl '>
           <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
             <span className='text-gray-base text-lg font-bold'>
