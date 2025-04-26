@@ -30,6 +30,11 @@ const useFetchTradeRequests = () => {
         },
       });
 
+      if (!user?.id) {
+        setError('Identifiant utilisateur manquant.');
+        return;
+      }
+
       const grouped = groupTradeRequestsByUser(res.data, user.id);
       setTradeGroups(grouped);
 
