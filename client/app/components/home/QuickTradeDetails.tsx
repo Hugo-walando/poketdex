@@ -2,7 +2,7 @@
 
 import { ListedCard } from '@/app/types';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
@@ -31,6 +31,10 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       myCardOfferedId: selectedWishlistCardId,
     });
   };
+
+  useEffect(() => {
+    setSelectedWishlistCardId(null);
+  }, [card]);
 
   if (loading) {
     return (
