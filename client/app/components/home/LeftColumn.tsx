@@ -5,11 +5,12 @@ import SetFilterDropdown from '../ui/SetFilterDropDown';
 import RarityFilter from '../ui/RarityFilter';
 import type { ListedCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
-import { useEffect, useState } from 'react';
-import { mockListedCards } from '@/app/data/mockListedCards';
+import { useState } from 'react';
 import ListedCardItem from './ListedCardItem';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
+import { useUserStore } from '@/app/store/useUserStore';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -17,19 +18,13 @@ interface LeftColumnProps {
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const sets = useGlobalData((s) => s.sets);
+  const user = useUserStore((s) => s.user);
 
-  const [listedCards, setListedCards] = useState<ListedCard[]>([]);
+  const { allListedCards } = useAllListedCardsStore();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
-
-  useEffect(() => {
-    // Plus tard un fetch ici
-    // fetch('/api/listed-cards').then(...)
-
-    setListedCards(mockListedCards); // pour l’instant on simule
-  }, []);
 
   // Reset Filters
   const hasActiveFilters =
@@ -51,8 +46,16 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     );
   };
 
-  const filteredListedCards = listedCards.filter((item) => {
+  const filteredListedCards = allListedCards.filter((item) => {
     const card = item.card;
+    console.log('Item:', item);
+    console.log('Item User ID:', item.user._id);
+    console.log('Current User ID:', user?.id);
+
+    if (item.user._id === user?.id) {
+      console.log("🚫 Exclure la carte de l'utilisateur");
+      return false; // 👈 on exclut nos propres cartes
+    }
 
     const matchSearch =
       searchQuery === '' ||

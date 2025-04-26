@@ -4,7 +4,7 @@ export const mockListedCards: ListedCard[] = [
   {
     _id: '1',
     user: {
-      id: 'u1',
+      _id: 'u1',
       username: 'Sacha',
       profile_picture: '/testimgs/avatars/Av1.png',
       friend_code: '1234-5678-9012',
@@ -25,7 +25,7 @@ export const mockListedCards: ListedCard[] = [
   {
     _id: '2',
     user: {
-      id: 'u2',
+      _id: 'u2',
       username: 'Ondine',
       profile_picture: '/testimgs/avatars/Av2.png',
       friend_code: '1234-5678-9012',
@@ -46,7 +46,7 @@ export const mockListedCards: ListedCard[] = [
   {
     _id: '3',
     user: {
-      id: 'u3',
+      _id: 'u3',
       username: 'Pierre',
       profile_picture: '/testimgs/avatars/Av3.png',
       friend_code: '1234-5678-9012',

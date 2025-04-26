@@ -16,7 +16,8 @@ export function groupMatchesByUser(
         user: {
           id: opponent._id,
           username: opponent.username,
-          profile_picture: '/testimgs/avatars/Av1.png',
+          profile_picture:
+            opponent.profile_picture || '/testimgs/avatars/Av1.png', // CHANGE THIS TO opponent.profile_picture
         },
         trades: [],
       };
