@@ -17,7 +17,7 @@ export function groupTradeRequestsByUser(
     if (!groups[otherUser._id]) {
       groups[otherUser._id] = {
         user: {
-          id: otherUser._id,
+          _id: otherUser._id,
           username: otherUser.username,
           profile_picture:
             otherUser.profile_picture || '/testimgs/avatars/Av1.png',
