@@ -23,7 +23,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
     if (!selectedWishlistCardId) return;
 
     console.log({
-      toUserId: card.user.id,
+      toUserId: card.user._id,
       listedCardId: card.card._id,
       myCardOfferedId: selectedWishlistCardId,
     });
@@ -74,7 +74,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
 
       <div className='flex items-center justify-center gap-2'>
         <Image
-          src={card.user.profile_picture}
+          src={card.user.profile_picture || '/testimgs/avatars/Av1.png'}
           alt={card.user.username}
           width={32}
           height={32}

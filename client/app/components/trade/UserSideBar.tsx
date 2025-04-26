@@ -22,7 +22,7 @@ export default function UserSidebar({
             key={user.id}
             id={user.id}
             username={user.username}
-            profilePicture={user.profile_picture}
+            profilePicture={user.profile_picture || '/testimgs/avatars/Av1.png'}
             isSelected={selectedUserId === user.id}
             onSelect={onSelectUser}
           />

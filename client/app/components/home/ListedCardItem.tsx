@@ -35,7 +35,7 @@ export default function ListedCardItem({
 
       <div className='flex items-center gap-2 mt-2 pl-1'>
         <Image
-          src={data.user.profile_picture}
+          src={data.user.profile_picture || '/testimgs/avatars/Av1.png'}
           alt={data.user.username}
           width={24}
           height={24}
