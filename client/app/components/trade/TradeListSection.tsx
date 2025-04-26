@@ -1,11 +1,11 @@
 'use client';
 
 import TradeItem from './TradeItem';
-import { TradeRequest, User } from '@/app/types';
+import { TradeRequest, AppUser } from '@/app/types';
 import CloseButton from '../ui/CloseButton';
 
 interface TradeListSectionProps {
-  selectedUser: User;
+  selectedUser: AppUser;
   trades: TradeRequest[];
   onBack: () => void;
 }
@@ -40,7 +40,7 @@ export default function TradeListSection({
             <TradeItem
               key={trade._id}
               trade={trade}
-              selectedUserId={selectedUser.id}
+              selectedUserId={selectedUser._id}
             />
           ))}
         </div>
