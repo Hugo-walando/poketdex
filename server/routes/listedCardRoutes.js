@@ -16,6 +16,6 @@ router.delete(
 // Obtenir toutes les cartes listées de l’utilisateur
 router.get('/me', authenticateToken, listedCardController.getListedCards);
 
-router.get('');
+router.get('/', authenticateToken, listedCardController.getAllListedCards);
 
 module.exports = router;

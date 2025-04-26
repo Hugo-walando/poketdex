@@ -11,6 +11,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProtectedPage from './components/auth/ProtectedPage';
 import ProtectedLayout from './components/auth/ProtectedLayout';
 import useFetchMatches from './hooks/useFetchMatches';
+import AllListedCardsLoader from './components/data/AllListedCardsLoader';
 
 export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
@@ -21,6 +22,7 @@ export default function Home() {
   return (
     <ProtectedPage>
       <ProtectedLayout>
+        <AllListedCardsLoader />
         {/* Mobile : bouton pour changer de mode */}
         {isMobile && viewMode === 'default' && (
           <button
