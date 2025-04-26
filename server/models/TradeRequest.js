@@ -24,13 +24,13 @@ const tradeRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'accepted', 'declined', 'cancelled'],
+      enum: ['pending', 'accepted', 'declined', 'cancelled', 'completed'],
       default: 'pending',
     },
     is_active: { type: Boolean, default: true },
+    completed: { type: Boolean, default: false },
     sent_by_sender: { type: Boolean, default: false },
     sent_by_receiver: { type: Boolean, default: false },
-    completed: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

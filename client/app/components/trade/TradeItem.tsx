@@ -8,6 +8,8 @@ import { cn } from '@/app/utils/cn';
 import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
+import { Check, CheckCircle, CircleX } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface TradeItemProps {
   trade: TradeRequest;
@@ -17,14 +19,25 @@ interface TradeItemProps {
 export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   console.log('Selected user ID:', selectedUserId);
   const currentUserId = useUserStore((state) => state.user?.id);
-  const { acceptTradeRequest, declineTradeRequest, markTradeRequestAsSent } =
-    useTradeRequestActions();
+  const {
+    acceptTradeRequest,
+    declineTradeRequest,
+    markTradeRequestAsSent,
+    cancelTradeRequest,
+  } = useTradeRequestActions();
   const [loadingAction, setLoadingAction] = useState(false);
   const [loadingMarkSent, setLoadingMarkSent] = useState(false);
 
   const isSender = trade.sender._id === currentUserId;
   const isReceiver = trade.receiver._id === currentUserId;
   const isPending = trade.status === 'pending';
+  const isCompleted = trade.status === 'completed';
+  const isCancelled = trade.status === 'cancelled';
+  const isDeclined = trade.status === 'declined';
+  const isActive = trade.is_active;
+
+  const canMarkAsSent =
+    trade.is_active && trade.status === 'accepted' && !trade.completed;
 
   const receivedCard = isSender ? trade.card_requested : trade.card_offered;
   const offeredCard = isSender ? trade.card_offered : trade.card_requested;
@@ -33,6 +46,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   const sentByOther = isSender ? trade.sent_by_receiver : trade.sent_by_sender;
 
   const handleAccept = async () => {
+    if (!isReceiver) {
+      toast.error(
+        "Vous ne pouvez pas accepter cet échange car vous n'êtes pas le receveur.",
+      );
+      return;
+    }
     try {
       setLoadingAction(true);
       await acceptTradeRequest(trade._id);
@@ -42,6 +61,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   };
 
   const handleDecline = async () => {
+    if (!isReceiver) {
+      toast.error(
+        "Vous ne pouvez pas refuser cet échange car vous n'êtes pas le receveur.",
+      );
+      return;
+    }
     try {
       setLoadingAction(true);
       await declineTradeRequest(trade._id);
@@ -51,6 +76,12 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   };
 
   const handleMarkAsSent = async () => {
+    if (!canMarkAsSent) {
+      toast.error(
+        "Vous ne pouvez pas marquer cet échange comme envoyé car il n'est pas actif ou a déjà été complété.",
+      );
+      return;
+    }
     try {
       setLoadingMarkSent(true);
       await markTradeRequestAsSent(trade._id);
@@ -58,11 +89,19 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       setLoadingMarkSent(false);
     }
   };
+  const handleCancel = async () => {
+    try {
+      setLoadingAction(true);
+      await cancelTradeRequest(trade._id);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
 
   return (
     <div
       className={cn(
-        'bg-white rounded-xl p-2 xl:p-4 flex flex-col gap-2 transition-all shadow-base border-2',
+        'bg-white rounded-xl p-2 xl:p-4 flex flex-col gap-2 transition-all shadow-base border-2 relative',
         trade.is_active
           ? 'border-primarygreen ring-2 ring-primarygreen'
           : 'border-transparent',
@@ -71,6 +110,49 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
       {/* Badge échange actif */}
       {trade.is_active && (
         <span className='text-green-base mb-1'>Échange en cours</span>
+      )}
+
+      {isCompleted && (
+        <div className='absolute inset-0 bg-primarygreen/20 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-green-base text-lg font-bold'>
+              Échange complété
+            </span>
+            <CheckCircle className='text-primarygreen w-8 h-8' />
+          </div>
+        </div>
+      )}
+
+      {isCancelled && (
+        <div className='absolute inset-0 bg-redalert/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-red-base text-lg font-bold'>
+              Échange annulé
+            </span>
+            <CircleX className='text-redalert w-8 h-8' />
+          </div>
+        </div>
+      )}
+
+      {isDeclined && (
+        <div className='absolute inset-0 bg-redalert/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-red-base text-lg font-bold'>
+              Échange refusé
+            </span>
+            <CircleX className='text-redalert w-8 h-8' />
+          </div>
+        </div>
+      )}
+
+      {!isActive && !isCompleted && !isCancelled && !isDeclined && (
+        <div className='absolute inset-0 bg-gray-200/60 flex items-start justify-start p-2 z-10 rounded-xl '>
+          <div className='absolute bg-white rounded-xl p-3 flex items-center justify-center gap-3 shadow-base'>
+            <span className='text-gray-base text-lg font-bold'>
+              Échange en attente ...
+            </span>
+          </div>
+        </div>
       )}
 
       <div className='flex items-center justify-between'>
@@ -138,10 +220,11 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
             {trade.status === 'accepted' && 'Accepté ✅'}
             {trade.status === 'declined' && 'Refusé ❌'}
             {trade.status === 'cancelled' && 'Annulé 🚫'}
+            {trade.status === 'completed' && 'Échange complété ✅'}
           </span>
 
           {/* Si pending + receiver -> montrer les boutons */}
-          {isReceiver && isPending && (
+          {isReceiver && isPending && isActive && (
             <div className='flex gap-2 mt-2'>
               <button
                 onClick={handleAccept}
@@ -161,7 +244,7 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           )}
 
           {/* Si accepté → montrer "Marquer comme envoyé" */}
-          {trade.status === 'accepted' && !sentByMe && (
+          {canMarkAsSent && (
             <div className='flex gap-2 mt-2'>
               <button
                 onClick={handleMarkAsSent}
@@ -176,18 +259,22 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           {/* Status carte envoyée */}
           {trade.status === 'accepted' && (
             <div className='flex flex-col text-xs gap-1 mt-2'>
-              <div>
+              <div className='flex items-center gap-1'>
                 Vous :{' '}
                 {sentByMe ? (
-                  <span className='text-green-600'>✔️ Envoyée</span>
+                  <span className='text-green-600 flex items-center gap-1'>
+                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                  </span>
                 ) : (
                   <span className='text-gray-500'>❌ Non envoyée</span>
                 )}
               </div>
-              <div>
+              <div className='flex items-center gap-1'>
                 {isSender ? 'Receveur' : 'Envoyeur'} :{' '}
                 {sentByOther ? (
-                  <span className='text-green-600'>✔️ Envoyée</span>
+                  <span className='text-green-600 flex items-center gap-1'>
+                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                  </span>
                 ) : (
                   <span className='text-gray-500'>❌ Non envoyée</span>
                 )}
@@ -197,9 +284,21 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
         </div>
 
         {/* Qui est qui */}
-        <span className='text-xs'>
-          {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
-        </span>
+        <div className='flex flex-col items-end gap-1'>
+          <span className='text-xs'>
+            {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
+          </span>
+          {(isSender || isReceiver) &&
+            (trade.status === 'pending' || trade.status === 'accepted') && (
+              <button
+                onClick={handleCancel}
+                disabled={loadingAction}
+                className='px-4 py-1 rounded-full bg-redalert text-white text-sm hover:opacity-90 transition'
+              >
+                {loadingAction ? '...' : 'Annuler'}
+              </button>
+            )}
+        </div>
       </div>
     </div>
   );

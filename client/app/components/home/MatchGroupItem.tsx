@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import MatchItem from './MatchItem';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import useCreateTradeRequests from '@/app/hooks/useCreateTradeRequest';
+// import useCreateTradeRequests from '@/app/hooks/useCreateTradeRequest';
+import useBatchTradeCreation from '@/app/hooks/useBatchTradeCreation';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
@@ -15,7 +16,8 @@ interface MatchGroupItemProps {
 export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMatchIds, setSelectedMatchIds] = useState<string[]>([]);
-  const { createRequests, loading } = useCreateTradeRequests();
+  // const { createRequests, loading } = useCreateTradeRequests();
+  const { createTradesFromMatches, loading } = useBatchTradeCreation();
 
   const toggleMatchSelection = (id: string) => {
     setSelectedMatchIds((prev) =>
@@ -25,7 +27,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
 
   const handleSendRequests = async () => {
     if (selectedMatchIds.length === 0) return;
-    await createRequests(selectedMatchIds);
+    await createTradesFromMatches(selectedMatchIds);
     setSelectedMatchIds([]); // 🧹 reset après envoi
     setIsOpen(false); // 🧹 referme le groupe pour feedback visuel
   };

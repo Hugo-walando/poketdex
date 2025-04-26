@@ -17,6 +17,12 @@ router.patch(
   tradeRequestController.markTradeRequestAsSent,
 );
 
+router.post(
+  '/batch',
+  authenticateToken,
+  tradeRequestController.createMultipleTradeRequests,
+);
+
 router.get('/me', authenticateToken, tradeRequestController.getMyTradeRequests);
 
 module.exports = router;

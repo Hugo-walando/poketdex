@@ -55,6 +55,9 @@ const addListedCard = async (req, res) => {
     console.log('✅ Carte ajoutée à la liste');
 
     // 🧠 Lancer la recherche de match
+    console.log(
+      `🔍 Recherche de match pour l’utilisateur : ${userId} et la carte : ${cardId}`,
+    );
     await findAndCreateMatch(userId, cardId, 'listed');
 
     await listed.populate('card');

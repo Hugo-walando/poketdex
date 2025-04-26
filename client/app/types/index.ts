@@ -142,11 +142,11 @@ export interface TradeRequest {
     rarity: number;
     set_code: string;
   };
-  status: 'pending' | 'accepted' | 'declined' | 'cancelled';
+  status: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed';
   is_active: boolean;
+  completed: boolean;
   sent_by_sender: boolean;
   sent_by_receiver: boolean;
-  completed: boolean;
   createdAt: string;
   updatedAt: string;
 }

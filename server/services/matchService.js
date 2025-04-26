@@ -11,6 +11,7 @@ async function isValidTrade(user1Card, user2Card) {
 
 async function findAndCreateMatch(userId, cardId, mode = 'listed') {
   try {
+    console.log('🔧 Recherche de match pour l’utilisateur :', userId);
     if (mode === 'listed') {
       const currentUserCard = await ListedCard.findOne({
         user: userId,
@@ -50,7 +51,7 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
           );
           if (sameRarity) {
             console.log(
-              `✅ Matchpotential : ${userWantsTheirCard.card.name} et ${listedEntry.card.name} ont la même rareté`,
+              `✅ Matchpotential : ${userWantsTheirCard.card.name} et ${theirCard.card.name} ont la même rareté`,
             );
           }
           if (!sameRarity) continue;

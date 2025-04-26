@@ -9,15 +9,14 @@ import { useEffect, useState } from 'react';
 import { mockListedCards } from '@/app/data/mockListedCards';
 import ListedCardItem from './ListedCardItem';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
-import Loader from '../ui/Loader';
-import useFetchSets from '@/app/hooks/useFetchSets';
+import { useGlobalData } from '@/app/store/useGlobalData';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
 }
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
-  const { sets: Sets, loading: setsLoading, error: setsError } = useFetchSets();
+  const sets = useGlobalData((s) => s.sets);
 
   const [listedCards, setListedCards] = useState<ListedCard[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -69,11 +68,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     return matchSearch && matchSet && matchRarity;
   });
 
-  if (setsLoading) return <Loader />;
-
-  if (setsError)
-    return <div className='text-center mt-10 text-red-500'>{setsError}</div>;
-
   return (
     <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6'>
       <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>
@@ -84,11 +78,11 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       />
       <div className='w-full my-6 flex gap-2 md:gap-4'>
         <FilterDropdownProvider>
-          {Sets.length > 0 && (
+          {sets.length > 0 && (
             <SetFilterDropdown
               selectedSets={selectedSets}
               onToggleSet={toggleSet}
-              sets={Sets}
+              sets={sets}
             />
           )}
           <RarityFilter

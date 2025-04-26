@@ -10,6 +10,16 @@ interface TradeListSectionProps {
   onBack: () => void;
 }
 
+// Méthode locale pour trier les trades (actives en haut, triées par date ensuite)
+const sortTradesByActiveStatus = (trades: TradeRequest[]) => {
+  return [...trades].sort((a, b) => {
+    if (a.is_active && !b.is_active) return -1;
+    if (!a.is_active && b.is_active) return 1;
+
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+};
+
 export default function TradeListSection({
   selectedUser,
   trades,
@@ -26,7 +36,7 @@ export default function TradeListSection({
           className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
         />
         <div className='space-y-4'>
-          {trades.map((trade) => (
+          {sortTradesByActiveStatus(trades).map((trade) => (
             <TradeItem
               key={trade._id}
               trade={trade}
