@@ -32,6 +32,11 @@ const useFetchMatches = () => {
         });
 
         // 🆕 Ici : grouper les matchs récupérés avant de set
+
+        if (!user?.id) {
+          setError('Identifiant utilisateur manquant.');
+          return;
+        }
         const groupedMatches = groupMatchesByUser(res.data, user.id);
 
         setMatches(groupedMatches); // 🆕 on stocke directement les MatchGroup
