@@ -19,7 +19,7 @@ const useFetchListedCards = () => {
 
       try {
         const response = await axiosClient.get<ListedCard[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards/me`,
           {
             headers: {
               Authorization: `Bearer ${user.accessToken}`,
