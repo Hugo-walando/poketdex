@@ -16,4 +16,9 @@ router.delete(
 // Récupérer la wishlist de l’utilisateur
 router.get('/me', authenticateToken, wishlistCardController.getWishlistCards);
 
+router.get(
+  '/user/:userId',
+  wishlistCardController.getWishlistCardsByUserAndRarity,
+);
+
 module.exports = router;
