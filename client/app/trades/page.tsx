@@ -17,7 +17,7 @@ export default function TradePage() {
   const { loading } = useFetchTradeRequests(); // 👈 fetch trades dès l'arrivée
 
   const selectedGroup =
-    tradeGroups.find((group) => group.user.id === selectedUserId) || null;
+    tradeGroups.find((group) => group.user._id === selectedUserId) || null;
 
   if (loading) {
     return (

@@ -155,7 +155,7 @@ export interface TradeRequest {
 
 export interface TradeGroup {
   user: {
-    id: string;
+    _id: string;
     username: string;
     profile_picture: string;
     friend_code: string;

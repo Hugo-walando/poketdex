@@ -3,7 +3,7 @@
 import UserItem from './UserItem';
 
 interface UserSidebarProps {
-  users: { id: string; username: string; profile_picture: string }[];
+  users: { _id: string; username: string; profile_picture: string }[];
   selectedUserId: string | null;
   onSelectUser: (id: string) => void;
 }
@@ -19,11 +19,11 @@ export default function UserSidebar({
       <div className='flex flex-col gap-2 p-2 md:p-0'>
         {users.map((user) => (
           <UserItem
-            key={user.id}
-            id={user.id}
+            key={user._id}
+            id={user._id}
             username={user.username}
             profilePicture={user.profile_picture || '/testimgs/avatars/Av1.png'}
-            isSelected={selectedUserId === user.id}
+            isSelected={selectedUserId === user._id}
             onSelect={onSelectUser}
           />
         ))}
