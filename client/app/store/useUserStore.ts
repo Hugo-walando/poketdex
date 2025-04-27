@@ -1,14 +1,15 @@
 // stores/useUserStore.ts
+import { User } from 'next-auth';
 import { create } from 'zustand';
 
-interface User {
-  id: string;
-  email: string;
-  username?: string;
-  friend_code?: string;
-  accessToken?: string;
-  // Tu peux ajouter d'autres champs ici
-}
+// interface User {
+//   id: string;
+//   email: string;
+//   username?: string;
+//   friend_code?: string;
+//   accessToken?: string;
+//   // Tu peux ajouter d'autres champs ici
+// }
 
 interface UserState {
   user: User | null;

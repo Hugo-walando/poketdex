@@ -131,8 +131,36 @@ const getListedCards = async (req, res) => {
   }
 };
 
+const getAllListedCards = async (req, res) => {
+  try {
+    const listedCards = await ListedCard.find()
+      .populate({
+        path: 'card',
+      })
+      .populate({
+        path: 'user',
+        select: 'username profile_picture friend_code wishlist_cards', // Ajout du champ
+        populate: {
+          path: 'wishlist_cards', // ➔ On va chercher les wishlists
+          populate: {
+            path: 'card', // ➔ Et pour chaque wishlist, on va chercher les infos de la carte liée
+          },
+        },
+      });
+
+    res.status(200).json(listedCards);
+  } catch (err) {
+    console.error(
+      'Erreur lors de la récupération de toutes les cartes listées :',
+      err,
+    );
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
 module.exports = {
   addListedCard,
   removeListedCard,
   getListedCards,
+  getAllListedCards,
 };

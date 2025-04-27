@@ -1,10 +1,12 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import axiosClient from '@/lib/axios';
-import { useUserStore } from '@/app/store/useUserStore';
-import toast from 'react-hot-toast';
 import { ListedCard } from '@/app/types';
+import toast from 'react-hot-toast';
+import { useUserStore } from '@/app/store/useUserStore';
 
-const useFetchListedCards = () => {
+const useFetchAllListedCards = () => {
   const user = useUserStore((state) => state.user);
   const [listedCards, setListedCards] = useState<ListedCard[]>([]);
   const [loading, setLoading] = useState(false);
@@ -13,13 +15,13 @@ const useFetchListedCards = () => {
   useEffect(() => {
     if (!user?.accessToken) return;
 
-    const fetchListedCards = async () => {
+    const fetchAllListedCards = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const response = await axiosClient.get<ListedCard[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards/me`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards`,
           {
             headers: {
               Authorization: `Bearer ${user.accessToken}`,
@@ -28,20 +30,18 @@ const useFetchListedCards = () => {
         );
         setListedCards(response.data);
       } catch (err) {
-        if (err) {
-          console.error('❌ Error fetching listed cards:', err);
-        }
+        console.error('❌ Error fetching all listed cards:', err);
         setError('Erreur lors du chargement des cartes listées.');
-        toast.error('❌ Impossible de charger les cartes listées.');
+        toast.error('❌ Impossible de charger toutes les cartes listées.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchListedCards();
+    fetchAllListedCards();
   }, [user?.accessToken]);
 
   return { listedCards, loading, error };
 };
 
-export default useFetchListedCards;
+export default useFetchAllListedCards;

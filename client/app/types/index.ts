@@ -10,7 +10,7 @@ export interface Card {
 }
 
 export interface Set {
-  id: string;
+  _id: string;
   code: string;
   name: string;
   color: string;
@@ -21,7 +21,7 @@ export interface Set {
 
 export interface ListedCard {
   _id: string;
-  user: User;
+  user: AppUser;
   card: Card;
   createdAt: string;
   updatedAt: string;
@@ -29,7 +29,7 @@ export interface ListedCard {
 
 export interface WishlistCard {
   _id: string;
-  user: User;
+  user: AppUser;
   card: Card;
   createdAt: string;
   updatedAt: string;
@@ -46,6 +46,7 @@ export interface Match {
     friend_code: string;
     updatedAt: string;
     username: string;
+    profile_picture: string;
     role: 'user' | 'admin';
     is_connected: boolean;
   };
@@ -58,6 +59,7 @@ export interface Match {
     friend_code: string;
     updatedAt: string;
     username: string;
+    profile_picture: string;
     role: 'user' | 'admin';
     is_connected: boolean;
   };
@@ -83,7 +85,7 @@ export interface Match {
 }
 
 export interface MatchTrade {
-  id: string;
+  _id: string;
   offered_card: {
     _id: string;
     official_id: string;
@@ -105,7 +107,7 @@ export interface MatchTrade {
 
 export interface MatchGroup {
   user: {
-    id: string;
+    _id: string;
     username: string;
     profile_picture: string;
   };
@@ -153,7 +155,7 @@ export interface TradeRequest {
 
 export interface TradeGroup {
   user: {
-    id: string;
+    _id: string;
     username: string;
     profile_picture: string;
     friend_code: string;
@@ -161,9 +163,10 @@ export interface TradeGroup {
   trades: TradeRequest[];
 }
 
-export interface User {
-  id: string;
+export interface AppUser {
+  _id: string;
   username: string;
   profile_picture: string;
+  wishlist_cards?: WishlistCard[];
   friend_code: string;
 }

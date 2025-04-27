@@ -7,6 +7,7 @@ import MatchItem from './MatchItem';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 // import useCreateTradeRequests from '@/app/hooks/useCreateTradeRequest';
 import useBatchTradeCreation from '@/app/hooks/useBatchTradeCreation';
+import { useRouter } from 'next/navigation';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
@@ -19,6 +20,8 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
   // const { createRequests, loading } = useCreateTradeRequests();
   const { createTradesFromMatches, loading } = useBatchTradeCreation();
 
+  const router = useRouter();
+
   const toggleMatchSelection = (id: string) => {
     setSelectedMatchIds((prev) =>
       prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
@@ -30,6 +33,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
     await createTradesFromMatches(selectedMatchIds);
     setSelectedMatchIds([]); // 🧹 reset après envoi
     setIsOpen(false); // 🧹 referme le groupe pour feedback visuel
+    router.push(`/trades?user=${group.user._id}`); // 🧭 redirige vers la page des échanges
   };
 
   return (
@@ -40,7 +44,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
       >
         <div className='flex items-center gap-3'>
           <Image
-            src={group.user.profile_picture}
+            src={group.user.profile_picture || '/testimgs/avatars/Av1.png'}
             alt='USERNAME'
             width={32}
             height={32}
@@ -77,9 +81,9 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
           <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 items-center'>
             {group.trades.map((match) => (
               <MatchItem
-                key={match.id}
+                key={match._id}
                 match={match}
-                isSelected={selectedMatchIds.includes(match.id)}
+                isSelected={selectedMatchIds.includes(match._id)}
                 onSelect={toggleMatchSelection}
                 sets={sets} // 🆕 passe la liste des Sets ici
               />

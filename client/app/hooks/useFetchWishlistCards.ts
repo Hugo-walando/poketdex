@@ -19,7 +19,7 @@ const useFetchWishlistCards = () => {
 
       try {
         const response = await axiosClient.get<WishlistCard[]>(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/wishlist-cards`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/wishlist-cards/me`,
           {
             headers: {
               Authorization: `Bearer ${user.accessToken}`,

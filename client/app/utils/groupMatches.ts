@@ -14,16 +14,17 @@ export function groupMatchesByUser(
     if (!groups[opponent._id]) {
       groups[opponent._id] = {
         user: {
-          id: opponent._id,
+          _id: opponent._id,
           username: opponent.username,
-          profile_picture: '/testimgs/avatars/Av1.png',
+          profile_picture:
+            opponent.profile_picture || '/testimgs/avatars/Av1.png', // CHANGE THIS TO opponent.profile_picture
         },
         trades: [],
       };
     }
 
     groups[opponent._id].trades.push({
-      id: match._id,
+      _id: match._id,
       offered_card: isCurrentUser1
         ? match.card_offered_by_user_1
         : match.card_offered_by_user_2,

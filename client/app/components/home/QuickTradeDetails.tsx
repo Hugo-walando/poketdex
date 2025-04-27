@@ -1,13 +1,14 @@
 'use client';
 
-import { mockWishlists } from '@/app/data/mockWishlists';
 import { ListedCard } from '@/app/types';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
 import CloseButton from '../ui/CloseButton';
+import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickTrade';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   card: ListedCard;
@@ -15,19 +16,37 @@ interface Props {
 }
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
+  const router = useRouter();
+
   const [selectedWishlistCardId, setSelectedWishlistCardId] = useState<
     string | null
   >(null);
 
+  const { wishlistCards, loading } = useFetchWishlistForQuickTrade(
+    card.user._id,
+    card.card.rarity,
+  );
   const handleSendRequest = () => {
     if (!selectedWishlistCardId) return;
-
     console.log({
-      toUserId: card.user.id,
+      toUserId: card.user._id,
       listedCardId: card.card._id,
       myCardOfferedId: selectedWishlistCardId,
     });
+    router.push(`/trades?user=${card.user._id}`); // 🧭 redirige vers la page des échanges
   };
+
+  useEffect(() => {
+    setSelectedWishlistCardId(null);
+  }, [card]);
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <p className='text-gray-xl'>Chargement...</p>
+      </div>
+    );
+  }
 
   return (
     <div className='p-4 rounded-xl'>
@@ -74,7 +93,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
 
       <div className='flex items-center justify-center gap-2'>
         <Image
-          src={card.user.profile_picture}
+          src={card.user.profile_picture || '/testimgs/avatars/Av1.png'}
           alt={card.user.username}
           width={32}
           height={32}
@@ -88,7 +107,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </h3>
       <div className='max-h-[20vh] overflow-y-auto'>
         <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
-          {mockWishlists.map((wish) => (
+          {wishlistCards.map((wish) => (
             <div
               key={wish._id}
               className='flex items-center justify-center hover:scale-110 transition-all hover:cursor-pointer'

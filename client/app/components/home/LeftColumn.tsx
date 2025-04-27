@@ -3,13 +3,14 @@
 import SearchBar from '../ui/SearchBar';
 import SetFilterDropdown from '../ui/SetFilterDropDown';
 import RarityFilter from '../ui/RarityFilter';
-import type { ListedCard } from '@/app/types/index';
+import type { ListedCard, WishlistCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
-import { useEffect, useState } from 'react';
-import { mockListedCards } from '@/app/data/mockListedCards';
+import { useState } from 'react';
 import ListedCardItem from './ListedCardItem';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
+import { useUserStore } from '@/app/store/useUserStore';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -17,19 +18,20 @@ interface LeftColumnProps {
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const sets = useGlobalData((s) => s.sets);
+  const user = useUserStore((s) => s.user);
 
-  const [listedCards, setListedCards] = useState<ListedCard[]>([]);
+  const { allListedCards } = useAllListedCardsStore();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
-  useEffect(() => {
-    // Plus tard un fetch ici
-    // fetch('/api/listed-cards').then(...)
-
-    setListedCards(mockListedCards); // pour l’instant on simule
-  }, []);
+  const hasWishlistOfSameRarity = (
+    wishlistCards: WishlistCard[] = [],
+    rarity: number,
+  ) => {
+    return wishlistCards.some((wish) => wish.card.rarity === rarity);
+  };
 
   // Reset Filters
   const hasActiveFilters =
@@ -51,9 +53,15 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     );
   };
 
-  const filteredListedCards = listedCards.filter((item) => {
+  const filteredListedCards = allListedCards.filter((item) => {
     const card = item.card;
 
+    // 1. Exclure nos propres cartes
+    if (item.user._id === user?.id) {
+      return false;
+    }
+
+    // 2. Filtrer par search, set, rarity
     const matchSearch =
       searchQuery === '' ||
       card.name.toLowerCase().includes(searchQuery) ||
@@ -65,9 +73,16 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     const matchRarity =
       selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
 
-    return matchSearch && matchSet && matchRarity;
-  });
+    // 3. Filtrer sur la wishlist de même rareté
+    console.log('item.user', item.user.wishlist_cards);
+    const wishlistAvailable = item.user.wishlist_cards || [];
+    const hasSameRarityWishlist = hasWishlistOfSameRarity(
+      wishlistAvailable,
+      card.rarity,
+    );
 
+    return matchSearch && matchSet && matchRarity && hasSameRarityWishlist;
+  });
   return (
     <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6'>
       <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>

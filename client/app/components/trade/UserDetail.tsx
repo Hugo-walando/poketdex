@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { User } from '@/app/types'; // Ton type utilisateur
+import { AppUser } from '@/app/types'; // Ton type utilisateur
 import FriendCode from './FriendCode';
 
 interface UserDetailProps {
-  user: User;
+  user: AppUser;
 }
 
 export default function UserDetail({ user }: UserDetailProps) {
@@ -13,7 +13,7 @@ export default function UserDetail({ user }: UserDetailProps) {
     <div className='bg-white shadow-base rounded-xl p-4 flex flex-col gap-4'>
       <div className='flex lg:flex-col lg:justify-center items-center gap-2'>
         <Image
-          src={user.profile_picture}
+          src={user.profile_picture || '/testimgs/avatars/Av1.png'}
           alt={user.username}
           width={0}
           height={0}

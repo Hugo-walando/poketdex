@@ -3,6 +3,7 @@ const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
 const Match = require('../models/Match');
 const { findAndCreateMatch } = require('../services/matchService');
+const User = require('../models/User');
 
 // POST /api/wishlist-cards
 const addWishlistCard = async (req, res) => {
@@ -40,6 +41,7 @@ const addWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
     if (wishlistExists) {
       return res
         .status(409)
@@ -51,6 +53,11 @@ const addWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { wishlist_cards: wishlist._id },
+    });
+    console.log('✅ Wishlist ajoutée au profil utilisateur');
     // 🧠 Lancer la recherche de match
     await findAndCreateMatch(userId, cardId, 'wishlist');
 
@@ -79,6 +86,13 @@ const removeWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
+    if (deleted) {
+      await User.findByIdAndUpdate(userId, {
+        $pull: { wishlist_cards: deleted._id },
+      });
+      console.log('✅ Wishlist retirée du profil utilisateur');
+    }
 
     if (!deleted) {
       return res
@@ -129,4 +143,50 @@ const getWishlistCards = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
-module.exports = { addWishlistCard, removeWishlistCard, getWishlistCards };
+
+// GET /api/wishlist-cards/user/:userId?rarity=...
+const getWishlistCardsByUserAndRarity = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { rarity } = req.query;
+
+    if (!userId || !rarity) {
+      return res.status(400).json({ message: 'User ID et rareté requis.' });
+    }
+
+    console.log(
+      `🔎 Recherche de wishlist pour user ${userId} avec rareté ${rarity}`,
+    );
+
+    const wishlistCards = await WishlistCard.find({
+      user: userId,
+    })
+      .populate({
+        path: 'card',
+      })
+      .populate({
+        path: 'user',
+        select: 'username profile_picture friend_code', // infos joueur
+      });
+
+    // ⚡ Maintenant filtrage par rareté (au cas où la card n'était pas filtrée par Mongo)
+    const filtered = wishlistCards.filter(
+      (wishlist) => wishlist.card.rarity === parseInt(rarity),
+    );
+
+    res.status(200).json(filtered);
+  } catch (err) {
+    console.error(
+      'Erreur lors de la récupération wishlist par user et rareté :',
+      err,
+    );
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
+module.exports = {
+  addWishlistCard,
+  removeWishlistCard,
+  getWishlistCards,
+  getWishlistCardsByUserAndRarity,
+};
