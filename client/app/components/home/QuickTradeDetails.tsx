@@ -8,6 +8,7 @@ import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
 import CloseButton from '../ui/CloseButton';
 import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickTrade';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   card: ListedCard;
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
+  const router = useRouter();
+
   const [selectedWishlistCardId, setSelectedWishlistCardId] = useState<
     string | null
   >(null);
@@ -30,6 +33,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       listedCardId: card.card._id,
       myCardOfferedId: selectedWishlistCardId,
     });
+    router.push(`/trades?user=${card.user._id}`); // 🧭 redirige vers la page des échanges
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserSidebar from '../components/trade/UserSideBar';
 import TradeListSection from '../components/trade/TradeListSection';
 import UserDetail from '../components/trade/UserDetail';
@@ -9,8 +9,11 @@ import ProtectedPage from '../components/auth/ProtectedPage';
 import ProtectedLayout from '../components/auth/ProtectedLayout';
 import { useTradeRequestStore } from '../store/useTradeRequestStore';
 import useFetchTradeRequests from '../hooks/useFetchTradeRequests';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function TradePage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const { tradeGroups } = useTradeRequestStore();
@@ -18,6 +21,17 @@ export default function TradePage() {
 
   const selectedGroup =
     tradeGroups.find((group) => group.user._id === selectedUserId) || null;
+
+  useEffect(() => {
+    const preselectedUserId = searchParams.get('user');
+
+    if (preselectedUserId) {
+      setSelectedUserId(preselectedUserId);
+
+      // 🧹 Nettoyer l'URL après avoir utilisé le paramètre
+      router.replace('/trades');
+    }
+  }, [searchParams, router]);
 
   if (loading) {
     return (

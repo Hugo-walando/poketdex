@@ -7,6 +7,7 @@ import MatchItem from './MatchItem';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 // import useCreateTradeRequests from '@/app/hooks/useCreateTradeRequest';
 import useBatchTradeCreation from '@/app/hooks/useBatchTradeCreation';
+import { useRouter } from 'next/navigation';
 
 interface MatchGroupItemProps {
   group: MatchGroup;
@@ -19,6 +20,8 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
   // const { createRequests, loading } = useCreateTradeRequests();
   const { createTradesFromMatches, loading } = useBatchTradeCreation();
 
+  const router = useRouter();
+
   const toggleMatchSelection = (id: string) => {
     setSelectedMatchIds((prev) =>
       prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
@@ -30,6 +33,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
     await createTradesFromMatches(selectedMatchIds);
     setSelectedMatchIds([]); // 🧹 reset après envoi
     setIsOpen(false); // 🧹 referme le groupe pour feedback visuel
+    router.push(`/trades?user=${group.user.id}`); // 🧭 redirige vers la page des échanges
   };
 
   return (
