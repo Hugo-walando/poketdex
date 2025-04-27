@@ -3,7 +3,7 @@
 import SearchBar from '../ui/SearchBar';
 import SetFilterDropdown from '../ui/SetFilterDropDown';
 import RarityFilter from '../ui/RarityFilter';
-import type { ListedCard } from '@/app/types/index';
+import type { ListedCard, WishlistCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
 import { useState } from 'react';
 import ListedCardItem from './ListedCardItem';
@@ -25,6 +25,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+
+  const hasWishlistOfSameRarity = (
+    wishlistCards: WishlistCard[] = [],
+    rarity: number,
+  ) => {
+    return wishlistCards.some((wish) => wish.card.rarity === rarity);
+  };
 
   // Reset Filters
   const hasActiveFilters =
@@ -48,15 +55,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
 
   const filteredListedCards = allListedCards.filter((item) => {
     const card = item.card;
-    console.log('Item:', item);
-    console.log('Item User ID:', item.user._id);
-    console.log('Current User ID:', user?.id);
 
+    // 1. Exclure nos propres cartes
     if (item.user._id === user?.id) {
-      console.log("🚫 Exclure la carte de l'utilisateur");
-      return false; // 👈 on exclut nos propres cartes
+      return false;
     }
 
+    // 2. Filtrer par search, set, rarity
     const matchSearch =
       searchQuery === '' ||
       card.name.toLowerCase().includes(searchQuery) ||
@@ -68,9 +73,16 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     const matchRarity =
       selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
 
-    return matchSearch && matchSet && matchRarity;
-  });
+    // 3. Filtrer sur la wishlist de même rareté
+    console.log('item.user', item.user.wishlist_cards);
+    const wishlistAvailable = item.user.wishlist_cards || [];
+    const hasSameRarityWishlist = hasWishlistOfSameRarity(
+      wishlistAvailable,
+      card.rarity,
+    );
 
+    return matchSearch && matchSet && matchRarity && hasSameRarityWishlist;
+  });
   return (
     <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6'>
       <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>

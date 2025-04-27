@@ -3,6 +3,7 @@ const ListedCard = require('../models/ListedCard');
 const Card = require('../models/Card');
 const Match = require('../models/Match');
 const { findAndCreateMatch } = require('../services/matchService');
+const User = require('../models/User');
 
 // POST /api/wishlist-cards
 const addWishlistCard = async (req, res) => {
@@ -40,6 +41,7 @@ const addWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
     if (wishlistExists) {
       return res
         .status(409)
@@ -51,6 +53,11 @@ const addWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { wishlist_cards: wishlist._id },
+    });
+    console.log('✅ Wishlist ajoutée au profil utilisateur');
     // 🧠 Lancer la recherche de match
     await findAndCreateMatch(userId, cardId, 'wishlist');
 
@@ -79,6 +86,13 @@ const removeWishlistCard = async (req, res) => {
       user: userId,
       card: cardId,
     });
+
+    if (deleted) {
+      await User.findByIdAndUpdate(userId, {
+        $pull: { wishlist_cards: deleted._id },
+      });
+      console.log('✅ Wishlist retirée du profil utilisateur');
+    }
 
     if (!deleted) {
       return res

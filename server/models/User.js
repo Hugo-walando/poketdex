@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
     profile_picture: { type: String },
     friend_code: { type: String, unique: true, sparse: true },
     is_connected: { type: Boolean, default: false },
+    wishlist_cards: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'WishlistCard' },
+    ],
     last_seen: { type: Date },
   },
   { timestamps: true },

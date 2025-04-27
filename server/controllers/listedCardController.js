@@ -139,9 +139,19 @@ const getAllListedCards = async (req, res) => {
       })
       .populate({
         path: 'user',
-        select: 'username profile_picture friend_code', // ce que tu veux afficher
+        select: 'username profile_picture friend_code wishlist_cards', // Ajout du champ
+        populate: {
+          path: 'wishlist_cards', // ➔ On va chercher les wishlists
+          populate: {
+            path: 'card', // ➔ Et pour chaque wishlist, on va chercher les infos de la carte liée
+          },
+        },
       });
 
+    console.log(
+      '📦 Cartes listées envoyées :',
+      JSON.stringify(listedCards, null, 2),
+    );
     res.status(200).json(listedCards);
   } catch (err) {
     console.error(

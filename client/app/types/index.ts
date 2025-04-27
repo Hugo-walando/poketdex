@@ -167,5 +167,6 @@ export interface AppUser {
   _id: string;
   username: string;
   profile_picture: string;
+  wishlist_cards?: WishlistCard[];
   friend_code: string;
 }
