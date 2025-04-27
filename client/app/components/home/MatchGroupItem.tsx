@@ -33,7 +33,7 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
     await createTradesFromMatches(selectedMatchIds);
     setSelectedMatchIds([]); // 🧹 reset après envoi
     setIsOpen(false); // 🧹 referme le groupe pour feedback visuel
-    router.push(`/trades?user=${group.user.id}`); // 🧭 redirige vers la page des échanges
+    router.push(`/trades?user=${group.user._id}`); // 🧭 redirige vers la page des échanges
   };
 
   return (
@@ -81,9 +81,9 @@ export default function MatchGroupItem({ group, sets }: MatchGroupItemProps) {
           <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 items-center'>
             {group.trades.map((match) => (
               <MatchItem
-                key={match.id}
+                key={match._id}
                 match={match}
-                isSelected={selectedMatchIds.includes(match.id)}
+                isSelected={selectedMatchIds.includes(match._id)}
                 onSelect={toggleMatchSelection}
                 sets={sets} // 🆕 passe la liste des Sets ici
               />

@@ -34,7 +34,7 @@ export default function MatchList({ loading }: MatchListProps) {
 
       <div className='flex flex-col gap-2'>
         {matchGroups.map((group) => (
-          <MatchGroupItem key={group.user.id} group={group} sets={sets} />
+          <MatchGroupItem key={group.user._id} group={group} sets={sets} />
         ))}
         <div className='bg-white rounded-xl shadow-base'>
           <div className='flex items-center gap-3 px-4 py-2'>

@@ -10,7 +10,7 @@ export interface Card {
 }
 
 export interface Set {
-  id: string;
+  _id: string;
   code: string;
   name: string;
   color: string;
@@ -85,7 +85,7 @@ export interface Match {
 }
 
 export interface MatchTrade {
-  id: string;
+  _id: string;
   offered_card: {
     _id: string;
     official_id: string;
@@ -107,7 +107,7 @@ export interface MatchTrade {
 
 export interface MatchGroup {
   user: {
-    id: string;
+    _id: string;
     username: string;
     profile_picture: string;
   };
