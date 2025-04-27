@@ -148,10 +148,6 @@ const getAllListedCards = async (req, res) => {
         },
       });
 
-    console.log(
-      '📦 Cartes listées envoyées :',
-      JSON.stringify(listedCards, null, 2),
-    );
     res.status(200).json(listedCards);
   } catch (err) {
     console.error(
