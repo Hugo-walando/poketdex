@@ -31,7 +31,7 @@ export default function MatchItem({
       <input
         type='checkbox'
         checked={isSelected}
-        onChange={() => onSelect(match.id)}
+        onChange={() => onSelect(match._id)}
         className='w-4 h-4 accent-primarygreen'
       />
 
