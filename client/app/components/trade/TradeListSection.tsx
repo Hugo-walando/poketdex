@@ -25,6 +25,7 @@ export default function TradeListSection({
   trades,
   onBack,
 }: TradeListSectionProps) {
+  console.log('🔄 Chargement de la section des échanges');
   return (
     <>
       <h2 className='text-dark-xl mb-4 truncate px-2'>

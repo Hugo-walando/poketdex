@@ -2,14 +2,16 @@
 
 import { MatchTrade, Set } from '@/app/types';
 import Image from 'next/image';
+import { CheckCircle, Circle } from 'lucide-react';
 import TradeIcon from '../svgs/TradeIcon';
 import { rarityIcons } from '@/app/data/rarities';
+import { cn } from '@/app/utils/cn'; // si tu as un utilitaire cn()
 
 interface Props {
   match: MatchTrade;
   isSelected: boolean;
   onSelect: (matchId: string) => void;
-  sets: Set[]; // 🆕 tu passes la liste des Sets ici
+  sets: Set[];
 }
 
 export default function MatchItem({
@@ -26,14 +28,21 @@ export default function MatchItem({
   );
 
   return (
-    <>
-      {/* Input Checkbox */}
-      <input
-        type='checkbox'
-        checked={isSelected}
-        onChange={() => onSelect(match._id)}
-        className='w-4 h-4 accent-primarygreen'
-      />
+    <div
+      onClick={() => onSelect(match._id)}
+      className={cn(
+        'col-span-4 grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 items-center p-2 rounded-lg cursor-pointer transition hover:bg-gray-100',
+        isSelected && 'bg-primarygreen/10  hover:bg-primarygreen/20',
+      )}
+    >
+      {/* Checkbox remplacée par icônes */}
+      <div className='flex justify-center'>
+        {isSelected ? (
+          <CheckCircle className='text-primarygreen w-10 h-10' />
+        ) : (
+          <Circle className='text-gray-400 w-10 h-10' />
+        )}
+      </div>
 
       {/* Requested Card */}
       <div className='flex items-center gap-2'>
@@ -62,7 +71,7 @@ export default function MatchItem({
         </div>
       </div>
 
-      {/* Trade Icon & Rarity */}
+      {/* Trade Icon + Rarity */}
       <div className='flex flex-col items-center w-full gap-1 mx-auto'>
         <TradeIcon className='w-6 h-6 text-primarygreen' />
         <Image
@@ -103,6 +112,6 @@ export default function MatchItem({
           className='h-22 w-auto'
         />
       </div>
-    </>
+    </div>
   );
 }
