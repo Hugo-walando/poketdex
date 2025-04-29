@@ -18,6 +18,7 @@ interface TradeItemProps {
 
 export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
   console.log("🔄 Chargement de l'item d'échange");
+  console.log('Selected user ID:', selectedUserId);
   const currentUserId = useUserStore((state) => state.user?.id);
   const {
     acceptTradeRequest,
