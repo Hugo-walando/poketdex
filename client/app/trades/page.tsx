@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import UserSidebar from '../components/trade/UserSideBar';
 import TradeListSection from '../components/trade/TradeListSection';
 import UserDetail from '../components/trade/UserDetail';
@@ -12,12 +12,14 @@ import useFetchTradeRequests from '../hooks/useFetchTradeRequests';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function TradePage() {
+  console.log('🔄 Chargement de la page des échanges...');
   const searchParams = useSearchParams();
   const router = useRouter();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const { tradeGroups } = useTradeRequestStore();
   const { loading } = useFetchTradeRequests(); // 👈 fetch trades dès l'arrivée
+  const cleanedUrl = useRef(false);
 
   const selectedGroup =
     tradeGroups.find((group) => group.user._id === selectedUserId) || null;
@@ -28,8 +30,11 @@ export default function TradePage() {
     if (preselectedUserId) {
       setSelectedUserId(preselectedUserId);
 
-      // 🧹 Nettoyer l'URL après avoir utilisé le paramètre
-      router.replace('/trades');
+      if (!cleanedUrl.current) {
+        // 👈 seulement 1 fois
+        router.replace('/trades', { scroll: false }); // ⬅️ scroll: false important aussi
+        cleanedUrl.current = true;
+      }
     }
   }, [searchParams, router]);
 

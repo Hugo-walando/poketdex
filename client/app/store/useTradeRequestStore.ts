@@ -15,6 +15,7 @@ interface TradeRequestStore {
 }
 
 export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
+  console: 'TradeRequestStore',
   tradeGroups: [],
 
   setTradeGroups: (groups) => set({ tradeGroups: groups }),
