@@ -106,7 +106,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         {card.user.username} voudrait ces cartes:{' '}
       </h3>
       <div className='max-h-[20vh] overflow-y-auto'>
-        <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2'>
+        <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-3 p-2 overflow-hidden'>
           {wishlistCards.map((wish) => (
             <div
               key={wish._id}
