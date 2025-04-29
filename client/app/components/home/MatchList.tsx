@@ -3,6 +3,9 @@
 import { useMatchStore } from '@/app/store/useMatchStore';
 import MatchGroupItem from './MatchGroupItem';
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useRouter } from 'next/navigation';
+import useBatchTradeCreation from '@/app/hooks/useBatchTradeCreation';
+import { useState } from 'react';
 
 interface MatchListProps {
   loading: boolean;
@@ -11,6 +14,22 @@ interface MatchListProps {
 export default function MatchList({ loading }: MatchListProps) {
   const matchGroups = useMatchStore((state) => state.matchGroups);
   const { sets } = useGlobalData();
+  const [selectedMatchIds, setSelectedMatchIds] = useState<string[]>([]);
+  const { createTradesFromMatches, loading: sending } = useBatchTradeCreation();
+  const router = useRouter();
+
+  const toggleMatchSelection = (id: string) => {
+    setSelectedMatchIds((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
+  };
+
+  const handleSendRequests = async () => {
+    if (selectedMatchIds.length === 0) return;
+    await createTradesFromMatches(selectedMatchIds);
+    setSelectedMatchIds([]); // 🧹 reset
+    router.push('/trades'); // Redirection après envoi
+  };
 
   if (loading) {
     return (
@@ -29,86 +48,114 @@ export default function MatchList({ loading }: MatchListProps) {
   }
 
   return (
-    <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
-      <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>Matchs</h2>
+    <>
+      <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
+        <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>
+          Matchs
+        </h2>
 
-      <div className='flex flex-col gap-2'>
-        {matchGroups.map((group) => (
-          <MatchGroupItem key={group.user._id} group={group} sets={sets} />
-        ))}
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+        <div className='flex flex-col gap-2 py-4'>
+          {matchGroups.map((group) => (
+            <MatchGroupItem
+              key={group.user._id}
+              group={group}
+              sets={sets}
+              selectedMatchIds={selectedMatchIds}
+              onToggleMatchSelection={toggleMatchSelection}
+            />
+          ))}
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='bg-white rounded-xl shadow-base'>
-          <div className='flex items-center gap-3 px-4 py-2'>
-            <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-            {/* cercle gris à la place de l'image */}
-            <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-              Test (2 matchs)
-            </span>
+          <div className='bg-white rounded-xl shadow-base'>
+            <div className='flex items-center gap-3 px-4 py-2'>
+              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
+              {/* cercle gris à la place de l'image */}
+              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
+                Test (2 matchs)
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <div className='sticky bottom-0 left-0 right-0 p-4 bg-white rounded-xl shadow-base'>
+        <button
+          onClick={handleSendRequests}
+          disabled={selectedMatchIds.length === 0 || sending}
+          className={`w-full py-3 rounded-xl font-semibold transition 
+      ${
+        selectedMatchIds.length === 0 || sending
+          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          : 'bg-primarygreen text-white hover:opacity-90 cursor-pointer'
+      }`}
+        >
+          {sending
+            ? 'Envoi en cours...'
+            : selectedMatchIds.length > 0
+              ? `Envoyer ${selectedMatchIds.length} demande(s)`
+              : 'Sélectionnez des matchs pour envoyer'}
+        </button>
+      </div>
+    </>
   );
 }
