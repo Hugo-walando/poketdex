@@ -6,6 +6,7 @@ import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { useCallback } from 'react';
+import { refetchTradeRequests } from '../utils/refetchTradeRequests';
 
 export function useTradeRequestActions() {
   console.log('🔄 Chargement des actions de trade');
@@ -28,6 +29,9 @@ export function useTradeRequestActions() {
           },
         );
         updateTradeStatus(tradeRequestId, newStatus);
+        if (user?.accessToken && user?.id) {
+          await refetchTradeRequests(user.accessToken, user.id);
+        }
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
 
