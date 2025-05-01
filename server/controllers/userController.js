@@ -74,6 +74,11 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
+    if (updates.friend_code) {
+      const clean = updates.friend_code.replace(/\D/g, ''); // supprime tout sauf chiffres
+      const formatted = clean.replace(/(.{4})/g, '$1-').replace(/-$/, ''); // ajoute les tirets
+      updates.friend_code = formatted;
+    }
     // Étape 3 : faire la mise à jour
     const updatedUser = await User.findByIdAndUpdate(currentUser._id, updates, {
       new: true,
