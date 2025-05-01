@@ -39,6 +39,7 @@ const useFetchTradeRequests = () => {
       setTradeGroups(grouped);
 
       console.log('✅ Trade requests récupérés et groupés :', grouped.length);
+      console.log('Trade requests:', grouped);
     } catch (err) {
       console.error('❌ Erreur fetch trades :', err);
       setError('Erreur lors de la récupération des échanges');

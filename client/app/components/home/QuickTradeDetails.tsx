@@ -9,6 +9,8 @@ import { rarityIcons } from '@/app/data/rarities';
 import CloseButton from '../ui/CloseButton';
 import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickTrade';
 import { useRouter } from 'next/navigation';
+import useCreateQuickTrade from '@/app/hooks/useCreateQuickTrade';
+import { Loader2 } from 'lucide-react';
 
 interface Props {
   card: ListedCard;
@@ -18,29 +20,29 @@ interface Props {
 export default function QuickTradeDetails({ card, onClose }: Props) {
   const router = useRouter();
 
-  const [selectedWishlistCardId, setSelectedWishlistCardId] = useState<
-    string | null
-  >(null);
+  const { createQuickTrade, loading: loadingTrade } = useCreateQuickTrade();
 
-  const { wishlistCards, loading } = useFetchWishlistForQuickTrade(
-    card.user._id,
-    card.card.rarity,
-  );
-  const handleSendRequest = () => {
-    if (!selectedWishlistCardId) return;
-    console.log({
-      toUserId: card.user._id,
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+
+  const { wishlistCards, loading: loadingWishlist } =
+    useFetchWishlistForQuickTrade(card.user._id, card.card.rarity);
+  const handleSendRequest = async () => {
+    if (!selectedCardId) return;
+    const result = await createQuickTrade({
       listedCardId: card.card._id,
-      myCardOfferedId: selectedWishlistCardId,
+      myCardOfferedId: selectedCardId,
+      toUserId: card.user._id,
     });
-    router.push(`/trades?user=${card.user._id}`); // 🧭 redirige vers la page des échanges
+    if (result) {
+      router.push(`/trades?user=${card.user._id}`);
+    } // 🧭 redirige vers la page des échanges
   };
 
   useEffect(() => {
-    setSelectedWishlistCardId(null);
+    setSelectedCardId(null);
   }, [card]);
 
-  if (loading) {
+  if (loadingWishlist) {
     return (
       <div className='flex items-center justify-center h-full'>
         <p className='text-gray-xl'>Chargement...</p>
@@ -115,14 +117,14 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               <WishlistItem
                 key={wish._id}
                 card={wish}
-                isSelected={selectedWishlistCardId === wish._id}
-                onClick={setSelectedWishlistCardId}
+                isSelected={selectedCardId === wish._id}
+                onClick={setSelectedCardId}
               />
             </div>
           ))}
         </div>
       </div>
-      {!selectedWishlistCardId && (
+      {!selectedCardId && (
         <p className='text-light-sm text-center my-2'>
           Veuillez sélectionner une carte à proposer en échange.
         </p>
@@ -130,15 +132,18 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
 
       <button
         onClick={handleSendRequest}
-        disabled={!selectedWishlistCardId}
+        disabled={!selectedCardId || loadingTrade}
         className={cn(
-          'w-full py-2 rounded-xl font-semibold ',
-          selectedWishlistCardId
+          'w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
+          selectedCardId && !loadingTrade
             ? 'bg-primarygreen text-white hover:opacity-90 mt-9 hover:cursor-pointer'
             : 'bg-gray-300 text-white cursor-not-allowed',
         )}
       >
-        Envoyer la demande d`échange
+        {loadingTrade && (
+          <Loader2 className='animate-spin w-5 h-5 text-white' />
+        )}
+        {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
       </button>
     </div>
   );

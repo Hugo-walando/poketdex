@@ -6,6 +6,10 @@ const reactivateNextTradeRequestService = require('../services/reactivateNextTra
 const createQuickTradeRequest = async (req, res) => {
   try {
     const { listedCardId, myCardOfferedId, toUserId } = req.body;
+    console.log('Requête de création d’un quick trade');
+    console.log('ID de la carte listée :', listedCardId);
+    console.log('ID de la carte offerte :', myCardOfferedId);
+    console.log('ID de l’utilisateur à qui envoyer la demande :', toUserId);
     const userId = req.user._id;
 
     if (!listedCardId || !myCardOfferedId || !toUserId) {
@@ -43,6 +47,8 @@ const createQuickTradeRequest = async (req, res) => {
 
     const isActive = !alreadyActive;
 
+    console.log('Card offerte :', myCardOfferedId);
+
     const newTrade = await TradeRequest.create({
       sender: userId,
       receiver: toUserId,
@@ -51,7 +57,15 @@ const createQuickTradeRequest = async (req, res) => {
       is_active: isActive,
     });
 
-    res.status(201).json(newTrade);
+    const populatedTrade = await TradeRequest.findById(newTrade._id)
+      .populate('card_offered')
+      .populate('card_requested')
+      .populate('sender', 'username profile_picture friend_code')
+      .populate('receiver', 'username profile_picture friend_code');
+
+    console.log('TradeRequest créée :', populatedTrade);
+
+    res.status(201).json(populatedTrade);
   } catch (error) {
     console.error('❌ Erreur création quick trade :', error);
     res.status(500).json({ message: 'Erreur serveur.' });
