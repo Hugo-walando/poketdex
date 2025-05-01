@@ -2,96 +2,72 @@ const TradeRequest = require('../models/TradeRequest');
 const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
 
-// POST /api/trade-requests
-const createTradeRequest = async (req, res) => {
+// POST /api/trade-requests/quick
+const createQuickTradeRequest = async (req, res) => {
   try {
-    console.log('🔧 Requête de création d’une demande d’échange');
-    const { matchId } = req.body;
-    const senderId = req.user._id; // User connecté
+    const { listedCardId, myCardOfferedId, toUserId } = req.body;
+    console.log('Requête de création d’un quick trade');
+    console.log('ID de la carte listée :', listedCardId);
+    console.log('ID de la carte offerte :', myCardOfferedId);
+    console.log('ID de l’utilisateur à qui envoyer la demande :', toUserId);
+    const userId = req.user._id;
 
-    if (!matchId) {
-      return res.status(400).json({ message: 'ID du match manquant.' });
+    if (!listedCardId || !myCardOfferedId || !toUserId) {
+      return res.status(400).json({ message: 'Données manquantes.' });
     }
 
-    // ➔ Récupérer le match
-    const match = await Match.findById(matchId).populate(
-      'user_1 user_2 card_offered_by_user_1 card_offered_by_user_2',
-    );
-
-    if (!match) {
-      return res.status(404).json({ message: 'Match non trouvé.' });
+    if (String(userId) === String(toUserId)) {
+      return res.status(400).json({
+        message: 'Vous ne pouvez pas vous envoyer un échange à vous-même.',
+      });
     }
 
-    // ➔ Vérifier que l'utilisateur connecté participe bien au match
-    if (
-      !match.user_1._id.equals(senderId) &&
-      !match.user_2._id.equals(senderId)
-    ) {
-      return res
-        .status(403)
-        .json({ message: 'Non autorisé à envoyer une demande pour ce match.' });
-    }
-
-    // ➔ Déterminer correctement sender et receiver
-    const sender = match.user_1._id.equals(senderId)
-      ? match.user_1
-      : match.user_2;
-    const receiver = match.user_1._id.equals(senderId)
-      ? match.user_2
-      : match.user_1;
-
-    // ➔ Déterminer les cartes
-    const offered_card = match.user_1._id.equals(senderId)
-      ? match.card_offered_by_user_1
-      : match.card_offered_by_user_2;
-    const requested_card = match.user_1._id.equals(senderId)
-      ? match.card_offered_by_user_2
-      : match.card_offered_by_user_1;
-
-    // ➔ Vérification doublon
-    const existingTrade = await TradeRequest.findOne({
-      sender: sender._id,
-      receiver: receiver._id,
-      card_offered: offered_card._id,
-      card_requested: requested_card._id,
-      status: { $in: ['pending', 'accepted'] }, // uniquement échanges actifs
+    // Check doublon
+    const existing = await TradeRequest.findOne({
+      sender: userId,
+      receiver: toUserId,
+      card_offered: myCardOfferedId,
+      card_requested: listedCardId,
+      status: { $in: ['pending', 'accepted'] },
     });
 
-    if (existingTrade) {
-      console.log('⚠️ Une demande d’échange similaire existe déjà.');
+    if (existing) {
       return res
         .status(409)
-        .json({ message: "Une demande d'échange similaire existe déjà." });
+        .json({ message: 'Une demande similaire existe déjà.' });
     }
 
     const alreadyActive = await TradeRequest.findOne({
       $or: [
-        { sender: sender._id, receiver: receiver._id },
-        { sender: receiver._id, receiver: sender._id },
+        { sender: userId, receiver: toUserId },
+        { sender: toUserId, receiver: userId },
       ],
       is_active: true,
     });
-    console.log('alreadyActive:', alreadyActive);
+
     const isActive = !alreadyActive;
 
-    // ➔ Création de la TradeRequest
+    console.log('Card offerte :', myCardOfferedId);
+
     const newTrade = await TradeRequest.create({
-      sender: sender._id,
-      receiver: receiver._id,
-      card_offered: offered_card._id,
-      card_requested: requested_card._id,
+      sender: userId,
+      receiver: toUserId,
+      card_offered: myCardOfferedId,
+      card_requested: listedCardId,
       is_active: isActive,
     });
 
-    console.log('✅ Demande d’échange créée avec succès :', newTrade._id);
+    const populatedTrade = await TradeRequest.findById(newTrade._id)
+      .populate('card_offered')
+      .populate('card_requested')
+      .populate('sender', 'username profile_picture friend_code')
+      .populate('receiver', 'username profile_picture friend_code');
 
-    // ➔ SUPPRIMER le match maintenant ✅
-    await Match.deleteOne({ _id: matchId });
-    console.log('🗑️ Match supprimé après création de la TradeRequest');
+    console.log('TradeRequest créée :', populatedTrade);
 
-    res.status(201).json(newTrade);
-  } catch (err) {
-    console.error("Erreur création demande d'échange :", err);
+    res.status(201).json(populatedTrade);
+  } catch (error) {
+    console.error('❌ Erreur création quick trade :', error);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -310,7 +286,7 @@ const createMultipleTradeRequests = async (req, res) => {
 };
 
 module.exports = {
-  createTradeRequest,
+  createQuickTradeRequest,
   updateTradeRequest,
   getMyTradeRequests,
   markTradeRequestAsSent,

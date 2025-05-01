@@ -16,7 +16,7 @@ export default function WishlistItem({
 }: WishlistItemProps) {
   return (
     <div
-      onClick={() => onClick(card._id)}
+      onClick={() => onClick(card.card._id)}
       className={cn(
         'shadow-base relative items-center cursor-pointer transition-all',
       )}

@@ -18,6 +18,15 @@ export default function MatchList({ loading }: MatchListProps) {
   const { createTradesFromMatches, loading: sending } = useBatchTradeCreation();
   const router = useRouter();
 
+  const getTargetUserId = () => {
+    for (const group of matchGroups) {
+      if (group.trades.some((t) => selectedMatchIds.includes(t._id))) {
+        return group.user._id;
+      }
+    }
+    return null;
+  };
+
   const toggleMatchSelection = (id: string) => {
     setSelectedMatchIds((prev) =>
       prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
@@ -26,9 +35,12 @@ export default function MatchList({ loading }: MatchListProps) {
 
   const handleSendRequests = async () => {
     if (selectedMatchIds.length === 0) return;
-    await createTradesFromMatches(selectedMatchIds);
-    setSelectedMatchIds([]); // 🧹 reset
-    router.push('/trades'); // Redirection après envoi
+    const created = await createTradesFromMatches(selectedMatchIds);
+    if (created) {
+      const userId = getTargetUserId();
+      setSelectedMatchIds([]);
+      router.push(userId ? `/trades?user=${userId}` : '/trades');
+    }
   };
 
   if (loading) {
