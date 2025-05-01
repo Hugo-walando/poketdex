@@ -11,6 +11,7 @@ import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 import { useUserStore } from '@/app/store/useUserStore';
+import { RefreshCcw } from 'lucide-react';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -19,6 +20,7 @@ interface LeftColumnProps {
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const sets = useGlobalData((s) => s.sets);
   const user = useUserStore((s) => s.user);
+  const { refetchListedCards } = useAllListedCardsStore();
 
   const { allListedCards } = useAllListedCardsStore();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -91,30 +93,40 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         placeholder='Rechercher une carte...'
         onSearch={(query) => setSearchQuery(query.toLowerCase())}
       />
-      <div className='w-full my-6 flex gap-2 md:gap-4'>
-        <FilterDropdownProvider>
-          {sets.length > 0 && (
-            <SetFilterDropdown
-              selectedSets={selectedSets}
-              onToggleSet={toggleSet}
-              sets={sets}
+      <div className='w-full my-6 items-center flex justify-between'>
+        <div className='flex gap-2 md:gap-4'>
+          <FilterDropdownProvider>
+            {sets.length > 0 && (
+              <SetFilterDropdown
+                selectedSets={selectedSets}
+                onToggleSet={toggleSet}
+                sets={sets}
+              />
+            )}
+            <RarityFilter
+              selectedRarities={selectedRarities}
+              onToggleRarity={(rarity) =>
+                setSelectedRarities((prev) =>
+                  prev.includes(rarity)
+                    ? prev.filter((r) => r !== rarity)
+                    : [...prev, rarity],
+                )
+              }
             />
-          )}
-          <RarityFilter
-            selectedRarities={selectedRarities}
-            onToggleRarity={(rarity) =>
-              setSelectedRarities((prev) =>
-                prev.includes(rarity)
-                  ? prev.filter((r) => r !== rarity)
-                  : [...prev, rarity],
-              )
-            }
+          </FilterDropdownProvider>
+          <ResetFilters
+            onClick={resetAllFilters}
+            disabled={!hasActiveFilters}
           />
-        </FilterDropdownProvider>
-        <ResetFilters onClick={resetAllFilters} disabled={!hasActiveFilters} />
+        </div>
+        <button
+          onClick={() => refetchListedCards?.()}
+          className='px-3 py-2 bg-primarygreen text-white rounded hover:opacity-90 flex items-center gap-2 hover:cursor-pointer'
+        >
+          Refresh les cartes <RefreshCcw className='w-4 h-4 inline' />
+        </button>
       </div>
-
-      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
+      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 relative'>
         {filteredListedCards.length === 0 ? (
           <p className='text-gray-xl col-span-full text-center mt-10'>
             Aucune carte trouvée avec ces filtres.
