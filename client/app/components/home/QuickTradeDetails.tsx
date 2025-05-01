@@ -70,15 +70,15 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           <div className='text-gray-xl'>
             {card.card.official_id}
             {/* {cardSet && (
-              <Image
-                src={cardSet.img_url}
-                alt={cardSet.name}
-                width={0}
-                height={0}
-                sizes='100vw'
-                className='h-8 w-auto'
-              />
-            )} */}
+                <Image
+                  src={cardSet.img_url}
+                  alt={cardSet.name}
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  className='h-8 w-auto'
+                />
+              )} */}
             <Image
               src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
               alt={`Rareté ${card.card.rarity}`}

@@ -20,7 +20,6 @@ export default function MatchGroupItem({
   onToggleMatchSelection,
 }: MatchGroupItemProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // const { createRequests, loading } = useCreateTradeRequests();
 
   return (
     <div className='bg-white rounded-xl shadow-base'>
