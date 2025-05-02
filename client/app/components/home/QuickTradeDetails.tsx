@@ -117,7 +117,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               <WishlistItem
                 key={wish._id}
                 card={wish}
-                isSelected={selectedCardId === wish._id}
+                isSelected={selectedCardId === wish.card._id}
                 onClick={setSelectedCardId}
               />
             </div>
