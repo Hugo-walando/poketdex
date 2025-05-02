@@ -25,6 +25,8 @@ import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
 import useRemoveListedCard from '../hooks/useRemoveListedCard';
 import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
 import ProtectedLayout from '../components/auth/ProtectedLayout';
+import TradeIcon from '../components/svgs/TradeIcon';
+import { HeartIcon } from 'lucide-react';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -177,6 +179,22 @@ export default function CardPage() {
         </FiltersWrapper>
 
         <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
+          <div className='mb-6 flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl  max-w-[1400px] mx-auto'>
+            <div className='flex items-center gap-2'>
+              <TradeIcon className='w-6 h-6 fill-primarygreen' />
+              <span className='text-gray-base text-sm'>
+                : Ajouter cette carte à vos{' '}
+                <strong>cartes disponibles pour échange</strong>
+              </span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+              <span className='text-gray-base text-sm'>
+                : Ajouter cette carte à votre <strong>wishlist</strong> (cartes
+                recherchées)
+              </span>
+            </div>
+          </div>
           {sets.map((set: Set) => {
             const cards = cardsBySet[set.code]
               ?.filter(
