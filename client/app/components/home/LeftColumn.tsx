@@ -22,7 +22,8 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const user = useUserStore((s) => s.user);
   const { refetchListedCards } = useAllListedCardsStore();
 
-  const { allListedCards } = useAllListedCardsStore();
+  const { allListedCards, loading: ListedCardsLoading } =
+    useAllListedCardsStore();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -129,7 +130,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         </div>
       </div>
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
-        {filteredListedCards.length === 0 ? (
+        {ListedCardsLoading ? (
+          <div className='col-span-full flex justify-center items-center h-[200px]'>
+            <p className='text-gray-xl animate-pulse'>
+              Chargement des cartes...
+            </p>
+          </div>
+        ) : filteredListedCards.length === 0 ? (
           <p className='text-gray-xl col-span-full text-center mt-10'>
             Aucune carte trouvée avec ces filtres.
           </p>
