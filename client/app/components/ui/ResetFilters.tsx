@@ -15,8 +15,8 @@ export default function ResetFilters({ onClick, disabled }: ResetFiltersProps) {
       className={`transition w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-base flex items-center justify-center text-white
         ${
           disabled
-            ? ' bg-darkgray/20 cursor-not-allowed'
-            : ' bg-darkgray hover:cursor-pointer'
+            ? ' bg-gray-300 cursor-not-allowed'
+            : ' bg-primarygreen hover:cursor-pointer'
         }
       `}
     >

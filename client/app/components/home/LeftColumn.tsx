@@ -87,7 +87,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   });
   return (
     <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6 relative'>
-      <div className='sticky top-5 z-10 rounded-xl mb-4 bg-gradient-to-t p-4'>
+      <div className='sticky top-0 z-10 rounded-xl mb-4 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>
         <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>
 
         <SearchBar
