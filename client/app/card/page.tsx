@@ -241,12 +241,9 @@ export default function CardPage() {
             const isOpen = openSetCodes.includes(set.code);
 
             return (
-              <section
-                key={set.code}
-                className='mb-12 flex flex-col items-center'
-              >
+              <section key={set.code} className='mb-12 '>
                 <div
-                  className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max  hover:cursor-pointer hover:bg-gray-100 transition-all sticky top-0 z-10'
+                  className='flex items-center justify-center mx-auto md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max  hover:cursor-pointer hover:bg-gray-100 transition-all sticky top-0 z-10'
                   onClick={() =>
                     setOpenSetCodes((prev) =>
                       prev.includes(set.code)
