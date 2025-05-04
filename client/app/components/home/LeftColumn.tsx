@@ -77,7 +77,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
 
     // 3. Filtrer sur la wishlist de même rareté
-    console.log('item.user', item.user.wishlist_cards);
     const wishlistAvailable = item.user.wishlist_cards || [];
     const hasSameRarityWishlist = hasWishlistOfSameRarity(
       wishlistAvailable,

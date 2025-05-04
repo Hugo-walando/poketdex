@@ -6,15 +6,16 @@ import { cn } from '@/app/utils/cn';
 import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
 import CardIcon from '../svgs/CardIcon';
 import TradeIcon from '../svgs/TradeIcon';
+import { useUserStore } from '@/app/store/useUserStore';
 
-// Mock temporaire (à remplacer avec données réelles plus tard)
-const isAuthenticated = true;
 // const userAvatarUrl = '/assets/avatar.png'; // Exemple
-const hasPendingTrade = true;
 
 export default function Navbar() {
+  const user = useUserStore((s) => s.user);
+  const isAuthenticated = !!user;
   const pathname = usePathname();
 
+  const hasPendingTrade = true;
   const navItems = [
     {
       href: '/',
@@ -70,16 +71,11 @@ export default function Navbar() {
 
         {isAuthenticated ? (
           <Link href='/profile'>
-            {/* <img
-              src={userAvatarUrl}
-              alt='avatar'
-              className='w-10 h-10 rounded-full object-cover'
-            /> */}
             <div className='w-10 h-10 rounded-full bg-primarygreen'></div>
           </Link>
         ) : (
-          <Link href='/auth/signup' className='text-dark-base'>
-            Connexion
+          <Link href='/login' className='text-dark-base font-medium'>
+            S’authentifier
           </Link>
         )}
       </nav>
