@@ -1,5 +1,6 @@
 'use client';
 
+import Google from 'next-auth/providers/google';
 // import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
@@ -77,7 +78,7 @@ export default function LoginPage() {
         <div className='mt-4'>
           <button
             onClick={handleGoogleSignIn}
-            className='w-full py-2 bg-blue-500 text-white rounded-xl font-semibold hover:opacity-90 transition'
+            className='w-full py-2 bg-primarygreen text-white rounded-xl font-semibold hover:opacity-90 transition'
           >
             Se connecter avec Google
           </button>
