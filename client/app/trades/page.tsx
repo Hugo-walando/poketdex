@@ -12,13 +12,12 @@ import useFetchTradeRequests from '../hooks/useFetchTradeRequests';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function TradePage() {
-  console.log('🔄 Chargement de la page des échanges...');
   const searchParams = useSearchParams();
   const router = useRouter();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const { tradeGroups } = useTradeRequestStore();
-  const { loading } = useFetchTradeRequests(); // 👈 fetch trades dès l'arrivée
+  const { loading } = useFetchTradeRequests();
   const cleanedUrl = useRef(false);
 
   const selectedGroup =
@@ -26,13 +25,10 @@ export default function TradePage() {
 
   useEffect(() => {
     const preselectedUserId = searchParams.get('user');
-
     if (preselectedUserId) {
       setSelectedUserId(preselectedUserId);
-
       if (!cleanedUrl.current) {
-        // 👈 seulement 1 fois
-        router.replace('/trades', { scroll: false }); // ⬅️ scroll: false important aussi
+        router.replace('/trades', { scroll: false });
         cleanedUrl.current = true;
       }
     }
@@ -50,6 +46,23 @@ export default function TradePage() {
     );
   }
 
+  if (tradeGroups.length === 0) {
+    return (
+      <ProtectedPage>
+        <ProtectedLayout>
+          <div className='flex justify-center items-center h-[calc(100vh-152px)] px-4 text-center'>
+            <p className='text-gray-xl'>
+              Aucun échange disponible pour le moment.
+              <br />
+              Ajoutez des cartes à votre collection ou votre wishlist pour
+              commencer à échanger !
+            </p>
+          </div>
+        </ProtectedLayout>
+      </ProtectedPage>
+    );
+  }
+
   return (
     <ProtectedPage>
       <ProtectedLayout>
@@ -60,7 +73,6 @@ export default function TradePage() {
                 <div className='mb-4'>
                   <UserDetail user={selectedGroup.user} />
                 </div>
-
                 <TradeListSection
                   selectedUser={selectedGroup.user}
                   trades={selectedGroup.trades}
@@ -85,14 +97,11 @@ export default function TradePage() {
               />
             </div>
 
-            {selectedGroup && (
+            {selectedGroup ? (
               <div className='flex-1 px-2 flex flex-col lg:flex-row gap-2'>
-                {/* UserDetail au-dessus sur mobile */}
                 <div className='block lg:hidden mb-4'>
                   <UserDetail user={selectedGroup.user} />
                 </div>
-
-                {/* Liste scrollable */}
                 <div className='flex-1 overflow-y-auto max-h-[calc(100vh-152px)] pr-2'>
                   <TradeListSection
                     selectedUser={selectedGroup.user}
@@ -100,11 +109,13 @@ export default function TradePage() {
                     onBack={() => setSelectedUserId(null)}
                   />
                 </div>
-
-                {/* UserDetail fixe à droite */}
                 <div className='hidden lg:block w-[280px] shrink-0'>
                   <UserDetail user={selectedGroup.user} />
                 </div>
+              </div>
+            ) : (
+              <div className='flex-1 flex justify-center items-center text-gray-xl'>
+                Sélectionnez un utilisateur pour voir les échanges.
               </div>
             )}
           </div>

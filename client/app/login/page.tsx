@@ -1,7 +1,11 @@
 'use client';
 
+import { FaGoogle } from 'react-icons/fa';
+import { useSearchParams } from 'next/navigation';
+
 // import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { useState } from 'react';
 
 export default function LoginPage() {
   // const [email, setEmail] = useState('');
@@ -25,6 +29,10 @@ export default function LoginPage() {
 
   //   setStatus('sent');
   // };
+  const params = useSearchParams();
+  const error = params.get('error');
+
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = () => {
     signIn('google', { redirect: false }); // Connexion via Google
@@ -75,11 +83,26 @@ export default function LoginPage() {
 
         {/* Ajout du bouton Google */}
         <div className='mt-4'>
+          {error && (
+            <p className='text-red-500 text-center'>
+              ❌ Erreur lors de la connexion.
+            </p>
+          )}
+
           <button
-            onClick={handleGoogleSignIn}
-            className='w-full py-2 bg-blue-500 text-white rounded-xl font-semibold hover:opacity-90 transition'
+            onClick={() => {
+              setLoading(true);
+              handleGoogleSignIn();
+            }}
+            className='w-full py-2 bg-primarygreen text-white rounded-xl font-semibold hover:opacity-90 transition flex items-center justify-center gap-2 hover:cursor-pointer'
           >
-            Se connecter avec Google
+            {loading ? (
+              'Connexion...'
+            ) : (
+              <>
+                <FaGoogle /> Se connecter avec Google
+              </>
+            )}
           </button>
         </div>
       </div>

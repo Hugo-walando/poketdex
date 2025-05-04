@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import CardSelector from '@/app/components/ui/CardSelector';
@@ -25,6 +25,8 @@ import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
 import useRemoveListedCard from '../hooks/useRemoveListedCard';
 import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
 import ProtectedLayout from '../components/auth/ProtectedLayout';
+import TradeIcon from '../components/svgs/TradeIcon';
+import { ChevronDown, ChevronRight, HeartIcon } from 'lucide-react';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -57,6 +59,7 @@ export default function CardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+  const [openSetCodes, setOpenSetCodes] = useState<string[]>([]);
 
   const { addListedCard } = useAddListedCard();
   const { addWishlistCard } = useAddWishlistCard();
@@ -137,18 +140,17 @@ export default function CardPage() {
     );
   };
 
-  useEffect(() => {
-    console.log('Wishlist cards:', wishlistCards);
-    Object.entries(cardsBySet).forEach(([set, cards]) => {
-      console.log(`Set ${set} a ${cards.length} cartes`);
-      console.log(cards.map((c) => c._id));
-    });
-  }, [wishlistCards, cardsBySet]);
+  const countByRarity = (cards: Card[]) => {
+    return cards.reduce<Record<number, number>>((acc, card) => {
+      acc[card.rarity] = (acc[card.rarity] || 0) + 1;
+      return acc;
+    }, {});
+  };
 
   return (
     <ProtectedPage>
       <ProtectedLayout>
-        <FiltersWrapper className='my-10 md:flex gap-6'>
+        <FiltersWrapper className='mt-10 mb-5 md:flex gap-6'>
           <div className='w-full md:w-[600px] mx-auto md:mx-0'>
             <SearchBar
               placeholder='Rechercher une carte...'
@@ -177,6 +179,41 @@ export default function CardPage() {
         </FiltersWrapper>
 
         <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
+          <div className='mb-6 flex flex-col items-center md:items-start gap-4'>
+            {/* <div className='bg-white rounded-xl shadow-base px-4 py-3 flex gap-6'>
+              <div className='flex items-center gap-2 text-sm text-gray-700'>
+                <TradeIcon className='w-5 h-5 fill-primarygreen' />
+                <span>
+                  <strong>{listedCards.length}</strong> doublon(s)
+                </span>
+              </div>
+              <div className='flex items-center gap-2 text-sm text-gray-700'>
+                <HeartIcon className='w-5 h-5 fill-pink-400 text-transparent' />
+                <span>
+                  <strong>{wishlistCards.length}</strong> carte(s) recherchée(s)
+                </span>
+              </div>
+            </div> */}
+
+            <div className='flex flex-col sm:flex-row sm:items-center gap-4'>
+              <div className='flex items-center gap-2'>
+                <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                <span className='text-gray-base text-sm'>
+                  : Ajouter cette carte à vos{' '}
+                  <strong>cartes disponibles pour échange </strong> (vos
+                  doublons)
+                </span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+                <span className='text-gray-base text-sm'>
+                  : Ajouter cette carte à votre <strong>wishlist</strong> (vos
+                  cartes recherchées)
+                </span>
+              </div>
+            </div>
+          </div>
+
           {sets.map((set: Set) => {
             const cards = cardsBySet[set.code]
               ?.filter(
@@ -191,9 +228,33 @@ export default function CardPage() {
 
             if (!cards || cards.length === 0) return null;
 
+            const listedBySet = listedCards
+              .filter((c) => c.card.set_code === set.code)
+              .map((c) => c.card);
+            const wishlistBySet = wishlistCards
+              .filter((c) => c.card.set_code === set.code)
+              .map((c) => c.card);
+
+            const listedCount = countByRarity(listedBySet);
+            const wishlistCount = countByRarity(wishlistBySet);
+
+            const isOpen = openSetCodes.includes(set.code);
+
             return (
-              <section key={set.code} className='mb-12'>
-                <div className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max'>
+              <section
+                key={set.code}
+                className='mb-12 flex flex-col items-center'
+              >
+                <div
+                  className='flex items-center justify-center md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max  hover:cursor-pointer hover:bg-gray-100 transition-all sticky top-0 z-10'
+                  onClick={() =>
+                    setOpenSetCodes((prev) =>
+                      prev.includes(set.code)
+                        ? prev.filter((c) => c !== set.code)
+                        : [...prev, set.code],
+                    )
+                  }
+                >
                   <Image
                     src={set.img_url}
                     alt={set.name}
@@ -202,44 +263,97 @@ export default function CardPage() {
                     sizes='100vw'
                     className='w-auto h-[50px]'
                   />
-                  <span className='font-medium text-lg'>{set.name}</span>
-                </div>
-
-                <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                  {cards.map((card: Card) => (
-                    <div
-                      key={card.official_id}
-                      className='justify-self-center relative'
-                    >
-                      {card.img_url ? (
-                        <Image
-                          src={card.img_url}
-                          alt={card.name || 'Carte'}
-                          width={0}
-                          height={0}
-                          sizes='100vw'
-                          className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
-                        />
-                      ) : (
-                        <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
-                          Image manquante
-                        </div>
-                      )}
-
-                      <CardSelector
-                        cardId={card.official_id}
-                        listedCardIds={listedCardIds}
-                        wishlistCardIds={wishlistCardIds}
-                        toggleListedCard={() =>
-                          toggleListedCard(card.official_id, card._id)
-                        }
-                        toggleWishlistCard={() =>
-                          toggleWishlistCard(card.official_id, card._id)
-                        }
-                      />
+                  <span className='text-dark-lg'>{set.card_count} cartes</span>
+                  <div className='text-gray-lg grid grid-cols-1 gap-2'>
+                    {/* Listed cards */}
+                    <div className='flex items-center gap-2 flex-wrap'>
+                      <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                      <span className='min-w-[190px] '>Cartes à échanger:</span>
+                      {Object.entries(listedCount).map(([rarity, count]) => (
+                        <span
+                          key={`listed-${rarity}`}
+                          className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
+                        >
+                          <Image
+                            src={`/testimgs/rarities/${rarity}.png`}
+                            alt={`Rareté ${rarity}`}
+                            width={0}
+                            height={0}
+                            sizes='100vw'
+                            quality={100}
+                            className='object-contain w-auto h-[25px]'
+                          />
+                          {count}
+                        </span>
+                      ))}
                     </div>
-                  ))}
+
+                    {/* Wishlist cards */}
+                    <div className='flex items-center gap-2 flex-wrap'>
+                      <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+                      <span className='min-w-[190px]'>Cartes recherchées:</span>
+                      {Object.entries(wishlistCount).map(([rarity, count]) => (
+                        <span
+                          key={`wishlist-${rarity}`}
+                          className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
+                        >
+                          <Image
+                            src={`/testimgs/rarities/${rarity}.png`}
+                            alt={`Rareté ${rarity}`}
+                            width={0}
+                            height={0}
+                            sizes='100vw'
+                            quality={100}
+                            className='object-contain w-auto h-[25px]'
+                          />
+                          {count}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {isOpen ? (
+                    <ChevronDown className='w-5 h-5' />
+                  ) : (
+                    <ChevronRight className='w-5 h-5' />
+                  )}
                 </div>
+                {isOpen && (
+                  <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+                    {cards.map((card: Card) => (
+                      <div
+                        key={card.official_id}
+                        className='justify-self-center relative'
+                      >
+                        {card.img_url ? (
+                          <Image
+                            src={card.img_url}
+                            alt={card.name || 'Carte'}
+                            width={0}
+                            height={0}
+                            sizes='100vw'
+                            className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                          />
+                        ) : (
+                          <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                            Image manquante
+                          </div>
+                        )}
+
+                        <CardSelector
+                          cardId={card.official_id}
+                          listedCardIds={listedCardIds}
+                          wishlistCardIds={wishlistCardIds}
+                          toggleListedCard={() =>
+                            toggleListedCard(card.official_id, card._id)
+                          }
+                          toggleWishlistCard={() =>
+                            toggleWishlistCard(card.official_id, card._id)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </section>
             );
           })}

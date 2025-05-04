@@ -11,6 +11,7 @@ import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickT
 import { useRouter } from 'next/navigation';
 import useCreateQuickTrade from '@/app/hooks/useCreateQuickTrade';
 import { Loader2 } from 'lucide-react';
+import { useGlobalData } from '@/app/store/useGlobalData';
 
 interface Props {
   card: ListedCard;
@@ -18,6 +19,9 @@ interface Props {
 }
 
 export default function QuickTradeDetails({ card, onClose }: Props) {
+  const sets = useGlobalData((s) => s.sets);
+  const cardSet = sets.find((set) => set.code === card.card.set_code);
+
   const router = useRouter();
 
   const { createQuickTrade, loading: loadingTrade } = useCreateQuickTrade();
@@ -71,16 +75,16 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         <div className='w-1/2 flex justify-start'>
           <div className='text-gray-xl'>
             {card.card.official_id}
-            {/* {cardSet && (
-                <Image
-                  src={cardSet.img_url}
-                  alt={cardSet.name}
-                  width={0}
-                  height={0}
-                  sizes='100vw'
-                  className='h-8 w-auto'
-                />
-              )} */}
+            {cardSet && (
+              <Image
+                src={cardSet.img_url}
+                alt={cardSet.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className='h-8 w-auto'
+              />
+            )}
             <Image
               src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
               alt={`Rareté ${card.card.rarity}`}
@@ -117,7 +121,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
               <WishlistItem
                 key={wish._id}
                 card={wish}
-                isSelected={selectedCardId === wish._id}
+                isSelected={selectedCardId === wish.card._id}
                 onClick={setSelectedCardId}
               />
             </div>

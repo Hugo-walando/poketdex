@@ -1,22 +1,30 @@
+// /components/data/AllListedCardsLoader.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
-import useFetchAllListedCards from '@/app/hooks/useFetchAllListedCards'; // Ton hook qu'on a fait ensemble
+import useFetchAllListedCards from '@/app/hooks/useFetchAllListedCards';
 
 export default function AllListedCardsLoader() {
-  console.log('🔄 Chargement des listedCards...');
-  const setAllListedCards = useAllListedCardsStore((s) => s.setAllListedCards);
+  const { setAllListedCards, setRefetchListedCards, setLoading } =
+    useAllListedCardsStore();
 
-  const { listedCards, loading } = useFetchAllListedCards();
+  const { listedCards, loading, refetch } = useFetchAllListedCards();
+
+  // 🔄 Synchronise loading avec le store Zustand
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading, setLoading]);
 
   useEffect(() => {
     if (!loading && listedCards.length > 0) {
-      console.log('📥 Stockage de toutes les listedCards...');
       setAllListedCards(listedCards);
-      console.log('✅ Toutes les listedCards sont chargées');
     }
   }, [loading, listedCards, setAllListedCards]);
+
+  useEffect(() => {
+    setRefetchListedCards(refetch);
+  }, [refetch, setRefetchListedCards]);
 
   return null;
 }
