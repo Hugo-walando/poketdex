@@ -248,12 +248,12 @@ export default function CardPage() {
                     sizes='100vw'
                     className='w-auto h-[50px]'
                   />
-                  <span className='font-medium text-lg'>{set.name}</span>
-                  <div className='text-gray-lg grid grid-cols-1 md:grid-cols-2 gap-2'>
+                  <span className='text-dark-lg'>{set.card_count} cartes</span>
+                  <div className='text-gray-lg grid grid-cols-1 gap-2'>
                     {/* Listed cards */}
                     <div className='flex items-center gap-2 flex-wrap'>
-                      <TradeIcon className='w-5 h-5 fill-primarygreen' />
-                      <span className='font-medium'>: Cartes listées</span>
+                      <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                      <span className='min-w-[190px] '>Cartes à échanger:</span>
                       {Object.entries(listedCount).map(([rarity, count]) => (
                         <span
                           key={`listed-${rarity}`}
@@ -276,7 +276,7 @@ export default function CardPage() {
                     {/* Wishlist cards */}
                     <div className='flex items-center gap-2 flex-wrap'>
                       <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
-                      <span className='font-medium'>: Wishlist</span>
+                      <span className='min-w-[190px]'>Cartes recherchées:</span>
                       {Object.entries(wishlistCount).map(([rarity, count]) => (
                         <span
                           key={`wishlist-${rarity}`}
