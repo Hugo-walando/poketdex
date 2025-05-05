@@ -27,6 +27,7 @@ import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
 import ProtectedLayout from '../components/auth/ProtectedLayout';
 import TradeIcon from '../components/svgs/TradeIcon';
 import { ChevronDown, ChevronRight, HeartIcon } from 'lucide-react';
+import useIsMobile from '../hooks/useIsMobile';
 
 export default function CardPage() {
   const sets = useGlobalData((s) => s.sets);
@@ -55,6 +56,7 @@ export default function CardPage() {
   );
 
   const { removeMatchesByCard } = useRemoveMatchesByCard();
+  const isMobile = useIsMobile();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -197,7 +199,7 @@ export default function CardPage() {
 
             <div className='flex flex-col sm:flex-row sm:items-center gap-4'>
               <div className='flex items-center gap-2'>
-                <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                <TradeIcon className='w-6 h-6 fill-primarygreen shrink-0' />
                 <span className='text-gray-base text-sm'>
                   : Ajouter cette carte à vos{' '}
                   <strong>cartes disponibles pour échange </strong> (vos
@@ -205,7 +207,7 @@ export default function CardPage() {
                 </span>
               </div>
               <div className='flex items-center gap-2'>
-                <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+                <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent shrink-0' />
                 <span className='text-gray-base text-sm'>
                   : Ajouter cette carte à votre <strong>wishlist</strong> (vos
                   cartes recherchées)
@@ -243,7 +245,7 @@ export default function CardPage() {
             return (
               <section key={set.code} className='mb-12 '>
                 <div
-                  className='flex items-center justify-center mx-auto md:justify-start w-full md:bg-white md:rounded-xl md:p-3 md:shadow-base gap-3 mb-6 md:w-max  hover:cursor-pointer hover:bg-gray-100 transition-all sticky top-0 z-10'
+                  className='flex items-center justify-center mx-auto md:justify-start w-full bg-white rounded-xl p-3 shadow-base gap-3 mb-6 md:w-max  hover:cursor-pointer hover:bg-gray-100 transition-all sticky top-0 z-10'
                   onClick={() =>
                     setOpenSetCodes((prev) =>
                       prev.includes(set.code)
@@ -260,54 +262,65 @@ export default function CardPage() {
                     sizes='100vw'
                     className='w-auto h-[50px]'
                   />
-                  <span className='text-dark-lg'>{set.card_count} cartes</span>
-                  <div className='text-gray-lg grid grid-cols-1 gap-2'>
-                    {/* Listed cards */}
-                    <div className='flex items-center gap-2 flex-wrap'>
-                      <TradeIcon className='w-6 h-6 fill-primarygreen' />
-                      <span className='min-w-[190px] '>Cartes à échanger:</span>
-                      {Object.entries(listedCount).map(([rarity, count]) => (
-                        <span
-                          key={`listed-${rarity}`}
-                          className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
-                        >
-                          <Image
-                            src={`/testimgs/rarities/${rarity}.png`}
-                            alt={`Rareté ${rarity}`}
-                            width={0}
-                            height={0}
-                            sizes='100vw'
-                            quality={100}
-                            className='object-contain w-auto h-[25px]'
-                          />
-                          {count}
+                  <span className='text-dark-base md:text-dark-lg'>
+                    {set.card_count} cartes
+                  </span>
+                  {!isMobile && (
+                    <div className='text-gray-base grid grid-cols-1 gap-2'>
+                      {/* Listed cards */}
+                      <div className='flex items-center gap-2 flex-wrap'>
+                        <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                        <span className='md:min-w-[190px] '>
+                          Cartes à échanger:
                         </span>
-                      ))}
-                    </div>
+                        {Object.entries(listedCount).map(([rarity, count]) => (
+                          <span
+                            key={`listed-${rarity}`}
+                            className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
+                          >
+                            <Image
+                              src={`/testimgs/rarities/${rarity}.png`}
+                              alt={`Rareté ${rarity}`}
+                              width={0}
+                              height={0}
+                              sizes='100vw'
+                              quality={100}
+                              className='object-contain w-auto h-[25px]'
+                            />
+                            {count}
+                          </span>
+                        ))}
+                      </div>
 
-                    {/* Wishlist cards */}
-                    <div className='flex items-center gap-2 flex-wrap'>
-                      <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
-                      <span className='min-w-[190px]'>Cartes recherchées:</span>
-                      {Object.entries(wishlistCount).map(([rarity, count]) => (
-                        <span
-                          key={`wishlist-${rarity}`}
-                          className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
-                        >
-                          <Image
-                            src={`/testimgs/rarities/${rarity}.png`}
-                            alt={`Rareté ${rarity}`}
-                            width={0}
-                            height={0}
-                            sizes='100vw'
-                            quality={100}
-                            className='object-contain w-auto h-[25px]'
-                          />
-                          {count}
+                      {/* Wishlist cards */}
+                      <div className='flex items-center gap-2 flex-wrap'>
+                        <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+                        <span className='min-w-[150px] md:min-w-[190px]'>
+                          Cartes recherchées:
                         </span>
-                      ))}
+                        {Object.entries(wishlistCount).map(
+                          ([rarity, count]) => (
+                            <span
+                              key={`wishlist-${rarity}`}
+                              className='inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md'
+                            >
+                              <Image
+                                src={`/testimgs/rarities/${rarity}.png`}
+                                alt={`Rareté ${rarity}`}
+                                width={0}
+                                height={0}
+                                sizes='100vw'
+                                quality={100}
+                                className='object-contain w-auto h-[25px]'
+                              />
+                              {count}
+                            </span>
+                          ),
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
+
                   {isOpen ? (
                     <ChevronDown className='w-5 h-5' />
                   ) : (
@@ -315,41 +328,96 @@ export default function CardPage() {
                   )}
                 </div>
                 {isOpen && (
-                  <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                    {cards.map((card: Card) => (
-                      <div
-                        key={card.official_id}
-                        className='justify-self-center relative'
-                      >
-                        {card.img_url ? (
-                          <Image
-                            src={card.img_url}
-                            alt={card.name || 'Carte'}
-                            width={0}
-                            height={0}
-                            sizes='100vw'
-                            className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
-                          />
-                        ) : (
-                          <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
-                            Image manquante
-                          </div>
-                        )}
+                  <>
+                    {isMobile && (
+                      <div className='text-gray-base 2xl:text-gray-lg grid grid-cols-1 gap-2 mb-4'>
+                        {/* Listed cards */}
+                        <div className='flex items-center gap-2 flex-wrap'>
+                          <TradeIcon className='w-6 h-6 fill-primarygreen' />
 
-                        <CardSelector
-                          cardId={card.official_id}
-                          listedCardIds={listedCardIds}
-                          wishlistCardIds={wishlistCardIds}
-                          toggleListedCard={() =>
-                            toggleListedCard(card.official_id, card._id)
-                          }
-                          toggleWishlistCard={() =>
-                            toggleWishlistCard(card.official_id, card._id)
-                          }
-                        />
+                          {Object.entries(listedCount).map(
+                            ([rarity, count]) => (
+                              <span
+                                key={`listed-${rarity}`}
+                                className='inline-flex items-center gap-1 bg-gray-200 px-2 py-1 rounded-md'
+                              >
+                                <Image
+                                  src={`/testimgs/rarities/${rarity}.png`}
+                                  alt={`Rareté ${rarity}`}
+                                  width={0}
+                                  height={0}
+                                  sizes='100vw'
+                                  quality={100}
+                                  className='object-contain w-auto h-[15px]'
+                                />
+                                {count}
+                              </span>
+                            ),
+                          )}
+                        </div>
+
+                        {/* Wishlist cards */}
+                        <div className='flex items-center gap-2 flex-wrap'>
+                          <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+
+                          {Object.entries(wishlistCount).map(
+                            ([rarity, count]) => (
+                              <span
+                                key={`wishlist-${rarity}`}
+                                className='inline-flex items-center gap-1 bg-gray-200 px-2 py-1 rounded-md'
+                              >
+                                <Image
+                                  src={`/testimgs/rarities/${rarity}.png`}
+                                  alt={`Rareté ${rarity}`}
+                                  width={0}
+                                  height={0}
+                                  sizes='100vw'
+                                  quality={100}
+                                  className='object-contain w-auto h-[15px]'
+                                />
+                                {count}
+                              </span>
+                            ),
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                    <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+                      {cards.map((card: Card) => (
+                        <div
+                          key={card.official_id}
+                          className='justify-self-center relative'
+                        >
+                          {card.img_url ? (
+                            <Image
+                              src={card.img_url}
+                              alt={card.name || 'Carte'}
+                              width={0}
+                              height={0}
+                              sizes='100vw'
+                              className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                            />
+                          ) : (
+                            <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                              Image manquante
+                            </div>
+                          )}
+
+                          <CardSelector
+                            cardId={card.official_id}
+                            listedCardIds={listedCardIds}
+                            wishlistCardIds={wishlistCardIds}
+                            toggleListedCard={() =>
+                              toggleListedCard(card.official_id, card._id)
+                            }
+                            toggleWishlistCard={() =>
+                              toggleWishlistCard(card.official_id, card._id)
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </section>
             );
