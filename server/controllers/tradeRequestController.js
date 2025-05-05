@@ -11,6 +11,14 @@ const createQuickTradeRequest = async (req, res) => {
     console.log('ID de la carte offerte :', myCardOfferedId);
     console.log('ID de l’utilisateur à qui envoyer la demande :', toUserId);
     const userId = req.user._id;
+    const sender = req.user;
+
+    if (!sender.username || !sender.friend_code) {
+      return res.status(400).json({
+        message:
+          'Vous devez compléter votre profil (pseudo et code ami) pour envoyer une demande.',
+      });
+    }
 
     if (!listedCardId || !myCardOfferedId || !toUserId) {
       return res.status(400).json({ message: 'Données manquantes.' });

@@ -6,11 +6,13 @@ import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { TradeRequest } from '@/app/types';
+import { useUIModalStore } from '../store/useUIModalStore';
 
 const useCreateQuickTrade = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useUserStore();
+  const { openCompleteProfileModal } = useUIModalStore();
 
   const createQuickTrade = async ({
     listedCardId,
@@ -52,6 +54,9 @@ const useCreateQuickTrade = () => {
       const backendMessage =
         axiosError.response?.data?.message ||
         'Erreur lors de la création de la demande.';
+      if (backendMessage.includes('compléter votre profil')) {
+        openCompleteProfileModal(); // ⬅️ à toi de gérer ce composant
+      }
       setError(backendMessage);
       toast.error(backendMessage);
       return null;
