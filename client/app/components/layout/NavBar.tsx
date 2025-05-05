@@ -94,6 +94,15 @@ export default function Navbar() {
             {item.icon}
           </Link>
         ))}
+        {isAuthenticated ? (
+          <Link href='/profile'>
+            <div className='w-10 h-10 rounded-full bg-primarygreen'></div>
+          </Link>
+        ) : (
+          <Link href='/login' className='text-dark-base font-medium'>
+            S’authentifier
+          </Link>
+        )}
       </nav>
     </>
   );

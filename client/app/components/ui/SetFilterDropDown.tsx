@@ -60,7 +60,7 @@ export default function SetFilterDropdown({
       <DropdownMenu.Content
         sideOffset={8}
         align='start'
-        className='z-10 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
+        className='z-50 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
       >
         {sets.map((set) => {
           const isSelected = selectedSets.includes(set.code); // ✅ on utilise `set.code` comme identifiant
