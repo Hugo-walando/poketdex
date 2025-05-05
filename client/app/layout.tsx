@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import ClientProviders from './ClientProviders';
 import { auth } from '@/auth';
+import Footer from './components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'PoketDex',
@@ -33,6 +34,7 @@ export default async function RootLayout({
             <Navbar />
             <Toaster position='top-center' />
             <ClientProviders>{children}</ClientProviders>
+            <Footer />
           </MaxWidthWrapper>
         </SessionProvider>
       </body>
