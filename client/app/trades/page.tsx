@@ -99,7 +99,7 @@ export default function TradePage() {
 
             {selectedGroup ? (
               <div className='flex-1 px-2 flex flex-col lg:flex-row gap-2'>
-                <div className='block lg:hidden pb-4 bg-white'>
+                <div className='block lg:hidden pb-4'>
                   <UserDetail user={selectedGroup.user} />
                 </div>
                 <div className='flex-1 overflow-y-auto max-h-[calc(100vh-152px)] pr-2 '>
