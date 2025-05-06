@@ -27,7 +27,7 @@ export default function Home() {
         {isMobile && viewMode === 'default' && (
           <button
             onClick={() => setViewMode('matchs')}
-            className='fixed top-8 right-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-l-full shadow-lg md:hidden flex items-center'
+            className='fixed top-5 right-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-l-full shadow-lg md:hidden flex items-center'
           >
             Voir les matchs
             <ChevronRight className='w-4 h-4 sm:w-6 sm:h-6 ml-2' />

@@ -12,6 +12,7 @@ import { useGlobalData } from '@/app/store/useGlobalData';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 import { useUserStore } from '@/app/store/useUserStore';
 import { RefreshCcw } from 'lucide-react';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -28,6 +29,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+  const isMobile = useIsMobile();
 
   const hasWishlistOfSameRarity = (
     wishlistCards: WishlistCard[] = [],
@@ -86,8 +88,8 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     return matchSearch && matchSet && matchRarity && hasSameRarityWishlist;
   });
   return (
-    <div className='w-full md:w-6/10 mb-10 mt-14 md:mt-0 gap-6 relative'>
-      <div className='sticky top-0 z-10 rounded-xl mb-4 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>
+    <div className='w-full md:w-6/10 mb-10  gap-6 relative'>
+      <div className='sticky top-0 z-10 mb-4 pt-10 md:pt-0 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>
         <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>
 
         <SearchBar
@@ -122,9 +124,17 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
           </div>
           <button
             onClick={() => refetchListedCards?.()}
-            className='px-3 py-2 bg-primarygreen text-white rounded hover:opacity-90 flex items-center gap-2 hover:cursor-pointer'
+            className='px-3 py-2 bg-primarygreen text-white rounded-lg hover:opacity-90 flex items-center gap-2 hover:cursor-pointer'
           >
-            Refresh les cartes <RefreshCcw className='w-4 h-4 inline' />
+            {isMobile ? (
+              <span className='text-sm font-poppins text-white'>
+                <RefreshCcw className='w-4 h-4 inline shrink-0' />
+              </span>
+            ) : (
+              <span className='text-white font-poppins text-base'>
+                Rafraîchir <RefreshCcw className='w-4 h-4 inline shrink-0' />
+              </span>
+            )}
           </button>
         </div>
       </div>
