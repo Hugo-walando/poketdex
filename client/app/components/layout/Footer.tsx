@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className='w-full text-center  text-gray-base py-4 border-t border-gray-200 mt-50 pb-24 px-4'>
+    <footer className='w-full text-center  text-gray-base py-4 border-t border-gray-200 mt-[100vh] pb-24 px-4'>
       <p>
         Toutes les images, noms et données des cartes Pokémon sont la propriété
         de <strong>The Pokémon Company</strong> et de leurs détenteurs
