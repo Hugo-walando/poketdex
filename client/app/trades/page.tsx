@@ -69,8 +69,8 @@ export default function TradePage() {
         {isMobile ? (
           <div className='h-full'>
             {selectedUserId && selectedGroup ? (
-              <div className='h-full'>
-                <div className='mb-4'>
+              <div className='h-full relative'>
+                <div className='mb-4 sticky top-0 left-0 z-20'>
                   <UserDetail user={selectedGroup.user} />
                 </div>
                 <TradeListSection

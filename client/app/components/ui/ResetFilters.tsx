@@ -12,7 +12,7 @@ export default function ResetFilters({ onClick, disabled }: ResetFiltersProps) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`transition w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-base flex items-center justify-center text-white
+      className={`transition px-3 py-2 rounded-lg shadow-base flex items-center justify-center text-white
         ${
           disabled
             ? ' bg-gray-300 cursor-not-allowed'
@@ -20,7 +20,7 @@ export default function ResetFilters({ onClick, disabled }: ResetFiltersProps) {
         }
       `}
     >
-      <Undo2 />
+      <Undo2 className='w-5 h-5' />
     </button>
   );
 }
