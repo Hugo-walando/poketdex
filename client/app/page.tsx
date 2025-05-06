@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LeftColumn from './components/home/LeftColumn';
 import RightColumn from './components/home/RightColumn';
 import { ListedCard } from './types';
@@ -18,6 +18,18 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<'default' | 'matchs'>('default');
   const isMobile = useIsMobile();
   const { loading } = useFetchMatches(); // ici une seule fois
+
+  useEffect(() => {
+    if (isMobile && (selectedCard || viewMode === 'matchs')) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isMobile, selectedCard, viewMode]);
 
   return (
     <ProtectedPage>
