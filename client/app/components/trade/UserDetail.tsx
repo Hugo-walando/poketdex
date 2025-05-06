@@ -10,7 +10,7 @@ interface UserDetailProps {
 
 export default function UserDetail({ user }: UserDetailProps) {
   return (
-    <div className='bg-white shadow-base rounded-xl p-4 flex flex-col gap-4'>
+    <div className=' rounded-b-xl w-full bg-white shadow-base md:rounded-xl p-4 md:flex md:flex-col gap-4'>
       <div className='flex lg:flex-col lg:justify-center items-center gap-2'>
         <Image
           src={user.profile_picture || '/testimgs/avatars/Av1.png'}
@@ -22,7 +22,7 @@ export default function UserDetail({ user }: UserDetailProps) {
         />
         <div className='flex flex-col lg:items-center gap-1 w-full'>
           <span className='text-dark-base truncate'>{user.username}</span>
-          <span className='text-light-sm sm:flex truncate items-center lg:flex-col '>
+          <span className='text-gray-base sm:flex truncate items-center lg:flex-col '>
             Code ami :
             <FriendCode code={user.friend_code} />
           </span>

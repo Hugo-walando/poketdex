@@ -48,12 +48,11 @@ async function authenticateToken(req, res, next) {
     req.user = user;
     req.googleSub = decoded.sub;
     console.log('✅ Utilisateur trouvé ');
-    console.log('googleSub', req.googleSub);
+
     next();
   } catch (err) {
     console.error(
       '❌ Erreur lors de la vérification du token ou de la récupération de l’utilisateur',
-      err,
     );
     return res
       .status(401)
