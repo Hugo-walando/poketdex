@@ -33,6 +33,11 @@ export default function TradePage() {
       }
     }
   }, [searchParams, router]);
+  useEffect(() => {
+    if (isMobile) {
+      window.scrollTo({ top: 0 });
+    }
+  }, [selectedUserId, isMobile]);
 
   if (loading) {
     return (

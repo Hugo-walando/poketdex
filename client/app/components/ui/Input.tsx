@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           className={cn(
-            'px-4 py-2 bg-whitebackground inset-shadow-field rounded-full focus:outline-none focus:ring-2 focus:ring-primarygreen text-dark-xl placeholder:text-gray-xl',
+            'px-4 py-2 bg-whitebackground inset-shadow-field rounded-full focus:outline-none focus:ring-2 focus:ring-primarygreen text-dark-lg placeholder:text-gray-xl',
             error && 'border-redalert ring-redalert',
             className,
           )}
