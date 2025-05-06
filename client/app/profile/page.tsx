@@ -6,6 +6,7 @@ import LogoutButton from '../components/ui/LogoutButton';
 import ProtectedPage from '../components/auth/ProtectedPage';
 import { updateUserSchema } from '@/lib/validation/user';
 import { useUserStore } from '../store/useUserStore';
+import Input from '../components/ui/Input';
 
 export default function Profile() {
   const { updateUser, error, success, loading } = useUpdateUser();
@@ -26,7 +27,7 @@ export default function Profile() {
   }, [user]);
 
   const handleSave = async () => {
-    setFormErrors({}); // Réinitialise les erreurs
+    setFormErrors({});
 
     const result = updateUserSchema.safeParse({
       username,
@@ -50,47 +51,41 @@ export default function Profile() {
 
   return (
     <ProtectedPage>
-      <div className='p-4 max-w-md mx-auto space-y-4'>
-        <h2 className='text-xl font-semibold'>Bienvenue {user.username}</h2>
-        <LogoutButton />
+      <div className='p-4 max-w-md mx-auto space-y-6 '>
+        <div className='flex items-center justify-between'>
+          <h2 className='text-dark-xl'>Bienvenue {user.username}</h2>
+          <LogoutButton />
+        </div>
 
-        {success && <div className='text-green-600 font-medium'>{success}</div>}
-        {error && <div className='text-red-600 font-medium'>{error}</div>}
+        {success && (
+          <div className='text-primarygreen font-medium'>{success}</div>
+        )}
+        {error && <div className='text-red-alert font-medium'>{error}</div>}
 
         <div>
-          <label className='block mb-1'>Pseudo</label>
-          <input
+          <Input
+            label='Pseudo'
             type='text'
-            className='w-full p-2 border rounded'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            error={formErrors.username?.[0]}
           />
-          {formErrors.username && (
-            <p className='text-sm text-red-600 mt-1'>
-              {formErrors.username[0]}
-            </p>
-          )}
         </div>
 
         <div>
-          <label className='block mb-1'>Code Ami</label>
-          <input
+          <Input
+            label='Code Ami'
             type='text'
-            className='w-full p-2 border rounded'
             value={friendCode}
             onChange={(e) => setFriendCode(e.target.value)}
+            error={formErrors.friend_code?.[0]}
           />
-          {formErrors.friend_code && (
-            <p className='text-sm text-red-600 mt-1'>
-              {formErrors.friend_code[0]}
-            </p>
-          )}
         </div>
 
         <button
           onClick={handleSave}
           disabled={loading}
-          className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50'
+          className='w-full py-2 bg-primarygreen text-white rounded-xl font-poppins hover:bg-primarygreen/80 transition disabled:opacity-60'
         >
           {loading ? 'Sauvegarde...' : 'Sauvegarder'}
         </button>

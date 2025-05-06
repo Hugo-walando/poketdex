@@ -103,11 +103,11 @@ body {
 }
 
 .text-light-base {
-  @apply text-base text-bluegray font-semibold font-poppins
+  @apply text-base text-bluegray font-light font-poppins
 }
 
 .text-light-sm {
-  @apply text-sm text-bluegray font-semibold font-poppins
+  @apply text-sm text-bluegray font-light font-poppins
 }
 
 
