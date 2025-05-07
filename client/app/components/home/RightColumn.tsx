@@ -14,7 +14,7 @@ export default function RightColumn({
   loadingMatches,
 }: RightColumnProps) {
   return (
-    <div className='bg-white rounded-xl shadow-base md:block sticky top-[22vh] h-[72vh] w-4/10 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-rounded '>
+    <div className=' flex flex-col bg-white rounded-xl shadow-base md:block sticky top-[22vh] h-[72vh] w-4/10 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-rounded '>
       {selectedCard ? (
         <QuickTradeDetails card={selectedCard} onClose={onClose} />
       ) : (

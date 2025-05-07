@@ -65,16 +65,16 @@ export default function MatchList({ loading }: MatchListProps) {
   }
 
   return (
-    <>
-      <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
+    <div className='flex flex-col h-full'>
+      <div className='flex-1 overflow-y-auto px-2 md:p-2'>
         <h2 className='text-dark-xl font-semibold text-center py-2'>
-          {`Match` + (totalMatchCount > 1 ? 's' : '')}{' '}
+          Match{totalMatchCount > 1 ? 's' : ''}{' '}
           <span className='text-gray-lg font-normal'>
             ({totalMatchCount} disponible{totalMatchCount > 1 ? 's' : ''})
           </span>
         </h2>
 
-        <div className='flex flex-col gap-2 pt-2 pb-10'>
+        <div className='flex flex-col gap-2 pt-2 pb-6'>
           {matchGroups.map((group) => (
             <MatchGroupItem
               key={group.user._id}
@@ -84,90 +84,20 @@ export default function MatchList({ loading }: MatchListProps) {
               onToggleMatchSelection={toggleMatchSelection}
             />
           ))}
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
-          <div className='bg-white rounded-xl shadow-base'>
-            <div className='flex items-center gap-3 px-4 py-2'>
-              <div className='w-8 h-8 rounded-full bg-gray-300' />{' '}
-              {/* cercle gris à la place de l'image */}
-              <span className='text-dark-sm sm:text-dark-base text-nowrap font-semibold'>
-                Test (2 matchs)
-              </span>
-            </div>
-          </div>
         </div>
       </div>
-      <div className='fixed bottom-20 md:sticky md:bottom-0 left-0 right-0 p-4 md:bg-white rounded-xl md:shadow-base'>
+
+      {/* Footer button */}
+      <div className='p-4 md:bg-white rounded-xl md:shadow-base'>
         <button
           onClick={handleSendRequests}
           disabled={selectedMatchIds.length === 0 || sending}
           className={`w-full py-3 rounded-xl font-semibold transition shadow-base
-      ${
-        selectedMatchIds.length === 0 || sending
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          : 'bg-primarygreen text-white hover:opacity-90 cursor-pointer'
-      }`}
+        ${
+          selectedMatchIds.length === 0 || sending
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-primarygreen text-white hover:opacity-90 cursor-pointer'
+        }`}
         >
           {sending
             ? 'Envoi en cours...'
@@ -176,6 +106,6 @@ export default function MatchList({ loading }: MatchListProps) {
               : 'Sélectionnez des matchs pour envoyer'}
         </button>
       </div>
-    </>
+    </div>
   );
 }
