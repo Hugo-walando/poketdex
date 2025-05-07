@@ -266,7 +266,7 @@ export default function CardPage() {
                     {set.card_count} cartes
                   </span>
                   {!isMobile && (
-                    <div className='text-gray-base grid grid-cols-1 gap-2'>
+                    <div className='text-gray-lg grid grid-cols-1 gap-2'>
                       {/* Listed cards */}
                       <div className='flex items-center gap-2 flex-wrap'>
                         <TradeIcon className='w-6 h-6 fill-primarygreen' />

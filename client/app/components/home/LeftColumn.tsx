@@ -12,7 +12,6 @@ import { useGlobalData } from '@/app/store/useGlobalData';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 import { useUserStore } from '@/app/store/useUserStore';
 import { RefreshCcw } from 'lucide-react';
-import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -29,7 +28,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
-  const isMobile = useIsMobile();
 
   const hasWishlistOfSameRarity = (
     wishlistCards: WishlistCard[] = [],
@@ -126,15 +124,9 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
             onClick={() => refetchListedCards?.()}
             className='px-3 py-2 bg-primarygreen text-white rounded-lg hover:opacity-90 flex items-center gap-2 hover:cursor-pointer'
           >
-            {isMobile ? (
-              <span className='text-sm font-poppins text-white'>
-                <RefreshCcw className='w-4 h-4 inline shrink-0' />
-              </span>
-            ) : (
-              <span className='text-white font-poppins text-base'>
-                Rafraîchir <RefreshCcw className='w-4 h-4 inline shrink-0' />
-              </span>
-            )}
+            <span className='text-sm font-poppins text-white'>
+              <RefreshCcw className='w-4 h-4 inline shrink-0' />
+            </span>
           </button>
         </div>
       </div>

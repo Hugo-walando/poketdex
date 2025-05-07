@@ -43,6 +43,11 @@ export default function MatchList({ loading }: MatchListProps) {
     }
   };
 
+  const totalMatchCount = matchGroups.reduce(
+    (acc, group) => acc + group.trades.length,
+    0,
+  );
+
   if (loading) {
     return (
       <div className='flex justify-center items-center h-[300px]'>
@@ -65,8 +70,12 @@ export default function MatchList({ loading }: MatchListProps) {
         <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>
           Matchs
         </h2>
+        <h3 className='text-gray-base text-sm mb-4 ml-2'>
+          <strong className='text-dark-base'>{`${totalMatchCount}`}</strong>{' '}
+          match{totalMatchCount > 1 && 's'} disponibles
+        </h3>
 
-        <div className='flex flex-col gap-2 py-4'>
+        <div className='flex flex-col gap-2 pt-2 pb-10'>
           {matchGroups.map((group) => (
             <MatchGroupItem
               key={group.user._id}
