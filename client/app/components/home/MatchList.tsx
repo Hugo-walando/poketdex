@@ -67,7 +67,7 @@ export default function MatchList({ loading }: MatchListProps) {
   return (
     <>
       <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
-        <h2 className='text-dark-xl font-semibold text-center'>
+        <h2 className='text-dark-xl font-semibold text-center py-2'>
           {`Match` + (totalMatchCount > 1 ? 's' : '')}{' '}
           <span className='text-gray-lg font-normal'>
             ({totalMatchCount} disponible{totalMatchCount > 1 ? 's' : ''})

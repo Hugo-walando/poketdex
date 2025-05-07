@@ -29,7 +29,8 @@ export default function TradeListSection({
   return (
     <>
       <h2 className='text-dark-xl mb-4 truncate px-2'>
-        Demandes et Échanges avec {selectedUser.username}
+        Demandes et Échanges avec {selectedUser.username}{' '}
+        <span className='text-gray-xl'>({trades.length})</span>
       </h2>
       <section className='flex-1 p-1 xl:px-2 mb-2 '>
         <CloseButton
