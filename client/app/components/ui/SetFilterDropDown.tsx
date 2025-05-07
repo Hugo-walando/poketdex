@@ -45,7 +45,7 @@ export default function SetFilterDropdown({
       }}
     >
       <DropdownMenu.Trigger asChild>
-        <button className='relative flex items-center gap-1 md:gap-2 px-2 h-max sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'>
+        <button className='relative flex items-center gap-1 md:gap-2 px-2 h-max sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray font-semibold text-base md:text-gray-xl hover:cursor-pointer'>
           <BoosterIcon className='w-5 h-5  text-darkgray' />
           {isMobile ? <span></span> : <span>Extension</span>}
 

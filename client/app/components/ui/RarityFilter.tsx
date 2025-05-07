@@ -28,7 +28,7 @@ export default function RarityFilter({
       onOpenChange={() => setOpenFilter(isOpen ? null : 'rarity')}
     >
       <DropdownMenu.Trigger asChild>
-        <button className='relative items-center h-max flex gap-1 md:gap-2 px-2 sm:px-3 md:px-4 py-2 text-gray-base md:text-gray-xl bg-white rounded-xl shadow-base hover:cursor-pointer'>
+        <button className='relative items-center h-max flex gap-1 md:gap-2 px-2 sm:px-3 md:px-4 py-2 text-gray font-semibold text-base  bg-white rounded-xl shadow-base hover:cursor-pointer'>
           <StarIcon className='w-5 h-5 text-darkgray fill-darkgray' />
           {isMobile ? <span></span> : <span>Rareté</span>}
           {isOpen ? (
