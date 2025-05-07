@@ -12,7 +12,7 @@ export default function ResetFilters({ onClick, disabled }: ResetFiltersProps) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`transition px-3 py-2 rounded-lg  flex items-center justify-center text-white
+      className={`transition px-3 py-2 rounded-lg flex items-center justify-center text-white
         ${
           disabled
             ? ' bg-gray-300 cursor-not-allowed'

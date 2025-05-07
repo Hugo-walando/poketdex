@@ -159,7 +159,7 @@ export default function CardPage() {
               onSearch={(query) => setSearchQuery(query.toLowerCase())}
             />
           </div>
-          <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex'>
+          <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex md:items-center'>
             <FilterDropdownProvider>
               {sets.length > 0 && (
                 <SetFilterDropdown
