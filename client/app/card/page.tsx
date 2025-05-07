@@ -159,7 +159,7 @@ export default function CardPage() {
               onSearch={(query) => setSearchQuery(query.toLowerCase())}
             />
           </div>
-          <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex'>
+          <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex md:items-start  '>
             <FilterDropdownProvider>
               {sets.length > 0 && (
                 <SetFilterDropdown
@@ -266,11 +266,11 @@ export default function CardPage() {
                     {set.card_count} cartes
                   </span>
                   {!isMobile && (
-                    <div className='text-gray-base grid grid-cols-1 gap-2'>
+                    <div className='text-gray-lg grid grid-cols-1 gap-2 h-[80px]'>
                       {/* Listed cards */}
                       <div className='flex items-center gap-2 flex-wrap'>
                         <TradeIcon className='w-6 h-6 fill-primarygreen' />
-                        <span className='md:min-w-[190px] '>
+                        <span className='md:min-w-[190px]'>
                           Cartes à échanger:
                         </span>
                         {Object.entries(listedCount).map(([rarity, count]) => (
@@ -295,7 +295,7 @@ export default function CardPage() {
                       {/* Wishlist cards */}
                       <div className='flex items-center gap-2 flex-wrap'>
                         <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
-                        <span className='min-w-[150px] md:min-w-[190px]'>
+                        <span className='md:min-w-[190px]'>
                           Cartes recherchées:
                         </span>
                         {Object.entries(wishlistCount).map(

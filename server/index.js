@@ -1,56 +1,63 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const http = require('http'); // 👈 Pour créer un serveur HTTP brut
+const { Server } = require('socket.io');
 require('dotenv').config();
 
+const connectDB = require('./config/db');
+const errorHandler = require('./middlewares/errorHandler');
+
+// Initialise Express
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// Middleware
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
 
-app.use(
-  cors({
-    origin: allowedOrigin, // Remplace par l'URL de ton frontend
-    credentials: true, // Permet d'envoyer des cookies et des en-têtes d'autorisation
-  }),
-);
-app.use(express.json());
-// app.use(errorHandler());
+// Création du serveur HTTP
+const server = http.createServer(app); // 👈 Important pour socket.io
 
-// Connect to database
+// Création de l'instance socket.io
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigin,
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
+// Connexion MongoDB
 connectDB();
 
-const errorHandler = require('./middlewares/errorHandler');
-// Routes
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
+// Middleware
+app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.use(express.json());
+// app.use(errorHandler()); // Ajoute-le plus tard si tu veux
 
-const setRoutes = require('./routes/setRoutes');
-app.use('/api/sets', setRoutes);
+// Routes API REST
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/sets', require('./routes/setRoutes'));
+app.use('/api/cards', require('./routes/cardRoutes'));
+app.use('/api/listed-cards', require('./routes/listedCardRoutes'));
+app.use('/api/wishlist-cards', require('./routes/wishlistCardRoutes'));
+app.use('/api/matches', require('./routes/matchRoutes'));
+app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 
-const cardRoutes = require('./routes/cardRoutes');
-app.use('/api/cards', cardRoutes);
+// 📦 Ajoute les autres routes si besoin (boosters, notifications, etc.)
 
-const listedCardRoutes = require('./routes/listedCardRoutes');
-app.use('/api/listed-cards', listedCardRoutes);
+// Route test pour voir si le serveur répond
+app.get('/', (req, res) => {
+  res.send('Backend Socket.IO prêt ✅');
+});
 
-const wishlistCardRoutes = require('./routes/wishlistCardRoutes');
-app.use('/api/wishlist-cards', wishlistCardRoutes);
+// 🎯 Gestion des connexions socket.io
+io.on('connection', (socket) => {
+  console.log('🟢 Nouveau client connecté :', socket.id);
 
-const matchRoutes = require('./routes/matchRoutes');
-app.use('/api/matches', matchRoutes);
+  socket.on('disconnect', () => {
+    console.log('🔴 Client déconnecté :', socket.id);
+  });
+});
 
-const tradeRequestRoutes = require('./routes/tradeRequestRoutes');
-app.use('/api/trade-requests', tradeRequestRoutes);
-
-// const boosterRoutes = require('./routes/boosterRoutes');
-// app.use('/api/boosters', boosterRoutes);
-
-// const cardBoosterRoutes = require('./routes/cardBoosterRoutes');
-// app.use('/api/card-booster', cardBoosterRoutes);
-
-// const notificationRoutes = require('./routes/notificationRoutes');
-// app.use('/api/notifications', notificationRoutes);
-
-app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+// Lancer le serveur
+server.listen(PORT, () =>
+  console.log(`✅ Serveur avec Socket.IO lancé sur le port ${PORT}`),
+);

@@ -7,6 +7,7 @@ import { useFilter } from '@/app/context/FilterContext';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect } from 'react';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface SetFilterDropdownProps {
   selectedSets: string[];
@@ -22,6 +23,7 @@ export default function SetFilterDropdown({
   console.log('SetFilterDropdown', selectedSets, sets);
   const hasSelected = selectedSets.length > 0;
   const { openFilter, setOpenFilter } = useFilter();
+  const isMobile = useIsMobile();
 
   const isOpen = openFilter === 'set';
 
@@ -43,9 +45,10 @@ export default function SetFilterDropdown({
       }}
     >
       <DropdownMenu.Trigger asChild>
-        <button className='relative flex items-center gap-2 px-2 h-max sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray-base sm:text-gray-lg md:text-gray-xl hover:cursor-pointer'>
-          <BoosterIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray' />
-          Extension
+        <button className='relative flex items-center gap-1 md:gap-2 px-2 h-max sm:px-3 md:px-4 py-2 bg-white rounded-xl shadow-base text-gray font-semibold text-base md:text-gray-xl hover:cursor-pointer'>
+          <BoosterIcon className='w-5 h-5  text-darkgray' />
+          {isMobile ? <span></span> : <span>Extension</span>}
+
           {isOpen ? (
             <ChevronUp className='w-5 h-5 text-darkgray' />
           ) : (

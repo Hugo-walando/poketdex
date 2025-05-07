@@ -5,6 +5,7 @@ import { useFilter } from '@/app/context/FilterContext';
 import { rarities, rarityIcons } from '@/app/data/rarities';
 import { ChevronDown, ChevronUp, StarIcon } from 'lucide-react';
 import Image from 'next/image';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface RarityFilterProps {
   selectedRarities: number[];
@@ -17,6 +18,8 @@ export default function RarityFilter({
 }: RarityFilterProps) {
   const { openFilter, setOpenFilter } = useFilter();
   const isOpen = openFilter === 'rarity';
+  const isMobile = useIsMobile();
+
   const hasSelected = selectedRarities.length > 0;
 
   return (
@@ -25,9 +28,9 @@ export default function RarityFilter({
       onOpenChange={() => setOpenFilter(isOpen ? null : 'rarity')}
     >
       <DropdownMenu.Trigger asChild>
-        <button className='relative items-center h-max flex gap-2 px-2 sm:px-3 md:px-4 py-2 text-gray-base md:text-gray-xl bg-white rounded-xl shadow-base hover:cursor-pointer'>
-          <StarIcon className='w-4 h-4 md:w-5 md:h-5 text-darkgray fill-darkgray' />
-          Rareté
+        <button className='relative items-center h-max flex gap-1 md:gap-2 px-2 sm:px-3 md:px-4 py-2 text-gray font-semibold text-base  bg-white rounded-xl shadow-base hover:cursor-pointer'>
+          <StarIcon className='w-5 h-5 text-darkgray fill-darkgray' />
+          {isMobile ? <span></span> : <span>Rareté</span>}
           {isOpen ? (
             <ChevronUp className='w-5 h-5' />
           ) : (

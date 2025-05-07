@@ -14,6 +14,9 @@
   --font-poppins: '--font-poppins';
 }
 
+
+@plugin 'tailwind-scrollbar';
+
 body {
   @apply bg-whitebackground
 }
@@ -110,9 +113,21 @@ body {
   @apply text-sm text-bluegray font-light font-poppins
 }
 
+.text-dark {
+  @apply text-darkblue font-poppins
+}
 
+.text-gray {
+  @apply text-darkgray font-poppins
+}
+
+.text-light-base {
+  @apply text-bluegray font-poppins
+}
 
 /* Mix */
+
+
 
 /* Input Styles */
 
