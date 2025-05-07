@@ -67,13 +67,12 @@ export default function MatchList({ loading }: MatchListProps) {
   return (
     <>
       <div className='mt-14 md:mt-0 px-2 md:p-2 pb-30'>
-        <h2 className='text-dark-base sm:text-dark-xl mb-2 text-right'>
-          Matchs
+        <h2 className='text-dark-xl font-semibold text-center'>
+          {`Match` + (totalMatchCount > 1 ? 's' : '')}{' '}
+          <span className='text-gray-lg font-normal'>
+            ({totalMatchCount} disponible{totalMatchCount > 1 ? 's' : ''})
+          </span>
         </h2>
-        <h3 className='text-gray-base text-sm mb-4 ml-2'>
-          <strong className='text-dark-base'>{`${totalMatchCount}`}</strong>{' '}
-          match{totalMatchCount > 1 && 's'} disponibles
-        </h3>
 
         <div className='flex flex-col gap-2 pt-2 pb-10'>
           {matchGroups.map((group) => (
