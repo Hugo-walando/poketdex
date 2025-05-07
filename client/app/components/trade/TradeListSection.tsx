@@ -31,7 +31,7 @@ export default function TradeListSection({
       <h2 className='text-dark-xl mb-4 truncate px-2'>
         Demandes et Échanges avec {selectedUser.username}
       </h2>
-      <section className='flex-1 p-1 xl:px-2 mb-2'>
+      <section className='flex-1 p-1 xl:px-2 mb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-rounded '>
         <CloseButton
           onClick={onBack}
           className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
