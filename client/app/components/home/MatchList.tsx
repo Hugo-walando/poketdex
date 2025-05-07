@@ -150,11 +150,11 @@ export default function MatchList({ loading }: MatchListProps) {
           </div>
         </div>
       </div>
-      <div className='sticky bottom-0 left-0 right-0 p-4 bg-white rounded-xl shadow-base'>
+      <div className='fixed bottom-20 md:sticky md:bottom-0 left-0 right-0 p-4 md:bg-white rounded-xl md:shadow-base'>
         <button
           onClick={handleSendRequests}
           disabled={selectedMatchIds.length === 0 || sending}
-          className={`w-full py-3 rounded-xl font-semibold transition 
+          className={`w-full py-3 rounded-xl font-semibold transition shadow-base
       ${
         selectedMatchIds.length === 0 || sending
           ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
