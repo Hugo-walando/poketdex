@@ -32,6 +32,10 @@ export default function useSocket() {
         setConnected(false);
         console.log('🔴 Déconnecté de Socket.IO');
       });
+
+      socket.on('server-response', (data) => {
+        console.log('📨 Réponse du serveur :', data);
+      });
     }
 
     return () => {

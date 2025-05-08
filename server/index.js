@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
 
   socket.on('hello', (message) => {
     console.log('📩 Message reçu du client :', message);
+    socket.emit('server-response', 'Bien reçu ton message ! 📨');
   });
 });
 
