@@ -43,6 +43,10 @@ function setupSocket(server, allowedOrigin) {
   });
 
   function logConnectedUsers() {
+    for (const [userId, sockId] of connectedUsers.entries()) {
+      console.log(` - ${userId} → ${sockId}`);
+    }
+
     const ids = Array.from(connectedUsers.keys());
     console.log(`🧍 Utilisateurs connectés (${ids.length}) :`, ids);
   }
