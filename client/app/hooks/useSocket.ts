@@ -15,6 +15,7 @@ export default function useSocket() {
 
   const addOnlineUser = useOnlineUserStore((s) => s.add);
   const removeOnlineUser = useOnlineUserStore((s) => s.remove);
+  const setAll = useOnlineUserStore((s) => s.setAll);
 
   useEffect(() => {
     if (!socketRef.current) {
@@ -53,6 +54,7 @@ export default function useSocket() {
       });
       socket.on('connected-users', (ids: string[]) => {
         console.log('📥 Utilisateurs actuellement connectés :', ids);
+        setAll(ids);
         // Tu peux stocker ça dans un Zustand Store par exemple
       });
     } else {
