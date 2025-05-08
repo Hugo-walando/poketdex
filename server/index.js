@@ -1,38 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-const http = require('http'); // 👈 Pour créer un serveur HTTP brut
-const { Server } = require('socket.io');
+const http = require('http');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
-const errorHandler = require('./middlewares/errorHandler');
+const { setupSocket, getConnectedUserIds } = require('./socket');
 
-// Initialise Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
 
-// Création du serveur HTTP
-const server = http.createServer(app); // 👈 Important pour socket.io
-
-// Création de l'instance socket.io
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigin,
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
-
-// Connexion MongoDB
-connectDB();
-
-// Middleware
+// Middlewares
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json());
-// app.use(errorHandler()); // Ajoute-le plus tard si tu veux
 
-// Routes API REST
+// DB connection
+connectDB();
+
+// Routes API
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/sets', require('./routes/setRoutes'));
 app.use('/api/cards', require('./routes/cardRoutes'));
@@ -41,23 +26,19 @@ app.use('/api/wishlist-cards', require('./routes/wishlistCardRoutes'));
 app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 
-// 📦 Ajoute les autres routes si besoin (boosters, notifications, etc.)
-
-// Route test pour voir si le serveur répond
+// Test route
 app.get('/', (req, res) => {
   res.send('Backend Socket.IO prêt ✅');
 });
 
-// 🎯 Gestion des connexions socket.io
-io.on('connection', (socket) => {
-  console.log('🟢 Nouveau client connecté :', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('🔴 Client déconnecté :', socket.id);
-  });
+app.get('/api/connected-users', (req, res) => {
+  res.json({ connectedUserIds: getConnectedUserIds() });
 });
 
-// Lancer le serveur
+// Server + Socket.IO
+const server = http.createServer(app);
+setupSocket(server, allowedOrigin);
+
 server.listen(PORT, () =>
   console.log(`✅ Serveur avec Socket.IO lancé sur le port ${PORT}`),
 );

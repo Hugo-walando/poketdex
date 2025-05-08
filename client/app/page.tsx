@@ -12,6 +12,7 @@ import ProtectedPage from './components/auth/ProtectedPage';
 import ProtectedLayout from './components/auth/ProtectedLayout';
 import useFetchMatches from './hooks/useFetchMatches';
 import AllListedCardsLoader from './components/data/AllListedCardsLoader';
+import TestSocket from './components/data/TestSocket';
 
 export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
@@ -35,6 +36,7 @@ export default function Home() {
     <ProtectedPage>
       <ProtectedLayout>
         <AllListedCardsLoader />
+        <TestSocket />
         {/* Mobile : bouton pour changer de mode */}
         {isMobile && viewMode === 'default' && (
           <button
