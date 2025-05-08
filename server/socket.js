@@ -17,12 +17,19 @@ function setupSocket(server, allowedOrigin) {
 
     socket.on('register-user', (userId) => {
       if (!userId) return;
+
       connectedUsers.set(userId, socket.id);
       console.log(`✅ Utilisateur ${userId} connecté`);
       logConnectedUsers();
 
-      socket.broadcast.emit('user-connected', userId); // 👈 Diffusion aux autres clients
+      // 👇 Émettre à tous que cet user est connecté
+      socket.broadcast.emit('user-connected', userId);
+
+      // 👇 Envoyer la liste actuelle au nouveau connecté
+      const allConnectedIds = Array.from(connectedUsers.keys());
+      socket.emit('connected-users', allConnectedIds);
     });
+
     socket.on('get-connected-users', () => {
       const ids = Array.from(connectedUsers.keys());
       socket.emit('connected-users', ids);
@@ -43,6 +50,10 @@ function setupSocket(server, allowedOrigin) {
   });
 
   function logConnectedUsers() {
+    for (const [userId, sockId] of connectedUsers.entries()) {
+      console.log(` - ${userId} → ${sockId}`);
+    }
+
     const ids = Array.from(connectedUsers.keys());
     console.log(`🧍 Utilisateurs connectés (${ids.length}) :`, ids);
   }
