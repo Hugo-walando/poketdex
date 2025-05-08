@@ -11,6 +11,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+const connectedUsers = new Map(); // userId -> socketId
 
 // Création du serveur HTTP
 app.use(cors({ origin: allowedOrigin, credentials: true }));
@@ -52,13 +53,22 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('🟢 Nouveau client connecté :', socket.id);
 
-  socket.on('disconnect', () => {
-    console.log('🔴 Client déconnecté :', socket.id);
+  socket.on('register-user', (userId) => {
+    if (userId) {
+      connectedUsers.set(userId, socket.id);
+      console.log(`✅ Utilisateur enregistré : ${userId} → ${socket.id}`);
+    }
   });
 
-  socket.on('hello', (message) => {
-    console.log('📩 Message reçu du client :', message);
-    socket.emit('server-response', 'Bien reçu ton message ! 📨');
+  socket.on('disconnect', () => {
+    // Supprimer l’utilisateur de la map s’il se déconnecte
+    for (const [userId, socketId] of connectedUsers.entries()) {
+      if (socketId === socket.id) {
+        connectedUsers.delete(userId);
+        console.log(`🔴 Utilisateur déconnecté : ${userId}`);
+        break;
+      }
+    }
   });
 });
 
