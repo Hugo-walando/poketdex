@@ -20,8 +20,9 @@ function setupSocket(server, allowedOrigin) {
       connectedUsers.set(userId, socket.id);
       console.log(`✅ Utilisateur ${userId} connecté`);
       logConnectedUsers();
-    });
 
+      socket.broadcast.emit('user-connected', userId); // 👈 Diffusion aux autres clients
+    });
     socket.on('get-connected-users', () => {
       const ids = Array.from(connectedUsers.keys());
       socket.emit('connected-users', ids);
@@ -32,6 +33,8 @@ function setupSocket(server, allowedOrigin) {
         if (sockId === socket.id) {
           connectedUsers.delete(userId);
           console.log(`🔴 Utilisateur ${userId} déconnecté`);
+
+          socket.broadcast.emit('user-disconnected', userId); // 👈 Diffusion aux autres clients
           break;
         }
       }
