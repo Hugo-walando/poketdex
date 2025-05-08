@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUserStore } from '../store/useUserStore';
+import { useOnlineUserStore } from '../store/useUserOnlineStore';
 
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
@@ -11,6 +12,9 @@ export default function useSocket() {
   const [connected, setConnected] = useState(false);
   const user = useUserStore((state) => state.user);
   const userId = user?.id;
+
+  const addOnlineUser = useOnlineUserStore((s) => s.add);
+  const removeOnlineUser = useOnlineUserStore((s) => s.remove);
 
   useEffect(() => {
     if (!socketRef.current) {
@@ -37,8 +41,17 @@ export default function useSocket() {
       socket.on('connect_error', (err) => {
         console.error('❌ Erreur Socket.IO :', err.message);
       });
+
+      socket.on('user-connected', (id) => {
+        console.log('✅ User connecté', id);
+        addOnlineUser(id);
+      });
+
+      socket.on('user-disconnected', (id) => {
+        console.log('❌ User déconnecté', id);
+        removeOnlineUser(id);
+      });
     } else {
-      // Si le socket existe déjà et userId arrive après (connexion)
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
         console.log('✅ User enregistré après connexion :', userId);
@@ -48,7 +61,7 @@ export default function useSocket() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [userId]);
+  }, [userId, addOnlineUser, removeOnlineUser]);
 
   return { socket: socketRef.current, connected };
 }

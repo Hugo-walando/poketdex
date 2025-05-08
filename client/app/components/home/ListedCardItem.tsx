@@ -3,6 +3,7 @@
 import { ListedCard } from '@/app/types';
 import { cn } from '@/app/utils/cn';
 import Image from 'next/image';
+import UserStatusIndicator from '../ui/UserStatusIndicator';
 
 interface ListedCardProps {
   data: ListedCard;
@@ -15,6 +16,7 @@ export default function ListedCardItem({
   onClick,
   isSelected,
 }: ListedCardProps) {
+  const user = data.user;
   return (
     <div
       className={cn(
@@ -42,7 +44,7 @@ export default function ListedCardItem({
           className='rounded-full'
         />
         <span className='text-sm text-darkgray font-semibold truncate'>
-          {data.user.username}
+          {data.user.username} <UserStatusIndicator userId={user._id} />
         </span>
       </div>
     </div>
