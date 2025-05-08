@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
 
 // Création du serveur HTTP
+app.use(cors({ origin: allowedOrigin, credentials: true }));
 const server = http.createServer(app); // 👈 Important pour socket.io
 
 // Création de l'instance socket.io
@@ -28,7 +29,6 @@ const io = new Server(server, {
 connectDB();
 
 // Middleware
-app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json());
 // app.use(errorHandler()); // Ajoute-le plus tard si tu veux
 

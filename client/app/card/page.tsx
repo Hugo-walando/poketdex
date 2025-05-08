@@ -173,6 +173,7 @@ export default function CardPage() {
                 onToggleRarity={toggleRarity}
               />
             </FilterDropdownProvider>
+
             <ResetFilters
               onClick={resetAllFilters}
               disabled={!hasActiveFilters}
