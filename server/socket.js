@@ -47,4 +47,11 @@ function setupSocket(server, allowedOrigin) {
   return io;
 }
 
-module.exports = setupSocket;
+function getConnectedUserIds() {
+  return Array.from(connectedUsers.keys());
+}
+
+module.exports = {
+  setupSocket,
+  getConnectedUserIds,
+};

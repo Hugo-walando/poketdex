@@ -4,7 +4,7 @@ const http = require('http');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
-const setupSocket = require('./socket');
+const { setupSocket } = require('./socket');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +29,10 @@ app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 // Test route
 app.get('/', (req, res) => {
   res.send('Backend Socket.IO prêt ✅');
+});
+
+app.get('/connected-users', (req, res) => {
+  res.json({ connectedUserIds: getConnectedUserIds() });
 });
 
 // Server + Socket.IO
