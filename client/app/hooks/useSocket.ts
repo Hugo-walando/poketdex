@@ -51,6 +51,10 @@ export default function useSocket() {
         console.log('❌ User déconnecté', id);
         removeOnlineUser(id);
       });
+      socket.on('connected-users', (ids: string[]) => {
+        console.log('📥 Utilisateurs actuellement connectés :', ids);
+        // Tu peux stocker ça dans un Zustand Store par exemple
+      });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
