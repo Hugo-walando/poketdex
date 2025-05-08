@@ -1,39 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-const http = require('http'); // 👈 Pour créer un serveur HTTP brut
-const { Server } = require('socket.io');
+const http = require('http');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
-const errorHandler = require('./middlewares/errorHandler');
+const setupSocket = require('./socket');
 
-// Initialise Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
-const connectedUsers = new Map(); // userId -> socketId
 
-// Création du serveur HTTP
+// Middlewares
 app.use(cors({ origin: allowedOrigin, credentials: true }));
-const server = http.createServer(app); // 👈 Important pour socket.io
+app.use(express.json());
 
-// Création de l'instance socket.io
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigin,
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
-
-// Connexion MongoDB
+// DB connection
 connectDB();
 
-// Middleware
-app.use(express.json());
-// app.use(errorHandler()); // Ajoute-le plus tard si tu veux
-
-// Routes API REST
+// Routes API
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/sets', require('./routes/setRoutes'));
 app.use('/api/cards', require('./routes/cardRoutes'));
@@ -42,37 +26,15 @@ app.use('/api/wishlist-cards', require('./routes/wishlistCardRoutes'));
 app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 
-// 📦 Ajoute les autres routes si besoin (boosters, notifications, etc.)
-
-// Route test pour voir si le serveur répond
+// Test route
 app.get('/', (req, res) => {
   res.send('Backend Socket.IO prêt ✅');
 });
 
-// 🎯 Gestion des connexions socket.io
-io.on('connection', (socket) => {
-  console.log('🟢 Nouveau client connecté :', socket.id);
+// Server + Socket.IO
+const server = http.createServer(app);
+setupSocket(server, allowedOrigin);
 
-  socket.on('register-user', (userId) => {
-    if (userId) {
-      connectedUsers.set(userId, socket.id);
-      console.log(`✅ Utilisateur enregistré : ${userId} → ${socket.id}`);
-    }
-  });
-
-  socket.on('disconnect', () => {
-    // Supprimer l’utilisateur de la map s’il se déconnecte
-    for (const [userId, socketId] of connectedUsers.entries()) {
-      if (socketId === socket.id) {
-        connectedUsers.delete(userId);
-        console.log(`🔴 Utilisateur déconnecté : ${userId}`);
-        break;
-      }
-    }
-  });
-});
-
-// Lancer le serveur
 server.listen(PORT, () =>
   console.log(`✅ Serveur avec Socket.IO lancé sur le port ${PORT}`),
 );
