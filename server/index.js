@@ -55,6 +55,10 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('🔴 Client déconnecté :', socket.id);
   });
+
+  socket.on('hello', (message) => {
+    console.log('📩 Message reçu du client :', message);
+  });
 });
 
 // Lancer le serveur
