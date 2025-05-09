@@ -73,10 +73,8 @@ const createQuickTradeRequest = async (req, res) => {
       .populate('receiver', 'username profile_picture friend_code');
 
     const io = getSocketIO();
-    console.log(io);
-
     const connectedUsers = getConnectedUsersMap();
-    console.log(connectedUsers);
+    console.log('connectedUsers :', connectedUsers);
     const receiverSocketId = connectedUsers.get(toUserId);
 
     if (receiverSocketId) {
