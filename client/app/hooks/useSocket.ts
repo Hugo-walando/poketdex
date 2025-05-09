@@ -18,6 +18,7 @@ export default function useSocket() {
   const setAll = useOnlineUserStore((s) => s.setAll);
 
   useEffect(() => {
+    if (!userId) return;
     if (!socketRef.current) {
       const socket = io(SOCKET_URL, {
         withCredentials: true,
