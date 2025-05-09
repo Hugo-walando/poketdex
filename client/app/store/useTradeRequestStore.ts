@@ -23,23 +23,27 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
   setTradeGroups: (groups) => set({ tradeGroups: groups }),
 
   resetTradeGroups: () => set({ tradeGroups: [] }),
-  addTradeRequest: (trade) =>
+  addTradeRequest: (newTrade) =>
     set((state) => {
-      const userId = trade.receiver._id;
-      const group = state.tradeGroups.find((g) => g.user._id === userId);
-      if (group) {
-        return {
-          tradeGroups: state.tradeGroups.map((g) =>
-            g.user._id === userId ? { ...g, trades: [trade, ...g.trades] } : g,
-          ),
+      const existingGroupIndex = state.tradeGroups.findIndex(
+        (group) =>
+          group.user._id === newTrade.sender._id ||
+          group.user._id === newTrade.receiver._id,
+      );
+
+      if (existingGroupIndex !== -1) {
+        // Ajouter au groupe existant
+        const updatedGroups = [...state.tradeGroups];
+        updatedGroups[existingGroupIndex].trades.unshift(newTrade);
+        return { tradeGroups: updatedGroups };
+      } else {
+        // Créer un nouveau groupe
+        const newGroup = {
+          user: newTrade.sender, // ou receiver, à adapter selon le cas
+          trades: [newTrade],
         };
+        return { tradeGroups: [newGroup, ...state.tradeGroups] };
       }
-      return {
-        tradeGroups: [
-          ...state.tradeGroups,
-          { user: trade.receiver, trades: [trade] },
-        ],
-      };
     }),
 
   updateTradeStatus: (tradeId, newStatus) =>
