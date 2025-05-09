@@ -249,29 +249,9 @@ const markTradeRequestAsSent = async (req, res) => {
         trade.sender._id,
         trade.receiver._id,
       );
-
-      if (nextTrade) {
-        const receiverSocketId = connectedUsers.get(
-          String(nextTrade.receiver._id),
-        );
-        if (receiverSocketId) {
-          io.to(receiverSocketId).emit('activate-trade-request', nextTrade);
-          console.log('📡 Nouvelle TradeRequest réactivée envoyée en direct');
-        }
-      }
     }
 
     // 📡 Notifier les deux utilisateurs
-    const senderSocket = connectedUsers.get(String(trade.sender._id));
-    const receiverSocket = connectedUsers.get(String(trade.receiver._id));
-
-    if (senderSocket) {
-      io.to(senderSocket).emit('trade-updated', trade);
-    }
-    if (receiverSocket) {
-      io.to(receiverSocket).emit('trade-updated', trade);
-    }
-
     res.status(200).json(trade);
   } catch (error) {
     console.error('Erreur markTradeRequestAsSent:', error);

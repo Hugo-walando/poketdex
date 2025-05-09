@@ -77,13 +77,6 @@ export default function useSocket() {
         console.log('♻️ TradeRequest mise à jour :', data);
 
         updateTradeStatus(data.tradeId, data.status);
-        markAsSent(data.tradeId, data.userId);
-      });
-
-      socket.on('activate-trade-request', (trade) => {
-        console.log('📥 Nouvelle demande activée automatiquement :', trade);
-        addTradeRequest(trade);
-        toast('📥 Nouvelle demande d’échange activée');
       });
     } else {
       if (socketRef.current.connected && userId) {
