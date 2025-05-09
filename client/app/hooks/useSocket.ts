@@ -19,6 +19,7 @@ export default function useSocket() {
   const removeOnlineUser = useOnlineUserStore((s) => s.remove);
   const setAll = useOnlineUserStore((s) => s.setAll);
   const addTradeRequest = useTradeRequestStore((s) => s.addTradeRequest);
+  const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
 
   useEffect(() => {
     if (!userId) return;
@@ -70,6 +71,12 @@ export default function useSocket() {
         // Optionnel : affiche une notification/toast
         toast('📩 Nouvelle demande d’échange reçue');
       });
+
+      socket.on('trade-updated', (data) => {
+        console.log('♻️ TradeRequest mise à jour :', data);
+
+        updateTradeStatus(data.tradeId, data.status);
+      });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
@@ -80,7 +87,14 @@ export default function useSocket() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [userId, addOnlineUser, removeOnlineUser, setAll, addTradeRequest]);
+  }, [
+    userId,
+    addOnlineUser,
+    removeOnlineUser,
+    setAll,
+    addTradeRequest,
+    updateTradeStatus,
+  ]);
 
   return { socket: socketRef.current, connected };
 }

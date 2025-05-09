@@ -143,6 +143,24 @@ const updateTradeRequest = async (req, res) => {
     }
 
     await tradeRequest.save();
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+
+    const recipientId =
+      String(tradeRequest.sender) === String(userId)
+        ? tradeRequest.receiver
+        : tradeRequest.sender;
+
+    const recipientSocketId = connectedUsers.get(String(recipientId));
+
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('trade-updated', {
+        tradeId: tradeRequest._id,
+        status: tradeRequest.status,
+        is_active: tradeRequest.is_active,
+      });
+    }
+
     if (['declined', 'cancelled'].includes(status)) {
       reactivateNextTradeRequestService(
         tradeRequest.sender,
@@ -221,6 +239,22 @@ const markTradeRequestAsSent = async (req, res) => {
     if (trade.status === 'completed') {
       await reactivateNextTradeRequestService(trade.sender, trade.receiver);
     }
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+
+    const recipientId =
+      String(trade.sender) === String(userId) ? trade.receiver : trade.sender;
+
+    const recipientSocketId = connectedUsers.get(String(recipientId));
+
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('trade-updated', {
+        tradeId: trade._id,
+        status: trade.status,
+        is_active: trade.is_active,
+      });
+    }
+
     res.status(200).json(trade);
   } catch (error) {
     console.error('Erreur markTradeRequestAsSent:', error);
