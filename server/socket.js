@@ -3,6 +3,8 @@ const { Server } = require('socket.io');
 
 const connectedUsers = new Map();
 
+let ioInstance;
+
 function setupSocket(server, allowedOrigin) {
   const io = new Server(server, {
     cors: {
@@ -11,6 +13,7 @@ function setupSocket(server, allowedOrigin) {
       credentials: true,
     },
   });
+  ioInstance = io;
 
   io.on('connection', (socket) => {
     console.log('🟢 Nouveau client connecté :', socket.id);
@@ -49,6 +52,14 @@ function setupSocket(server, allowedOrigin) {
     });
   });
 
+  function getSocketIO() {
+    return ioInstance;
+  }
+
+  function getConnectedUsersMap() {
+    return connectedUsers;
+  }
+
   function logConnectedUsers() {
     for (const [userId, sockId] of connectedUsers.entries()) {
       console.log(` - ${userId} → ${sockId}`);
@@ -68,4 +79,6 @@ function getConnectedUserIds() {
 module.exports = {
   setupSocket,
   getConnectedUserIds,
+  getConnectedUsersMap,
+  getSocketIO,
 };
