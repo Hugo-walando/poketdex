@@ -74,7 +74,9 @@ const createQuickTradeRequest = async (req, res) => {
 
     const io = getSocketIO();
     console.log(io);
+
     const connectedUsers = getConnectedUsersMap();
+    console.log(connectedUsers);
     const receiverSocketId = connectedUsers.get(toUserId);
 
     if (receiverSocketId) {
