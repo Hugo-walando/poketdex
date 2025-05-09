@@ -67,7 +67,7 @@ export default function useSocket() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [userId, addOnlineUser, removeOnlineUser]);
+  }, [userId, addOnlineUser, removeOnlineUser, setAll]);
 
   return { socket: socketRef.current, connected };
 }
