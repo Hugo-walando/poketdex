@@ -1,6 +1,7 @@
 const TradeRequest = require('../models/TradeRequest');
 const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
+const { getSocketIO, getConnectedUsersMap } = require('../socket');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -70,6 +71,15 @@ const createQuickTradeRequest = async (req, res) => {
       .populate('card_requested')
       .populate('sender', 'username profile_picture friend_code')
       .populate('receiver', 'username profile_picture friend_code');
+
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+    const receiverSocketId = connectedUsers.get(toUserId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('new-trade-request', populatedTrade);
+      console.log(`📨 TradeRequest envoyée en direct à ${toUserId}`);
+    }
 
     console.log('TradeRequest créée :', populatedTrade);
 
