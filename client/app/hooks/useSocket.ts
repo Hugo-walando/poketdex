@@ -80,7 +80,7 @@ export default function useSocket() {
         markAsSent(data.tradeId, data.userId);
       });
 
-      socket.on('new-trade-request', (trade) => {
+      socket.on('activate-trade-request', (trade) => {
         console.log('📥 Nouvelle demande activée automatiquement :', trade);
         addTradeRequest(trade);
         toast('📥 Nouvelle demande d’échange activée');
@@ -102,6 +102,7 @@ export default function useSocket() {
     setAll,
     addTradeRequest,
     updateTradeStatus,
+    markAsSent,
   ]);
 
   return { socket: socketRef.current, connected };

@@ -255,7 +255,7 @@ const markTradeRequestAsSent = async (req, res) => {
           String(nextTrade.receiver._id),
         );
         if (receiverSocketId) {
-          io.to(receiverSocketId).emit('new-trade-request', nextTrade);
+          io.to(receiverSocketId).emit('activate-trade-request', nextTrade);
           console.log('📡 Nouvelle TradeRequest réactivée envoyée en direct');
         }
       }
