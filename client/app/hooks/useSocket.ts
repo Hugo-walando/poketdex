@@ -20,6 +20,7 @@ export default function useSocket() {
   const setAll = useOnlineUserStore((s) => s.setAll);
   const addTradeRequest = useTradeRequestStore((s) => s.addTradeRequest);
   const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
+  const markAsSent = useTradeRequestStore((s) => s.markAsSent);
 
   useEffect(() => {
     if (!userId) return;
@@ -76,6 +77,13 @@ export default function useSocket() {
         console.log('♻️ TradeRequest mise à jour :', data);
 
         updateTradeStatus(data.tradeId, data.status);
+        markAsSent(data.tradeId, data.userId);
+      });
+
+      socket.on('new-trade-request', (trade) => {
+        console.log('📥 Nouvelle demande activée automatiquement :', trade);
+        addTradeRequest(trade);
+        toast('📥 Nouvelle demande d’échange activée');
       });
     } else {
       if (socketRef.current.connected && userId) {
