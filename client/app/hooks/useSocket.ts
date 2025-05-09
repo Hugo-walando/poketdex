@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUserStore } from '../store/useUserStore';
 import { useOnlineUserStore } from '../store/useUserOnlineStore';
+import toast from 'react-hot-toast';
+import { useTradeRequestStore } from '../store/useTradeRequestStore';
 
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
@@ -16,6 +18,7 @@ export default function useSocket() {
   const addOnlineUser = useOnlineUserStore((s) => s.add);
   const removeOnlineUser = useOnlineUserStore((s) => s.remove);
   const setAll = useOnlineUserStore((s) => s.setAll);
+  const addTradeRequest = useTradeRequestStore((s) => s.addTradeRequest);
 
   useEffect(() => {
     if (!userId) return;
@@ -58,6 +61,15 @@ export default function useSocket() {
         setAll(ids);
         // Tu peux stocker ça dans un Zustand Store par exemple
       });
+
+      socket.on('new-trade-request', (tradeRequest) => {
+        console.log('📩 Nouvelle demande d’échange reçue :', tradeRequest);
+
+        // Optionnel : ajoute dans un store (ex: `useTradeRequestStore`)
+        addTradeRequest(tradeRequest);
+        // Optionnel : affiche une notification/toast
+        toast('📩 Nouvelle demande d’échange reçue');
+      });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
@@ -68,7 +80,7 @@ export default function useSocket() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [userId, addOnlineUser, removeOnlineUser, setAll]);
+  }, [userId, addOnlineUser, removeOnlineUser, setAll, addTradeRequest]);
 
   return { socket: socketRef.current, connected };
 }
