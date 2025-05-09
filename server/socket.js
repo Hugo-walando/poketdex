@@ -52,14 +52,6 @@ function setupSocket(server, allowedOrigin) {
     });
   });
 
-  function getSocketIO() {
-    return ioInstance;
-  }
-
-  function getConnectedUsersMap() {
-    return connectedUsers;
-  }
-
   function logConnectedUsers() {
     for (const [userId, sockId] of connectedUsers.entries()) {
       console.log(` - ${userId} → ${sockId}`);
@@ -70,6 +62,13 @@ function setupSocket(server, allowedOrigin) {
   }
 
   return io;
+}
+function getSocketIO() {
+  return ioInstance;
+}
+
+function getConnectedUsersMap() {
+  return connectedUsers;
 }
 
 function getConnectedUserIds() {
