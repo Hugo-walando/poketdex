@@ -78,6 +78,13 @@ export default function useSocket() {
         console.log('♻️ TradeRequest mise à jour :', data);
 
         updateTradeStatus(data.tradeId, data.status);
+        if (data.status === 'accepted') {
+          toast.success('🎉 Votre échange a été accepté !');
+        } else if (data.status === 'declined') {
+          toast('❌ Votre échange a été refusé.');
+        } else if (data.status === 'cancelled') {
+          toast('❌ Votre échange a été annulé.');
+        }
       });
 
       socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
