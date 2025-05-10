@@ -240,25 +240,24 @@ const markTradeRequestAsSent = async (req, res) => {
 
     await trade.save();
     // 📡 Envoi temps réel si non terminé
-    if (!isCompleted) {
-      const io = getSocketIO();
-      const connectedUsers = getConnectedUsersMap();
 
-      const senderSocket = connectedUsers.get(String(trade.sender._id));
-      const receiverSocket = connectedUsers.get(String(trade.receiver._id));
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
 
-      const eventPayload = {
-        tradeId: trade._id,
-        sentByUserId: userId.toString(), // <- ID de celui qui vient d'envoyer
-      };
+    const senderSocket = connectedUsers.get(String(trade.sender._id));
+    const receiverSocket = connectedUsers.get(String(trade.receiver._id));
 
-      if (senderSocket)
-        io.to(senderSocket).emit('trade-sent-update', eventPayload);
-      if (receiverSocket)
-        io.to(receiverSocket).emit('trade-sent-update', eventPayload);
+    const eventPayload = {
+      tradeId: trade._id,
+      sentByUserId: userId.toString(), // <- ID de celui qui vient d'envoyer
+    };
 
-      console.log('📡 trade-sent-update envoyé aux deux utilisateurs');
-    }
+    if (senderSocket)
+      io.to(senderSocket).emit('trade-sent-update', eventPayload);
+    if (receiverSocket)
+      io.to(receiverSocket).emit('trade-sent-update', eventPayload);
+
+    console.log('📡 trade-sent-update envoyé aux deux utilisateurs');
 
     // 🔄 Réactivation possible d’une autre TradeRequest
 
