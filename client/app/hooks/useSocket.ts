@@ -79,10 +79,15 @@ export default function useSocket() {
         updateTradeStatus(data.tradeId, data.status);
       });
 
-      socket.on('trade-sent-update', (data) => {
-        console.log('📦 Mise à jour envoyée pour TradeRequest :', data);
-        markAsSent(data.tradeId, userId); // ← userId du store ou du token
-        toast.success('📦 Une carte t`as été envoyée');
+      socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
+        console.log(
+          '📦 Mise à jour carte envoyée pour',
+          tradeId,
+          'par',
+          sentByUserId,
+        );
+        markAsSent(tradeId, sentByUserId); // 👈 utilise bien le user qui a envoyé
+        toast('📦 Tu as recu une Carte !');
       });
     } else {
       if (socketRef.current.connected && userId) {

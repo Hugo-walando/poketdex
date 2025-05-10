@@ -249,17 +249,13 @@ const markTradeRequestAsSent = async (req, res) => {
 
       const eventPayload = {
         tradeId: trade._id,
-        sent_by_sender: trade.sent_by_sender,
-        sent_by_receiver: trade.sent_by_receiver,
+        sentByUserId: userId.toString(), // <- ID de celui qui vient d'envoyer
       };
 
-      if (senderSocket) {
+      if (senderSocket)
         io.to(senderSocket).emit('trade-sent-update', eventPayload);
-      }
-
-      if (receiverSocket) {
+      if (receiverSocket)
         io.to(receiverSocket).emit('trade-sent-update', eventPayload);
-      }
 
       console.log('📡 trade-sent-update envoyé aux deux utilisateurs');
     }
