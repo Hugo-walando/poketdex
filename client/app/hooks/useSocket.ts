@@ -79,11 +79,11 @@ export default function useSocket() {
 
         updateTradeStatus(data.tradeId, data.status);
         if (data.status === 'accepted') {
-          toast.success('🎉 Votre échange a été accepté !');
+          toast('🎉 Une de vos demandes d`échange a été accepté !');
         } else if (data.status === 'declined') {
-          toast('❌ Votre échange a été refusé.');
+          toast('❌ Une de vos demandes d`échange a été refusé.');
         } else if (data.status === 'cancelled') {
-          toast('❌ Votre échange a été annulé.');
+          toast('❌ Une de vos demandes d`échange a été annulé.');
         }
       });
 
