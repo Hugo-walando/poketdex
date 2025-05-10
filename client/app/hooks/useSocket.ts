@@ -21,6 +21,7 @@ export default function useSocket() {
   const addTradeRequest = useTradeRequestStore((s) => s.addTradeRequest);
   const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
   const markAsSent = useTradeRequestStore((s) => s.markAsSent);
+  const setTradeActive = useTradeRequestStore((s) => s.setTradeActive);
 
   useEffect(() => {
     if (!userId) return;
@@ -89,6 +90,10 @@ export default function useSocket() {
         markAsSent(tradeId, sentByUserId); // 👈 utilise bien le user qui a envoyé
         toast('📦 Tu as recu une Carte !');
       });
+      socket.on('trade-reactivated', ({ tradeId }) => {
+        console.log('♻️ Trade réactivée :', tradeId);
+        setTradeActive(tradeId); // une méthode zustand qui met is_active à true
+      });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
@@ -107,6 +112,7 @@ export default function useSocket() {
     addTradeRequest,
     updateTradeStatus,
     markAsSent,
+    setTradeActive,
   ]);
 
   return { socket: socketRef.current, connected };

@@ -14,6 +14,7 @@ interface TradeRequestStore {
     newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed',
   ) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
+  setTradeActive: (tradeId: string) => void;
 }
 
 export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
@@ -58,6 +59,15 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
                 is_active: newStatus === 'pending' || newStatus === 'accepted',
               }
             : trade,
+        ),
+      })),
+    })),
+  setTradeActive: (tradeId) =>
+    set((state) => ({
+      tradeGroups: state.tradeGroups.map((group) => ({
+        ...group,
+        trades: group.trades.map((trade) =>
+          trade._id === tradeId ? { ...trade, is_active: true } : trade,
         ),
       })),
     })),

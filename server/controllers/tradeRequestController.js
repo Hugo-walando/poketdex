@@ -266,6 +266,31 @@ const markTradeRequestAsSent = async (req, res) => {
         trade.sender._id,
         trade.receiver._id,
       );
+
+      if (nextTrade) {
+        const populated = await TradeRequest.findById(nextTrade._id)
+          .populate('card_offered')
+          .populate('card_requested')
+          .populate('sender', 'username profile_picture friend_code')
+          .populate('receiver', 'username profile_picture friend_code');
+
+        const receiverSocket = connectedUsers.get(
+          String(populated.receiver._id),
+        );
+        const senderSocket = connectedUsers.get(String(populated.sender._id));
+
+        if (receiverSocket)
+          io.to(receiverSocket).emit('trade-reactivated', {
+            tradeId: populated._id,
+          });
+
+        if (senderSocket)
+          io.to(senderSocket).emit('trade-reactivated', {
+            tradeId: populated._id,
+          });
+
+        console.log('📡 Trade réactivée envoyée aux utilisateurs');
+      }
     }
 
     // 📡 Notifier les deux utilisateurs
