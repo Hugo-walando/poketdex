@@ -87,8 +87,13 @@ export default function useSocket() {
           'par',
           sentByUserId,
         );
-        markAsSent(tradeId, sentByUserId); // 👈 utilise bien le user qui a envoyé
-        toast('📦 Tu as recu une Carte !');
+
+        markAsSent(tradeId, sentByUserId);
+
+        // ✅ On ne notifie que si c’est l’autre qui a envoyé
+        if (sentByUserId !== userId) {
+          toast('📦 Tu as reçu une carte !');
+        }
       });
       socket.on('trade-reactivated', ({ tradeId }) => {
         console.log('♻️ Trade réactivée :', tradeId);
