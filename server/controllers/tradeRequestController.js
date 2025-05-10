@@ -162,10 +162,38 @@ const updateTradeRequest = async (req, res) => {
     }
 
     if (['declined', 'cancelled'].includes(status)) {
-      reactivateNextTradeRequestService(
+      const nextTrade = await reactivateNextTradeRequestService(
         tradeRequest.sender,
         tradeRequest.receiver,
       );
+
+      // 👉 Si une nouvelle trade est activée, notifie les deux utilisateurs :
+      if (nextTrade) {
+        const populated = await TradeRequest.findById(nextTrade._id)
+          .populate('card_offered')
+          .populate('card_requested')
+          .populate('sender', 'username profile_picture friend_code')
+          .populate('receiver', 'username profile_picture friend_code');
+
+        const io = getSocketIO();
+        const connectedUsers = getConnectedUsersMap();
+
+        const senderSocket = connectedUsers.get(String(populated.sender._id));
+        const receiverSocket = connectedUsers.get(
+          String(populated.receiver._id),
+        );
+
+        const payload = { tradeId: populated._id, is_active: true };
+
+        if (senderSocket)
+          io.to(senderSocket).emit('trade-reactivated', payload);
+        if (receiverSocket)
+          io.to(receiverSocket).emit('trade-reactivated', payload);
+
+        console.log(
+          '📡 Nouvelle TradeRequest activée envoyée aux utilisateurs',
+        );
+      }
     }
 
     res.status(200).json(tradeRequest);
