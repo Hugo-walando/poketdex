@@ -1,6 +1,7 @@
 const TradeRequest = require('../models/TradeRequest');
 const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
+const { getSocketIO, getConnectedUsersMap } = require('../socket');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -71,6 +72,15 @@ const createQuickTradeRequest = async (req, res) => {
       .populate('sender', 'username profile_picture friend_code')
       .populate('receiver', 'username profile_picture friend_code');
 
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+    const receiverSocketId = connectedUsers.get(toUserId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('new-trade-request', populatedTrade);
+      console.log(`📨 TradeRequest envoyée en direct à ${toUserId}`);
+    }
+
     console.log('TradeRequest créée :', populatedTrade);
 
     res.status(201).json(populatedTrade);
@@ -133,11 +143,57 @@ const updateTradeRequest = async (req, res) => {
     }
 
     await tradeRequest.save();
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+
+    const recipientId =
+      String(tradeRequest.sender) === String(userId)
+        ? tradeRequest.receiver
+        : tradeRequest.sender;
+
+    const recipientSocketId = connectedUsers.get(String(recipientId));
+
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('trade-updated', {
+        tradeId: tradeRequest._id,
+        status: tradeRequest.status,
+        is_active: tradeRequest.is_active,
+      });
+    }
+
     if (['declined', 'cancelled'].includes(status)) {
-      reactivateNextTradeRequestService(
+      const nextTrade = await reactivateNextTradeRequestService(
         tradeRequest.sender,
         tradeRequest.receiver,
       );
+
+      // 👉 Si une nouvelle trade est activée, notifie les deux utilisateurs :
+      if (nextTrade) {
+        const populated = await TradeRequest.findById(nextTrade._id)
+          .populate('card_offered')
+          .populate('card_requested')
+          .populate('sender', 'username profile_picture friend_code')
+          .populate('receiver', 'username profile_picture friend_code');
+
+        const io = getSocketIO();
+        const connectedUsers = getConnectedUsersMap();
+
+        const senderSocket = connectedUsers.get(String(populated.sender._id));
+        const receiverSocket = connectedUsers.get(
+          String(populated.receiver._id),
+        );
+
+        const payload = { tradeId: populated._id, is_active: true };
+
+        if (senderSocket)
+          io.to(senderSocket).emit('trade-reactivated', payload);
+        if (receiverSocket)
+          io.to(receiverSocket).emit('trade-reactivated', payload);
+
+        console.log(
+          '📡 Nouvelle TradeRequest activée envoyée aux utilisateurs',
+        );
+      }
     }
 
     res.status(200).json(tradeRequest);
@@ -175,42 +231,97 @@ const getMyTradeRequests = async (req, res) => {
 const markTradeRequestAsSent = async (req, res) => {
   try {
     const tradeRequestId = req.params.id;
-    const userId = req.user._id; // user connecté
+    const userId = req.user._id;
 
-    const trade = await TradeRequest.findById(tradeRequestId);
+    const trade = await TradeRequest.findById(tradeRequestId)
+      .populate('sender', 'username profile_picture friend_code')
+      .populate('receiver', 'username profile_picture friend_code')
+      .populate('card_offered')
+      .populate('card_requested');
 
     if (!trade) {
       return res.status(404).json({ message: 'TradeRequest non trouvée.' });
     }
 
-    // Vérifier si l'utilisateur est bien impliqué
     if (
-      String(trade.sender) !== String(userId) &&
-      String(trade.receiver) !== String(userId)
+      String(trade.sender._id) !== String(userId) &&
+      String(trade.receiver._id) !== String(userId)
     ) {
       return res.status(403).json({ message: 'Non autorisé.' });
     }
 
-    // Marquer l'envoi selon le rôle
-    if (String(trade.sender) === String(userId)) {
+    if (String(trade.sender._id) === String(userId)) {
       trade.sent_by_sender = true;
-    } else if (String(trade.receiver) === String(userId)) {
+    } else {
       trade.sent_by_receiver = true;
     }
 
     // Si les deux ont envoyé → échange terminé
+    let isCompleted = false;
     if (trade.sent_by_sender && trade.sent_by_receiver) {
-      console.log('Echange terminé !');
       trade.status = 'completed';
       trade.completed = true;
       trade.is_active = false;
+      isCompleted = true;
+      console.log('✅ Échange complété :', trade._id);
     }
 
     await trade.save();
+    // 📡 Envoi temps réel si non terminé
 
-    if (trade.status === 'completed') {
-      await reactivateNextTradeRequestService(trade.sender, trade.receiver);
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
+
+    const senderSocket = connectedUsers.get(String(trade.sender._id));
+    const receiverSocket = connectedUsers.get(String(trade.receiver._id));
+
+    const eventPayload = {
+      tradeId: trade._id,
+      sentByUserId: userId.toString(), // <- ID de celui qui vient d'envoyer
+    };
+
+    if (senderSocket)
+      io.to(senderSocket).emit('trade-sent-update', eventPayload);
+    if (receiverSocket)
+      io.to(receiverSocket).emit('trade-sent-update', eventPayload);
+
+    console.log('📡 trade-sent-update envoyé aux deux utilisateurs');
+
+    // 🔄 Réactivation possible d’une autre TradeRequest
+
+    if (isCompleted) {
+      const nextTrade = await reactivateNextTradeRequestService(
+        trade.sender._id,
+        trade.receiver._id,
+      );
+
+      if (nextTrade) {
+        const populated = await TradeRequest.findById(nextTrade._id)
+          .populate('card_offered')
+          .populate('card_requested')
+          .populate('sender', 'username profile_picture friend_code')
+          .populate('receiver', 'username profile_picture friend_code');
+
+        const receiverSocket = connectedUsers.get(
+          String(populated.receiver._id),
+        );
+        const senderSocket = connectedUsers.get(String(populated.sender._id));
+
+        if (receiverSocket)
+          io.to(receiverSocket).emit('trade-reactivated', {
+            tradeId: populated._id,
+          });
+
+        if (senderSocket)
+          io.to(senderSocket).emit('trade-reactivated', {
+            tradeId: populated._id,
+          });
+
+        console.log('📡 Trade réactivée envoyée aux utilisateurs');
+      }
     }
+
+    // 📡 Notifier les deux utilisateurs
     res.status(200).json(trade);
   } catch (error) {
     console.error('Erreur markTradeRequestAsSent:', error);

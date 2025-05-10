@@ -18,7 +18,9 @@ async function reactivateNextTradeRequest(senderId, receiverId) {
       '✅ Nouvelle TradeRequest activée automatiquement :',
       nextTrade._id,
     );
+    return nextTrade;
   }
+  return null;
 }
 
 module.exports = reactivateNextTradeRequest;

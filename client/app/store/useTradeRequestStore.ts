@@ -1,17 +1,20 @@
 // app/store/useTradeRequestStore.ts
 
 import { create } from 'zustand';
-import { TradeGroup } from '@/app/types';
+import { TradeGroup, TradeRequest } from '@/app/types';
 
 interface TradeRequestStore {
   tradeGroups: TradeGroup[];
   setTradeGroups: (groups: TradeGroup[]) => void;
   resetTradeGroups: () => void;
+  addTradeRequest: (newTrade: TradeRequest) => void;
+
   updateTradeStatus: (
     tradeId: string,
     newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed',
   ) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
+  setTradeActive: (tradeId: string) => void;
 }
 
 export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
@@ -21,6 +24,28 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
   setTradeGroups: (groups) => set({ tradeGroups: groups }),
 
   resetTradeGroups: () => set({ tradeGroups: [] }),
+  addTradeRequest: (newTrade) =>
+    set((state) => {
+      const existingGroupIndex = state.tradeGroups.findIndex(
+        (group) =>
+          group.user._id === newTrade.sender._id ||
+          group.user._id === newTrade.receiver._id,
+      );
+
+      if (existingGroupIndex !== -1) {
+        // Ajouter au groupe existant
+        const updatedGroups = [...state.tradeGroups];
+        updatedGroups[existingGroupIndex].trades.unshift(newTrade);
+        return { tradeGroups: updatedGroups };
+      } else {
+        // Créer un nouveau groupe
+        const newGroup = {
+          user: newTrade.sender, // ou receiver, à adapter selon le cas
+          trades: [newTrade],
+        };
+        return { tradeGroups: [newGroup, ...state.tradeGroups] };
+      }
+    }),
 
   updateTradeStatus: (tradeId, newStatus) =>
     set((state) => ({
@@ -34,6 +59,15 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
                 is_active: newStatus === 'pending' || newStatus === 'accepted',
               }
             : trade,
+        ),
+      })),
+    })),
+  setTradeActive: (tradeId) =>
+    set((state) => ({
+      tradeGroups: state.tradeGroups.map((group) => ({
+        ...group,
+        trades: group.trades.map((trade) =>
+          trade._id === tradeId ? { ...trade, is_active: true } : trade,
         ),
       })),
     })),
