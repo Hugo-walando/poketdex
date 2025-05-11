@@ -15,10 +15,15 @@ interface TradeRequestStore {
   ) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
   setTradeActive: (tradeId: string) => void;
+  hasImportantTradeActivity: (currentUserId: string) => boolean;
+  hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
+  seenUsers: string[];
+  markUserTradesAsSeen: (userId: string) => void;
 }
 
-export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
+export const useTradeRequestStore = create<TradeRequestStore>((set, get) => ({
   console: 'TradeRequestStore',
+  seenUsers: [],
   tradeGroups: [],
 
   setTradeGroups: (groups) => set({ tradeGroups: groups }),
@@ -96,5 +101,46 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
           return updatedTrade;
         }),
       })),
+    })),
+  hasImportantTradeActivity: (currentUserId) => {
+    const { tradeGroups, seenUsers } = get();
+
+    return tradeGroups.some((group) => {
+      if (seenUsers.includes(group.user._id)) return false;
+
+      return group.trades.some((t) => {
+        const isReceivedRequest =
+          t.receiver._id === currentUserId && t.status === 'pending';
+        const isAcceptedSent =
+          t.sender._id === currentUserId && t.status === 'accepted';
+        const hasReceivedCard =
+          t.receiver._id === currentUserId && t.sent_by_sender;
+        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
+      });
+    });
+  },
+
+  hasImportantTradeWithUser: (userId: string, currentUserId: string) => {
+    const { tradeGroups, seenUsers } = get();
+    if (seenUsers.includes(userId)) return false;
+
+    return tradeGroups.some((group) => {
+      if (group.user._id !== userId) return false;
+
+      return group.trades.some((t) => {
+        const isReceivedRequest =
+          t.receiver._id === currentUserId && t.status === 'pending';
+        const isAcceptedSent =
+          t.sender._id === currentUserId && t.status === 'accepted';
+        const hasReceivedCard =
+          t.receiver._id === currentUserId && t.sent_by_sender;
+        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
+      });
+    });
+  },
+
+  markUserTradesAsSeen: (userId) =>
+    set((state) => ({
+      seenUsers: [...state.seenUsers, userId],
     })),
 }));
