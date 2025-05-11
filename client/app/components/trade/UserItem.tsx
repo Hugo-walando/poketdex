@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { cn } from '@/app/utils/cn';
+import UserStatusIndicator from '../ui/UserStatusIndicator';
 
 interface UserItemProps {
   id: string;
@@ -41,7 +42,9 @@ export default function UserItem({
           <span className=' h-4 w-4 bg-redalert rounded-full animate-ping' />
         </div>
       )}
-      <span className='text-dark-lg truncate'>{username}</span>
+      <span className='text-dark-lg truncate'>
+        {username} <UserStatusIndicator userId={id} />
+      </span>
     </button>
   );
 }
