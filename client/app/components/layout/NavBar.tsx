@@ -7,6 +7,7 @@ import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct locat
 import CardIcon from '../svgs/CardIcon';
 import TradeIcon from '../svgs/TradeIcon';
 import { useUserStore } from '@/app/store/useUserStore';
+import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 
 // const userAvatarUrl = '/assets/avatar.png'; // Exemple
 
@@ -15,7 +16,10 @@ export default function Navbar() {
   const isAuthenticated = !!user;
   const pathname = usePathname();
 
-  const hasPendingTrade = true;
+  const hasImportantTradeActivity = useTradeRequestStore((s) =>
+    s.hasImportantTradeActivity(user?.id || ''),
+  );
+
   const navItems = [
     {
       href: '/',
@@ -32,8 +36,8 @@ export default function Navbar() {
       icon: (
         <div className='relative'>
           <TradeIcon className={cn('w-6 h-6')} />
-          {hasPendingTrade && (
-            <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full' />
+          {hasImportantTradeActivity && (
+            <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full animate-ping' />
           )}
         </div>
       ),

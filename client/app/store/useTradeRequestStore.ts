@@ -15,9 +15,11 @@ interface TradeRequestStore {
   ) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
   setTradeActive: (tradeId: string) => void;
+  hasImportantTradeActivity: (currentUserId: string) => boolean;
+  hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
 }
 
-export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
+export const useTradeRequestStore = create<TradeRequestStore>((set, get) => ({
   console: 'TradeRequestStore',
   tradeGroups: [],
 
@@ -97,4 +99,31 @@ export const useTradeRequestStore = create<TradeRequestStore>((set) => ({
         }),
       })),
     })),
+  hasImportantTradeActivity: (currentUserId) =>
+    get().tradeGroups.some((group) =>
+      group.trades.some((t) => {
+        const isReceivedRequest =
+          t.receiver._id === currentUserId && t.status === 'pending';
+        const isAcceptedSent =
+          t.sender._id === currentUserId && t.status === 'accepted';
+        const hasReceivedCard =
+          t.receiver._id === currentUserId && t.sent_by_sender === true;
+        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
+      }),
+    ),
+  hasImportantTradeWithUser: (userId: string, currentUserId: string) => {
+    return get().tradeGroups.some((group) => {
+      if (group.user._id !== userId) return false;
+
+      return group.trades.some((t) => {
+        const isReceivedRequest =
+          t.receiver._id === currentUserId && t.status === 'pending';
+        const isAcceptedSent =
+          t.sender._id === currentUserId && t.status === 'accepted';
+        const hasReceivedCard =
+          t.receiver._id === currentUserId && t.sent_by_sender;
+        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
+      });
+    });
+  },
 }));

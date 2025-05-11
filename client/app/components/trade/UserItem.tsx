@@ -9,6 +9,7 @@ interface UserItemProps {
   profilePicture: string;
   isSelected: boolean;
   onSelect: (id: string) => void;
+  showAlertDot?: boolean;
 }
 
 export default function UserItem({
@@ -17,6 +18,7 @@ export default function UserItem({
   profilePicture,
   isSelected,
   onSelect,
+  showAlertDot,
 }: UserItemProps) {
   return (
     <button
@@ -34,6 +36,9 @@ export default function UserItem({
         sizes='100vw'
         className='rounded-full h-10 w-10 '
       />
+      {showAlertDot && (
+        <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-redalert animate-ping' />
+      )}
       <span className='text-dark-lg truncate'>{username}</span>
     </button>
   );
