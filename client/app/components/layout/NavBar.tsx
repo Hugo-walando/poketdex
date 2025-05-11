@@ -37,7 +37,9 @@ export default function Navbar() {
         <div className='relative'>
           <TradeIcon className={cn('w-6 h-6')} />
           {hasImportantTradeActivity && (
-            <span className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full animate-ping' />
+            <div className='absolute -top-1 -right-1 h-2 w-2 bg-redalert rounded-full flex items-center justify-center'>
+              <span className=' h-2 w-2 bg-redalert rounded-full animate-ping' />
+            </div>
           )}
         </div>
       ),

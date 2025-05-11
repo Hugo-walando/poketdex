@@ -24,7 +24,7 @@ export default function UserItem({
     <button
       onClick={() => onSelect(id)}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 rounded-xl shadow-base  md:shadow-none md:hover:bg-primarygreen/10 hover:cursor-pointer transition-all w-full text-left',
+        'flex items-center gap-3 px-4 py-3 rounded-xl shadow-base  md:shadow-none md:hover:bg-primarygreen/10 hover:cursor-pointer transition-all w-full text-left relative',
         isSelected && 'md:bg-primarygreen/40 md:hover:bg-primarygreen/40',
       )}
     >
@@ -37,7 +37,9 @@ export default function UserItem({
         className='rounded-full h-10 w-10 '
       />
       {showAlertDot && (
-        <span className='absolute top-0 right-0 w-2 h-2 rounded-full bg-redalert animate-ping' />
+        <div className='absolute -top-1 -right-1 h-4 w-4 bg-redalert rounded-full flex items-center justify-center'>
+          <span className=' h-4 w-4 bg-redalert rounded-full animate-ping' />
+        </div>
       )}
       <span className='text-dark-lg truncate'>{username}</span>
     </button>
