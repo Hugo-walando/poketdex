@@ -20,6 +20,13 @@ export default function UserSidebar({
   const hasImportantTradeWithUser = useTradeRequestStore(
     (s) => s.hasImportantTradeWithUser,
   );
+  const markUserTradesAsSeen = useTradeRequestStore(
+    (s) => s.markUserTradesAsSeen,
+  );
+  const handleSelectUser = (id: string) => {
+    markUserTradesAsSeen(id); // Marque comme lu
+    onSelectUser(id); // Action normale
+  };
 
   // Map pour récupérer la dernière activité pour chaque user
   const usersWithActivity = users.map((user) => {
@@ -56,7 +63,7 @@ export default function UserSidebar({
             username={user.username}
             profilePicture={user.profile_picture || '/testimgs/avatars/Av1.png'}
             isSelected={selectedUserId === user._id}
-            onSelect={onSelectUser}
+            onSelect={handleSelectUser}
             showAlertDot={
               currentUserId
                 ? hasImportantTradeWithUser(user._id, currentUserId)
