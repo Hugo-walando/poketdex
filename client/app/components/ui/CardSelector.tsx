@@ -5,16 +5,16 @@ import TradeIcon from '../svgs/TradeIcon';
 
 interface CardSelectorProps {
   cardId: string;
-  listedCardIds: string[];
-  wishlistCardIds: string[];
+  isListed: boolean;
+  isWishlisted: boolean;
   toggleListedCard: (id: string) => void;
   toggleWishlistCard: (id: string) => void;
 }
 
 export default function CardSelector({
   cardId,
-  listedCardIds,
-  wishlistCardIds,
+  isListed,
+  isWishlisted,
   toggleListedCard,
   toggleWishlistCard,
 }: CardSelectorProps) {
@@ -25,7 +25,7 @@ export default function CardSelector({
         className={`p-2 lg:p-3  text-grayblue w-full transition-all duration-200 hover:cursor-pointer flex items-center justify-center`}
       >
         <TradeIcon
-          className={`w-8 h-8 ${listedCardIds.includes(cardId) ? 'fill-primarygreen' : ' text-grayblue'}`}
+          className={`w-8 h-8 ${isListed ? 'fill-primarygreen' : ' text-grayblue'}`}
         />
       </button>
 
@@ -34,7 +34,7 @@ export default function CardSelector({
         className={`p-2 lg:p-3  text-grayblue w-full transition-all duration-200 hover:cursor-pointer  flex items-center justify-center`}
       >
         <HeartIcon
-          className={`w-8 h-8 transition-all duration-200 ${wishlistCardIds.includes(cardId) ? 'fill-pink-400 text-transparent' : 'fill-transparent text-grayblue'}`}
+          className={`w-8 h-8 transition-all duration-200 ${isWishlisted ? 'fill-pink-400 text-transparent' : 'fill-transparent text-grayblue'}`}
         />
       </button>
     </div>

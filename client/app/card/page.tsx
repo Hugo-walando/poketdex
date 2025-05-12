@@ -70,8 +70,8 @@ export default function CardPage() {
   const { removeWishlistCard } = useRemoveWishlistCard();
 
   // Extraire les ID pour `CardSelector`
-  const listedCardIds = listedCards.map((item) => item.card.official_id);
-  const wishlistCardIds = wishlistCards.map((item) => item.card.official_id);
+  const listedCardIds = listedCards.map((item) => item.card._id);
+  const wishlistCardIds = wishlistCards.map((item) => item.card._id);
 
   const toggleListedCard = async (officialId: string, cardId: string) => {
     console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
@@ -405,9 +405,9 @@ export default function CardPage() {
                           )}
 
                           <CardSelector
-                            cardId={card.official_id}
-                            listedCardIds={listedCardIds}
-                            wishlistCardIds={wishlistCardIds}
+                            cardId={card._id}
+                            isListed={listedCardIds.includes(card._id)}
+                            isWishlisted={wishlistCardIds.includes(card._id)}
                             toggleListedCard={() =>
                               toggleListedCard(card.official_id, card._id)
                             }
