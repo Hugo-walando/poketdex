@@ -59,7 +59,7 @@ export default function MatchGroupItem({
             <div></div> {/* Colonne checkbox */}
             <span>Vous recevez</span>
             <span></span> {/* Colonne de séparation */}
-            <span>Vous offrez</span>
+            <span>Vous envoyez</span>
           </div>
 
           {/* Match rows */}

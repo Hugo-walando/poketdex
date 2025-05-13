@@ -75,10 +75,15 @@ export default function CardPage() {
       removeListedCardFromStore(cardId);
       removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée des doublons');
-    } else {
+    } else if (wishlistCards.some((c) => c.card._id === cardId)) {
       await removeWishlistCard(cardId); // ❗️pareil ici
       removeWishlistCardFromStore(cardId);
-
+      const added = await addListedCard(cardId);
+      if (added) {
+        addListedCardToStore(added);
+        console.log('➕ Ajout au store de :', added);
+      }
+    } else {
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
@@ -86,7 +91,6 @@ export default function CardPage() {
       }
     }
   };
-
   const toggleWishlistCard = async (cardId: string) => {
     console.log('🟢 toggleWishlistCard appelé avec :', { cardId });
 
@@ -95,10 +99,15 @@ export default function CardPage() {
       removeWishlistCardFromStore(cardId);
       removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée des doublons');
-    } else {
+    } else if (listedCards.some((c) => c.card._id === cardId)) {
       await removeListedCard(cardId); // ❗️pareil ici
       removeListedCardFromStore(cardId);
-
+      const added = await addWishlistCard(cardId);
+      if (added) {
+        addWishlistCardToStore(added);
+        console.log('➕ Ajout au store de :', added);
+      }
+    } else {
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);
