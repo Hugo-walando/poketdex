@@ -339,7 +339,7 @@ export default function CardPage() {
                           <div className='flex items-center gap-1 flex-wrap'>
                             <TradeIcon className='w-6 h-6 fill-primarygreen' />
                             {Object.entries(listedCount)
-                              .filter(([_, count]) => count > 0)
+                              .filter(([, count]) => count > 0)
                               .map(([rarity, count]) => (
                                 <div
                                   key={`row-listed-${rarity}`}
@@ -368,7 +368,7 @@ export default function CardPage() {
                           <div className='flex items-center gap-1 flex-wrap'>
                             <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
                             {Object.entries(wishlistCount)
-                              .filter(([_, count]) => count > 0)
+                              .filter(([, count]) => count > 0)
                               .map(([rarity, count]) => (
                                 <div
                                   key={`row-wishlist-${rarity}`}
