@@ -33,7 +33,7 @@ export default async function RootLayout({
         <SessionProvider session={session} refetchOnWindowFocus={false}>
           <MaxWidthWrapper>
             <Navbar />
-            <Toaster position='top-center' />
+            <Toaster position='top-right' />
             <ClientProviders>
               <ScrollToTop />
               {children}

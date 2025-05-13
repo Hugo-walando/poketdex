@@ -163,17 +163,18 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           <span className='text-gray-base lg:text-gray-lg truncate'>
             Vous recevez
           </span>
+
           <div className='flex items-center gap-1 lg:gap-3'>
             <Image
-              src={offeredCard.img_url}
-              alt={offeredCard.name}
+              src={receivedCard.img_url}
+              alt={receivedCard.name}
               width={0}
               height={0}
               sizes='100vw'
               className='h-26 sm:h-32 lg:h-36 w-auto'
             />
             <span className='text-dark-sm lg:text-dark-base'>
-              {offeredCard.official_id}
+              #{receivedCard.official_id}
             </span>
           </div>
         </div>
@@ -200,11 +201,11 @@ export default function TradeItem({ trade, selectedUserId }: TradeItemProps) {
           </span>
           <div className='flex items-center gap-1 lg:gap-3'>
             <span className='text-dark-sm lg:text-dark-base'>
-              {receivedCard.official_id}
+              #{offeredCard.official_id}
             </span>
             <Image
-              src={receivedCard.img_url}
-              alt={receivedCard.name}
+              src={offeredCard.img_url}
+              alt={offeredCard.name}
               width={0}
               height={0}
               sizes='100vw'
