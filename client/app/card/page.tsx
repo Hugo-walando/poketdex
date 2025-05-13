@@ -333,54 +333,65 @@ export default function CardPage() {
                     {isMobile && (
                       <div className='text-gray-base grid grid-cols-1 gap-2 mb-4 sticky top-22 z-10'>
                         {/* Listed cards */}
-                        <div className='flex items-center gap-2 flex-wrap'>
-                          <TradeIcon className='w-6 h-6 fill-primarygreen' />
-
-                          {[1, 2, 3, 4, 5].map((rarity) => (
-                            <div
-                              key={`row-wishlist-${rarity}`}
-                              className='flex items-center gap-1 bg-gray-200 px-2 py-2 rounded-md'
-                            >
-                              <Image
-                                src={`/testimgs/rarities/${rarity}.png`}
-                                alt={`Rareté ${rarity}`}
-                                width={0}
-                                height={0}
-                                sizes='100vw'
-                                className='object-contain w-auto h-[18px]'
-                              />
-                              <span className='font-medium min-w-[35px] max-w-[35px] text-center'>
-                                {wishlistCount[rarity] || 0}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                        {Object.values(listedCount).some(
+                          (count) => count > 0,
+                        ) && (
+                          <div className='flex items-center gap-1 flex-wrap'>
+                            <TradeIcon className='w-6 h-6 fill-primarygreen' />
+                            {Object.entries(listedCount)
+                              .filter(([_, count]) => count > 0)
+                              .map(([rarity, count]) => (
+                                <div
+                                  key={`row-listed-${rarity}`}
+                                  className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
+                                >
+                                  <Image
+                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    alt={`Rareté ${rarity}`}
+                                    width={0}
+                                    height={0}
+                                    sizes='100vw'
+                                    className='object-contain w-auto h-[14px]'
+                                  />
+                                  <span className='font-medium text-sm min-w-[30px] max-w-[35px] text-center'>
+                                    {count}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
+                        )}
 
                         {/* Wishlist cards */}
-                        <div className='flex items-center gap-2 flex-wrap'>
-                          <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
-
-                          {[1, 2, 3, 4, 5].map((rarity) => (
-                            <div
-                              key={`row-wishlist-${rarity}`}
-                              className='flex items-center gap-1 bg-gray-200 px-2 py-2 rounded-md'
-                            >
-                              <Image
-                                src={`/testimgs/rarities/${rarity}.png`}
-                                alt={`Rareté ${rarity}`}
-                                width={0}
-                                height={0}
-                                sizes='100vw'
-                                className='object-contain w-auto h-[18px]'
-                              />
-                              <span className='font-medium min-w-[35px] max-w-[35px] text-center'>
-                                {wishlistCount[rarity] || 0}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                        {Object.values(wishlistCount).some(
+                          (count) => count > 0,
+                        ) && (
+                          <div className='flex items-center gap-1 flex-wrap'>
+                            <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent' />
+                            {Object.entries(wishlistCount)
+                              .filter(([_, count]) => count > 0)
+                              .map(([rarity, count]) => (
+                                <div
+                                  key={`row-wishlist-${rarity}`}
+                                  className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
+                                >
+                                  <Image
+                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    alt={`Rareté ${rarity}`}
+                                    width={0}
+                                    height={0}
+                                    sizes='100vw'
+                                    className='object-contain w-auto h-[14px]'
+                                  />
+                                  <span className='font-medium text-sm min-w-[30px] max-w-[35px] text-center'>
+                                    {count}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
+                        )}
                       </div>
                     )}
+
                     <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                       {cards.map((card: Card) => (
                         <div
