@@ -9,6 +9,16 @@ interface AllListedCardsState {
   setLoading: (loading: boolean) => void;
   refetchListedCards?: () => void;
   setRefetchListedCards: (fn: () => void) => void;
+  pagination: {
+    page: number;
+    totalPages: number;
+    setPage: (page: number) => void;
+  };
+  setPagination: (data: {
+    page: number;
+    totalPages: number;
+    setPage: (page: number) => void;
+  }) => void;
 }
 
 export const useAllListedCardsStore = create<AllListedCardsState>((set) => ({
@@ -17,4 +27,18 @@ export const useAllListedCardsStore = create<AllListedCardsState>((set) => ({
   setAllListedCards: (cards) => set({ allListedCards: cards }),
   setLoading: (loading) => set({ loading }),
   setRefetchListedCards: (fn) => set({ refetchListedCards: fn }),
+  pagination: {
+    page: 1,
+    totalPages: 1,
+    setPage: () => {},
+  },
+  setPagination: ({ page, totalPages, setPage }) =>
+    set((state) => ({
+      pagination: {
+        ...state.pagination,
+        page,
+        totalPages,
+        setPage,
+      },
+    })),
 }));

@@ -1,26 +1,39 @@
-// /components/data/AllListedCardsLoader.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
-import useFetchAllListedCards from '@/app/hooks/useFetchAllListedCards';
+import useFetchAllListedCards from '@/app/hooks/useFetchListedCards';
 
 export default function AllListedCardsLoader() {
-  const { setAllListedCards, setRefetchListedCards, setLoading } =
-    useAllListedCardsStore();
+  const {
+    setAllListedCards,
+    setRefetchListedCards,
+    setLoading,
+    setPagination,
+  } = useAllListedCardsStore();
 
-  const { listedCards, loading, refetch } = useFetchAllListedCards();
+  const { listedCards, loading, refetch, page, totalPages, setPage } =
+    useFetchAllListedCards();
 
-  // 🔄 Synchronise loading avec le store Zustand
   useEffect(() => {
     setLoading(loading);
   }, [loading, setLoading]);
 
   useEffect(() => {
-    if (!loading && listedCards.length > 0) {
+    if (!loading) {
       setAllListedCards(listedCards);
+      console.log('Listed cards loaded:', listedCards);
+      setPagination({ page, totalPages, setPage });
     }
-  }, [loading, listedCards, setAllListedCards]);
+  }, [
+    listedCards,
+    loading,
+    page,
+    totalPages,
+    setAllListedCards,
+    setPagination,
+    setPage,
+  ]);
 
   useEffect(() => {
     setRefetchListedCards(refetch);

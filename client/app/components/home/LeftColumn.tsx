@@ -20,10 +20,15 @@ interface LeftColumnProps {
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const sets = useGlobalData((s) => s.sets);
   const user = useUserStore((s) => s.user);
-  const { refetchListedCards } = useAllListedCardsStore();
 
-  const { allListedCards, loading: ListedCardsLoading } =
-    useAllListedCardsStore();
+  const {
+    allListedCards,
+    loading: ListedCardsLoading,
+    refetchListedCards,
+    pagination: { page, totalPages, setPage },
+  } = useAllListedCardsStore();
+
+  console.log('allListedCards', allListedCards);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -61,6 +66,12 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
 
     // 1. Exclure nos propres cartes
     if (item.user._id === user?.id) {
+      console.log(
+        "Exclue carte de l'utilisateur: ",
+        item,
+        item.user._id,
+        user?.id,
+      );
       return false;
     }
 
@@ -85,6 +96,8 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
 
     return matchSearch && matchSet && matchRarity && hasSameRarityWishlist;
   });
+
+  console.log('filteredListedCards', filteredListedCards);
   return (
     <div className='w-full md:w-6/10 mb-10  gap-6 relative'>
       <div className='sticky top-0 z-10 mb-4 pt-10 md:pt-0 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>
@@ -155,6 +168,27 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
           ))
         )}
       </div>
+      {filteredListedCards.length > 0 && (
+        <div className='flex justify-center gap-2 mt-6'>
+          <button
+            onClick={() => setPage(Math.max(page - 1, 1))}
+            disabled={page === 1}
+            className='px-3 py-2 bg-gray-200 rounded text-sm'
+          >
+            ← Précédent
+          </button>
+          <span className='px-3 py-2 text-sm font-medium'>
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage(Math.min(page + 1, totalPages))}
+            disabled={page === totalPages}
+            className='px-3 py-2 bg-gray-200 rounded text-sm'
+          >
+            Suivant →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
