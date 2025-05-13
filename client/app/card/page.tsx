@@ -48,13 +48,6 @@ export default function CardPage() {
     (s) => s.removeListedCardFromStore,
   );
 
-  const removeWishlistCardByOfficialId = useCollectionStore(
-    (s) => s.removeWishlistCardByOfficialId,
-  );
-  const removeListedCardByOfficialId = useCollectionStore(
-    (s) => s.removeListedCardByOfficialId,
-  );
-
   const { removeMatchesByCard } = useRemoveMatchesByCard();
   const isMobile = useIsMobile();
 
@@ -73,18 +66,18 @@ export default function CardPage() {
   const listedCardIds = listedCards.map((item) => item.card._id);
   const wishlistCardIds = wishlistCards.map((item) => item.card._id);
 
-  const toggleListedCard = async (officialId: string, cardId: string) => {
-    console.log('🟢 toggleListedCard appelé avec :', { officialId, cardId });
+  const toggleListedCard = async (cardId: string) => {
+    console.log('🟢 toggleListedCard appelé avec :', { cardId });
 
-    if (listedCardIds.includes(officialId)) {
-      // 👉 Elle est déjà dans la liste → on la retire
+    if (listedCards.some((c) => c.card._id === cardId)) {
       await removeListedCard(cardId);
       removeListedCardFromStore(cardId);
       removeMatchesByCard(cardId);
       console.log('🗑️ Carte retirée des doublons');
     } else {
-      // 👉 Elle n'est pas encore listée → on l'ajoute
-      removeWishlistCardByOfficialId(officialId);
+      await removeWishlistCard(cardId); // ❗️pareil ici
+      removeWishlistCardFromStore(cardId);
+
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
@@ -93,21 +86,22 @@ export default function CardPage() {
     }
   };
 
-  const toggleWishlistCard = async (officialId: string, cardId: string) => {
-    console.log('🟢 toggleWishlistCard appelé avec :', { officialId, cardId });
+  const toggleWishlistCard = async (cardId: string) => {
+    console.log('🟢 toggleWishlistCard appelé avec :', { cardId });
 
-    if (wishlistCardIds.includes(officialId)) {
+    if (wishlistCards.some((c) => c.card._id === cardId)) {
       await removeWishlistCard(cardId);
       removeWishlistCardFromStore(cardId);
       removeMatchesByCard(cardId);
-      console.log('🗑️ Carte retirée de la wishlist');
+      console.log('🗑️ Carte retirée des doublons');
     } else {
-      removeListedCardByOfficialId(officialId);
+      await removeListedCard(cardId); // ❗️pareil ici
+      removeListedCardFromStore(cardId);
 
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);
-        console.log('➕ Ajout à la wishlist :', added);
+        console.log('➕ Ajout au store de :', added);
       }
     }
   };
@@ -417,11 +411,9 @@ export default function CardPage() {
                             cardId={card._id}
                             isListed={listedCardIds.includes(card._id)}
                             isWishlisted={wishlistCardIds.includes(card._id)}
-                            toggleListedCard={() =>
-                              toggleListedCard(card.official_id, card._id)
-                            }
+                            toggleListedCard={() => toggleListedCard(card._id)}
                             toggleWishlistCard={() =>
-                              toggleWishlistCard(card.official_id, card._id)
+                              toggleWishlistCard(card._id)
                             }
                           />
                         </div>
