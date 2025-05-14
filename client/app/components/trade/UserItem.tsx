@@ -42,9 +42,12 @@ export default function UserItem({
           <span className=' h-4 w-4 bg-redalert rounded-full animate-ping' />
         </div>
       )}
-      <span className='text-dark-lg truncate'>
-        {username} <UserStatusIndicator userId={id} />
-      </span>
+      <div className='flex items-center gap-1'>
+        <span className='text-dark-base truncate max-w-[150px]'>
+          {username}
+        </span>
+        <UserStatusIndicator userId={id} />
+      </div>
     </button>
   );
 }
