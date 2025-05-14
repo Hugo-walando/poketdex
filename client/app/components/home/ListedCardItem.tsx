@@ -43,9 +43,12 @@ export default function ListedCardItem({
           height={24}
           className='rounded-full'
         />
-        <span className='text-sm text-darkgray font-semibold truncate'>
-          {data.user.username} <UserStatusIndicator userId={user._id} />
-        </span>
+        <div className='flex items-center'>
+          <span className='text-sm text-darkgray font-semibold truncate max-w-[80px]'>
+            {data.user.username}
+          </span>
+          <UserStatusIndicator userId={user._id} />
+        </div>
       </div>
     </div>
   );

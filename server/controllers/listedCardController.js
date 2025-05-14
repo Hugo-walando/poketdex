@@ -133,27 +133,134 @@ const getListedCards = async (req, res) => {
 
 const getAllListedCards = async (req, res) => {
   try {
-    const listedCards = await ListedCard.find()
-      .populate({
-        path: 'card',
-      })
-      .populate({
-        path: 'user',
-        select: 'username profile_picture friend_code wishlist_cards', // Ajout du champ
-        populate: {
-          path: 'wishlist_cards', // ➔ On va chercher les wishlists
-          populate: {
-            path: 'card', // ➔ Et pour chaque wishlist, on va chercher les infos de la carte liée
+    const userId = req.user._id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 30;
+    const skip = (page - 1) * limit;
+    const search = req.query.search?.toLowerCase() || '';
+    const sets = req.query.sets ? req.query.sets.split(',') : [];
+    const rarities = req.query.rarities
+      ? req.query.rarities.split(',').map(Number)
+      : [];
+
+    const pipeline = [
+      {
+        // Exclure les cartes de l'utilisateur connecté
+        $match: {
+          user: { $ne: userId },
+        },
+      },
+      {
+        // Joindre les données des cartes
+        $lookup: {
+          from: 'cards',
+          localField: 'card',
+          foreignField: '_id',
+          as: 'cardData',
+        },
+      },
+      {
+        // Déstructurer le tableau cardData (1 seule carte)
+        $unwind: '$cardData',
+      },
+      {
+        $match: {
+          ...(search && {
+            $or: [
+              { 'cardData.name': { $regex: search, $options: 'i' } },
+              { 'cardData.official_id': { $regex: search, $options: 'i' } },
+            ],
+          }),
+          ...(sets.length > 0 && { 'cardData.set_code': { $in: sets } }),
+          ...(rarities.length > 0 && { 'cardData.rarity': { $in: rarities } }),
+        },
+      },
+      {
+        // Joindre les infos utilisateur
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'userData',
+        },
+      },
+      {
+        $unwind: '$userData',
+      },
+      {
+        // Joindre les wishlist_cards de l'utilisateur
+        $lookup: {
+          from: 'wishlistcards',
+          localField: 'userData._id',
+          foreignField: 'user',
+          as: 'userWishlistCards',
+        },
+      },
+      {
+        // Joindre les infos des cartes de la wishlist
+        $lookup: {
+          from: 'cards',
+          localField: 'userWishlistCards.card',
+          foreignField: '_id',
+          as: 'wishlistCardDetails',
+        },
+      },
+      {
+        // Filtrer uniquement les listedCards dont la rareté
+        // est présente dans au moins une carte de la wishlist
+        $match: {
+          $expr: {
+            $in: ['$cardData.rarity', '$wishlistCardDetails.rarity'],
           },
         },
-      });
+      },
+      {
+        $sort: { createdAt: -1 }, // 🔽 du plus récent au plus ancien
+      },
 
-    res.status(200).json(listedCards);
-  } catch (err) {
-    console.error(
-      'Erreur lors de la récupération de toutes les cartes listées :',
-      err,
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        // Optionnel : re-projeter proprement
+        $project: {
+          _id: 1,
+          card: '$cardData',
+          user: {
+            _id: '$userData._id',
+            username: '$userData.username',
+            profile_picture: '$userData.profile_picture',
+            friend_code: '$userData.friend_code',
+            wishlist_cards: '$userWishlistCards',
+          },
+        },
+      },
+    ];
+
+    const listedCards = await ListedCard.aggregate(pipeline);
+
+    // ⚠️ Pour avoir `total`, il faut refaire le même pipeline sans skip/limit
+    const countPipeline = [...pipeline];
+    // Supprimer $skip et $limit de countPipeline
+    const cleanedCountPipeline = countPipeline.filter(
+      (stage) => !stage.$skip && !stage.$limit,
     );
+    cleanedCountPipeline.push({ $count: 'total' });
+
+    const countResult = await ListedCard.aggregate(cleanedCountPipeline);
+    const total = countResult[0]?.total || 0;
+
+    res.status(200).json({
+      data: listedCards,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
+  } catch (err) {
+    console.error('Erreur lors du filtrage par rareté wishlist :', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
