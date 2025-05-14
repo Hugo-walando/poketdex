@@ -3,7 +3,7 @@
 import SearchBar from '../ui/SearchBar';
 import SetFilterDropdown from '../ui/SetFilterDropDown';
 import RarityFilter from '../ui/RarityFilter';
-import type { ListedCard, WishlistCard } from '@/app/types/index';
+import type { ListedCard } from '@/app/types/index';
 import ResetFilters from '../ui/ResetFilters';
 import { useState } from 'react';
 import ListedCardItem from './ListedCardItem';
@@ -33,13 +33,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
-
-  const hasWishlistOfSameRarity = (
-    wishlistCards: WishlistCard[] = [],
-    rarity: number,
-  ) => {
-    return wishlistCards.some((wish) => wish.card.rarity === rarity);
-  };
 
   // Reset Filters
   const hasActiveFilters =
@@ -88,13 +81,8 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
 
     // 3. Filtrer sur la wishlist de même rareté
-    const wishlistAvailable = item.user.wishlist_cards || [];
-    const hasSameRarityWishlist = hasWishlistOfSameRarity(
-      wishlistAvailable,
-      card.rarity,
-    );
 
-    return matchSearch && matchSet && matchRarity && hasSameRarityWishlist;
+    return matchSearch && matchSet && matchRarity;
   });
 
   console.log('filteredListedCards', filteredListedCards);

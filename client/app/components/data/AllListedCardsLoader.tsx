@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
-import useFetchAllListedCards from '@/app/hooks/useFetchListedCards';
+import useFetchAllListedCards from '@/app/hooks/useFetchAllListedCards';
 
 export default function AllListedCardsLoader() {
   const {

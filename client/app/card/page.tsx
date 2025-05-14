@@ -67,6 +67,7 @@ export default function CardPage() {
   const listedCardIds = listedCards.map((item) => item.card._id);
   const wishlistCardIds = wishlistCards.map((item) => item.card._id);
 
+  console.log('listedCards --------', listedCards);
   const toggleListedCard = async (cardId: string) => {
     console.log('🟢 toggleListedCard appelé avec :', { cardId });
 

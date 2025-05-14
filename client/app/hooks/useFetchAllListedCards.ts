@@ -1,47 +1,59 @@
-'use client';
-
 import { useEffect, useState, useCallback } from 'react';
 import axiosClient from '@/lib/axios';
-import { ListedCard } from '@/app/types';
-import toast from 'react-hot-toast';
 import { useUserStore } from '@/app/store/useUserStore';
+import toast from 'react-hot-toast';
+import { ListedCard } from '@/app/types';
 
-const useFetchAllListedCards = () => {
+const useFetchListedCards = () => {
   const user = useUserStore((state) => state.user);
   const [listedCards, setListedCards] = useState<ListedCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 30;
 
-  const fetchAllListedCards = useCallback(async () => {
+  const fetchListedCards = useCallback(async () => {
     if (!user?.accessToken) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axiosClient.get<ListedCard[]>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards`,
+      const response = await axiosClient.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,
           },
         },
       );
-      setListedCards(response.data);
+
+      setListedCards(response.data.data);
+      setTotalPages(response.data.pages);
     } catch (err) {
-      console.error('❌ Error fetching all listed cards:', err);
+      console.error('❌ Error fetching listed cards:', err);
       setError('Erreur lors du chargement des cartes listées.');
-      toast.error('❌ Impossible de charger toutes les cartes listées.');
+      toast.error('❌ Impossible de charger les cartes listées.');
     } finally {
       setLoading(false);
     }
-  }, [user?.accessToken]);
+  }, [user?.accessToken, page]);
 
+  // Re-fetch automatique quand `page` ou `accessToken` change
   useEffect(() => {
-    fetchAllListedCards();
-  }, [fetchAllListedCards]);
+    fetchListedCards();
+  }, [fetchListedCards]);
 
-  return { listedCards, loading, error, refetch: fetchAllListedCards };
+  return {
+    listedCards,
+    loading,
+    error,
+    page,
+    totalPages,
+    setPage,
+    refetch: fetchListedCards, // 🔁 export refetch
+  };
 };
 
-export default useFetchAllListedCards;
+export default useFetchListedCards;
