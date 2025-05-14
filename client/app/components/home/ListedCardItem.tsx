@@ -43,7 +43,7 @@ export default function ListedCardItem({
           height={24}
           className='rounded-full'
         />
-        <div className='flex items-center'>
+        <div className='flex items-center gap-1'>
           <span className='text-sm text-darkgray font-semibold truncate max-w-[80px]'>
             {data.user.username}
           </span>
