@@ -137,6 +137,11 @@ const getAllListedCards = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 30;
     const skip = (page - 1) * limit;
+    const search = req.query.search?.toLowerCase() || '';
+    const sets = req.query.sets ? req.query.sets.split(',') : [];
+    const rarities = req.query.rarities
+      ? req.query.rarities.split(',').map(Number)
+      : [];
 
     const pipeline = [
       {
@@ -157,6 +162,18 @@ const getAllListedCards = async (req, res) => {
       {
         // Déstructurer le tableau cardData (1 seule carte)
         $unwind: '$cardData',
+      },
+      {
+        $match: {
+          ...(search && {
+            $or: [
+              { 'cardData.name': { $regex: search, $options: 'i' } },
+              { 'cardData.official_id': { $regex: search, $options: 'i' } },
+            ],
+          }),
+          ...(sets.length > 0 && { 'cardData.set_code': { $in: sets } }),
+          ...(rarities.length > 0 && { 'cardData.rarity': { $in: rarities } }),
+        },
       },
       {
         // Joindre les infos utilisateur

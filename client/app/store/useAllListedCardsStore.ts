@@ -19,6 +19,13 @@ interface AllListedCardsState {
     totalPages: number;
     setPage: (page: number) => void;
   }) => void;
+  // filtres
+  searchQuery: string;
+  selectedSets: string[];
+  selectedRarities: number[];
+  setSearchQuery: (q: string) => void;
+  setSelectedSets: (sets: string[]) => void;
+  setSelectedRarities: (r: number[]) => void;
 }
 
 export const useAllListedCardsStore = create<AllListedCardsState>((set) => ({
@@ -30,7 +37,10 @@ export const useAllListedCardsStore = create<AllListedCardsState>((set) => ({
   pagination: {
     page: 1,
     totalPages: 1,
-    setPage: () => {},
+    setPage: (page) =>
+      set((state) => ({
+        pagination: { ...state.pagination, page },
+      })),
   },
   setPagination: ({ page, totalPages, setPage }) =>
     set((state) => ({
@@ -41,4 +51,11 @@ export const useAllListedCardsStore = create<AllListedCardsState>((set) => ({
         setPage,
       },
     })),
+  // filtres
+  searchQuery: '',
+  selectedSets: [],
+  selectedRarities: [],
+  setSearchQuery: (q) => set({ searchQuery: q }),
+  setSelectedSets: (sets) => set({ selectedSets: sets }),
+  setSelectedRarities: (r) => set({ selectedRarities: r }),
 }));

@@ -1,59 +1,95 @@
-import { useEffect, useState, useCallback } from 'react';
+// /hooks/useFetchAllListedCards.ts
+import { useEffect, useCallback } from 'react';
 import axiosClient from '@/lib/axios';
-import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
-import { ListedCard } from '@/app/types';
+import { useUserStore } from '@/app/store/useUserStore';
+import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 
-const useFetchListedCards = () => {
+const useFetchAllListedCards = () => {
   const user = useUserStore((state) => state.user);
-  const [listedCards, setListedCards] = useState<ListedCard[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const {
+    pagination: { page },
+    setPagination,
+    setAllListedCards,
+    setLoading,
+    searchQuery,
+    selectedSets,
+    selectedRarities,
+  } = useAllListedCardsStore();
+
+  const {
+    allListedCards,
+    loading,
+    pagination: { totalPages, setPage },
+  } = useAllListedCardsStore();
+
   const limit = 30;
 
   const fetchListedCards = useCallback(async () => {
     if (!user?.accessToken) return;
 
     setLoading(true);
-    setError(null);
 
     try {
-      const response = await axiosClient.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/listed-cards?page=${page}&limit=${limit}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-          },
-        },
-      );
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
 
-      setListedCards(response.data.data);
-      setTotalPages(response.data.pages);
+      if (searchQuery) params.append('search', searchQuery);
+      if (selectedSets.length) params.append('sets', selectedSets.join(','));
+      if (selectedRarities.length)
+        params.append('rarities', selectedRarities.join(','));
+
+      console.log('📤 Filtres envoyés :', {
+        page,
+        searchQuery,
+        selectedSets,
+        selectedRarities,
+      });
+
+      const response = await axiosClient.get(`/api/listed-cards?${params}`, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+
+      setAllListedCards(response.data.data);
+      setPagination({
+        page: response.data.page,
+        totalPages: response.data.pages,
+        setPage,
+      });
     } catch (err) {
       console.error('❌ Error fetching listed cards:', err);
-      setError('Erreur lors du chargement des cartes listées.');
       toast.error('❌ Impossible de charger les cartes listées.');
     } finally {
       setLoading(false);
     }
-  }, [user?.accessToken, page]);
+  }, [
+    user?.accessToken,
+    page,
+    searchQuery,
+    selectedSets,
+    selectedRarities,
+    setLoading,
+    setAllListedCards,
+    setPagination,
+    setPage,
+  ]);
 
-  // Re-fetch automatique quand `page` ou `accessToken` change
   useEffect(() => {
     fetchListedCards();
   }, [fetchListedCards]);
 
   return {
-    listedCards,
+    listedCards: allListedCards,
     loading,
-    error,
     page,
     totalPages,
     setPage,
-    refetch: fetchListedCards, // 🔁 export refetch
+    refetch: fetchListedCards,
   };
 };
 
-export default useFetchListedCards;
+export default useFetchAllListedCards;

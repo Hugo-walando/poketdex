@@ -10,7 +10,6 @@ import ListedCardItem from './ListedCardItem';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
-import { useUserStore } from '@/app/store/useUserStore';
 import { RefreshCcw } from 'lucide-react';
 
 interface LeftColumnProps {
@@ -19,20 +18,22 @@ interface LeftColumnProps {
 
 export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   const sets = useGlobalData((s) => s.sets);
-  const user = useUserStore((s) => s.user);
 
   const {
     allListedCards,
     loading: ListedCardsLoading,
     refetchListedCards,
     pagination: { page, totalPages, setPage },
+    searchQuery,
+    setSearchQuery,
+    selectedSets,
+    setSelectedSets,
+    selectedRarities,
+    setSelectedRarities,
   } = useAllListedCardsStore();
 
   console.log('allListedCards', allListedCards);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSets, setSelectedSets] = useState<string[]>([]);
-  const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
   // Reset Filters
   const hasActiveFilters =
@@ -47,45 +48,14 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   };
 
   const toggleSet = (setId: string) => {
-    setSelectedSets((prev) =>
-      prev.includes(setId)
-        ? prev.filter((id) => id !== setId)
-        : [...prev, setId],
-    );
+    const updated = selectedSets.includes(setId)
+      ? selectedSets.filter((id) => id !== setId)
+      : [...selectedSets, setId];
+
+    setSelectedSets(updated);
   };
 
-  const filteredListedCards = allListedCards.filter((item) => {
-    const card = item.card;
-
-    // 1. Exclure nos propres cartes
-    if (item.user._id === user?.id) {
-      console.log(
-        "Exclue carte de l'utilisateur: ",
-        item,
-        item.user._id,
-        user?.id,
-      );
-      return false;
-    }
-
-    // 2. Filtrer par search, set, rarity
-    const matchSearch =
-      searchQuery === '' ||
-      card.name.toLowerCase().includes(searchQuery) ||
-      card.official_id.toString().includes(searchQuery);
-
-    const matchSet =
-      selectedSets.length === 0 || selectedSets.includes(card.set_code);
-
-    const matchRarity =
-      selectedRarities.length === 0 || selectedRarities.includes(card.rarity);
-
-    // 3. Filtrer sur la wishlist de même rareté
-
-    return matchSearch && matchSet && matchRarity;
-  });
-
-  console.log('filteredListedCards', filteredListedCards);
+  console.log('filteredListedCards', allListedCards);
   return (
     <div className='w-full md:w-6/10 mb-10  gap-6 relative'>
       <div className='sticky top-0 z-10 mb-4 pt-10 md:pt-0 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>
@@ -107,13 +77,13 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
               )}
               <RarityFilter
                 selectedRarities={selectedRarities}
-                onToggleRarity={(rarity) =>
-                  setSelectedRarities((prev) =>
-                    prev.includes(rarity)
-                      ? prev.filter((r) => r !== rarity)
-                      : [...prev, rarity],
-                  )
-                }
+                onToggleRarity={(rarity) => {
+                  const updated = selectedRarities.includes(rarity)
+                    ? selectedRarities.filter((r) => r !== rarity)
+                    : [...selectedRarities, rarity];
+
+                  setSelectedRarities(updated);
+                }}
               />
             </FilterDropdownProvider>
             <ResetFilters
@@ -138,12 +108,12 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
               Chargement des cartes...
             </p>
           </div>
-        ) : filteredListedCards.length === 0 ? (
+        ) : allListedCards.length === 0 ? (
           <p className='text-gray-xl col-span-full text-center mt-10'>
             Aucune carte trouvée avec ces filtres.
           </p>
         ) : (
-          filteredListedCards.map((item) => (
+          allListedCards.map((item) => (
             <ListedCardItem
               key={item._id}
               data={item}
@@ -156,12 +126,12 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
           ))
         )}
       </div>
-      {filteredListedCards.length > 0 && (
+      {allListedCards.length > 0 && (
         <div className='flex justify-center gap-2 mt-6'>
           <button
             onClick={() => setPage(Math.max(page - 1, 1))}
             disabled={page === 1}
-            className='px-3 py-2 bg-gray-200 rounded text-sm'
+            className='px-3 py-2 bg-gray-200 rounded text-sm hover:cursor-pointer'
           >
             ← Précédent
           </button>
@@ -171,7 +141,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
           <button
             onClick={() => setPage(Math.min(page + 1, totalPages))}
             disabled={page === totalPages}
-            className='px-3 py-2 bg-gray-200 rounded text-sm'
+            className='px-3 py-2 bg-gray-200 rounded text-sm hover:cursor-pointer'
           >
             Suivant →
           </button>
