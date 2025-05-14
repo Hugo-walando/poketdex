@@ -198,6 +198,10 @@ const getAllListedCards = async (req, res) => {
         },
       },
       {
+        $sort: { createdAt: -1 }, // 🔽 du plus récent au plus ancien
+      },
+
+      {
         $skip: skip,
       },
       {
