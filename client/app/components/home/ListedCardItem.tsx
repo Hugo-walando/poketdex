@@ -4,6 +4,7 @@ import { ListedCard } from '@/app/types';
 import { cn } from '@/app/utils/cn';
 import Image from 'next/image';
 import UserStatusIndicator from '../ui/UserStatusIndicator';
+import { useState } from 'react';
 
 interface ListedCardProps {
   data: ListedCard;
@@ -17,6 +18,8 @@ export default function ListedCardItem({
   isSelected,
 }: ListedCardProps) {
   const user = data.user;
+  const [isImageLoaded, setImageLoaded] = useState(false);
+
   return (
     <div
       className={cn(
@@ -24,15 +27,21 @@ export default function ListedCardItem({
       )}
       onClick={onClick}
     >
+      {!isImageLoaded && (
+        <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
+      )}
       <Image
         src={data.card.img_url}
         alt={data.card.name}
-        width={150}
-        height={200}
+        width={0}
+        height={0}
+        sizes='100vw'
         className={cn(
-          'mx-auto',
+          'w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto',
           isSelected && 'ring-2 ring-primarygreen rounded-md',
         )}
+        onLoad={() => setImageLoaded(true)}
+        priority={true}
       />
 
       <div className='flex items-center gap-2 mt-2 pl-1'>

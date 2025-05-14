@@ -29,13 +29,15 @@ import TradeIcon from '../components/svgs/TradeIcon';
 import { ChevronDown, ChevronRight, HeartIcon } from 'lucide-react';
 import useIsMobile from '../hooks/useIsMobile';
 import { rarityIcons } from '../data/rarities';
+import ShimmerCard from '../components/ui/ShimmerCard';
 
 export default function CardPage() {
-  const sets = useGlobalData((s) => s.sets);
-  const cardsBySet = useGlobalData((s) => s.cardsBySet);
+  const { sets, cardsBySet, loadingCards } = useGlobalData();
 
   const listedCards = useCollectionStore((s) => s.listedCards);
   const wishlistCards = useCollectionStore((s) => s.wishlistCards);
+  const [isCardImageLoaded, setCardImageLoaded] = useState(false);
+
   const addListedCardToStore = useCollectionStore(
     (s) => s.addListedCardToStore,
   );
@@ -396,61 +398,75 @@ export default function CardPage() {
                         )}
                       </div>
                     )}
-
                     <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                      {cards.map((card: Card) => (
-                        <div
-                          className='flex flex-col items-center gap-2'
-                          key={card._id}
-                        >
+                      {loadingCards ? (
+                        <>
+                          {Array.from({ length: 15 }).map((_, idx) => (
+                            <ShimmerCard key={idx} />
+                          ))}
+                        </>
+                      ) : (
+                        cards.map((card: Card) => (
                           <div
-                            key={card.official_id}
-                            className='justify-self-center relative '
+                            className='flex flex-col items-center gap-2'
+                            key={card._id}
                           >
-                            <div className='absolute top-1 right-1 rounded-full bg-white/90 backdrop-blur-lg px-2 py-1 shadow-base flex flex-col items-center justify-center text-light-sm'>
-                              #{card.official_id}
-                            </div>
-                            {card.img_url ? (
-                              <Image
-                                src={card.img_url}
-                                alt={card.name || 'Carte'}
-                                width={0}
-                                height={0}
-                                sizes='100vw'
-                                className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
-                              />
-                            ) : (
-                              <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
-                                Image manquante
+                            <div
+                              key={card.official_id}
+                              className='justify-self-center relative '
+                            >
+                              <div className='absolute top-1 right-1 rounded-full bg-white/90 backdrop-blur-lg px-2 py-1 shadow-base flex flex-col items-center justify-center text-light-sm'>
+                                #{card.official_id}
                               </div>
-                            )}
+                              {!isCardImageLoaded && (
+                                <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
+                              )}
+                              {card.img_url ? (
+                                <Image
+                                  src={card.img_url}
+                                  alt={card.name || 'Carte'}
+                                  width={0}
+                                  height={0}
+                                  sizes='100vw'
+                                  className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                                  onLoad={() => setCardImageLoaded(true)}
+                                  priority={true}
+                                />
+                              ) : (
+                                <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                                  Image manquante
+                                </div>
+                              )}
 
-                            <CardSelector
-                              cardId={card._id}
-                              isListed={listedCardIds.includes(card._id)}
-                              isWishlisted={wishlistCardIds.includes(card._id)}
-                              toggleListedCard={() =>
-                                toggleListedCard(card._id)
+                              <CardSelector
+                                cardId={card._id}
+                                isListed={listedCardIds.includes(card._id)}
+                                isWishlisted={wishlistCardIds.includes(
+                                  card._id,
+                                )}
+                                toggleListedCard={() =>
+                                  toggleListedCard(card._id)
+                                }
+                                toggleWishlistCard={() =>
+                                  toggleWishlistCard(card._id)
+                                }
+                              />
+                            </div>
+                            <Image
+                              src={
+                                rarityIcons[
+                                  card.rarity as keyof typeof rarityIcons
+                                ]
                               }
-                              toggleWishlistCard={() =>
-                                toggleWishlistCard(card._id)
-                              }
+                              alt={`Rareté`}
+                              width={0}
+                              height={0}
+                              sizes='100vw'
+                              className='h-8 lg:h-10 w-auto object-contain'
                             />
                           </div>
-                          <Image
-                            src={
-                              rarityIcons[
-                                card.rarity as keyof typeof rarityIcons
-                              ]
-                            }
-                            alt={`Rareté`}
-                            width={0}
-                            height={0}
-                            sizes='100vw'
-                            className='h-8 lg:h-10 w-auto object-contain'
-                          />
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </>
                 )}
