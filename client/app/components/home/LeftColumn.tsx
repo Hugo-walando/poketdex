@@ -11,6 +11,7 @@ import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 import { RefreshCcw } from 'lucide-react';
+import ShimmerCard from '../ui/ShimmerCard';
 
 interface LeftColumnProps {
   onCardClick: (card: ListedCard) => void;
@@ -103,11 +104,11 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
       </div>
       <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
         {ListedCardsLoading ? (
-          <div className='col-span-full flex justify-center items-center h-[200px]'>
-            <p className='text-gray-xl animate-pulse'>
-              Chargement des cartes...
-            </p>
-          </div>
+          <>
+            {Array.from({ length: 15 }).map((_, idx) => (
+              <ShimmerCard key={idx} />
+            ))}
+          </>
         ) : allListedCards.length === 0 ? (
           <p className='text-gray-xl col-span-full text-center mt-10'>
             Aucune carte trouvée avec ces filtres.

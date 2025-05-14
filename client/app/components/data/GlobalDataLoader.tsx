@@ -1,3 +1,4 @@
+// app/components/GlobalDataLoader.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -16,13 +17,13 @@ export default function GlobalDataLoader() {
   const clearUser = useUserStore((s) => s.clearUser);
   const setUserLoading = useUserStore((s) => s.setLoading);
 
-  const sets = useGlobalData((s) => s.sets);
-  const setSets = useGlobalData((s) => s.setSets);
-  const setAllCardsBySet = useGlobalData((s) => s.setAllCardsBySet);
-
-  const { sets: fetchedSets, loading: setsLoading } = useFetchSets();
+  const { sets, loading: setsLoading } = useFetchSets();
   const { cardsBySet, loading: cardsLoading } = useFetchAllCards();
-  // 🔐 Gestion user
+
+  const storeSets = useGlobalData((s) => s.setSets);
+  const storeCards = useGlobalData((s) => s.setAllCardsBySet);
+
+  // 🔐 Sauvegarde de l'utilisateur dans le store Zustand
   useEffect(() => {
     setUserLoading(true);
 
@@ -40,23 +41,23 @@ export default function GlobalDataLoader() {
     if (status === 'unauthenticated') {
       clearUser();
     }
-  }, [status, session, clearUser, setUser, setUserLoading]);
+  }, [status, session, setUser, clearUser, setUserLoading]);
 
-  // 📥 Stocker les sets
+  // 📦 Sauvegarde des sets dans Zustand une seule fois
   useEffect(() => {
-    if (!setsLoading && fetchedSets.length > 0 && sets.length === 0) {
+    if (!setsLoading && sets.length > 0) {
       console.log('📦 Saving sets to store...');
-      setSets(fetchedSets);
+      storeSets(sets);
     }
-  }, [setsLoading, fetchedSets, sets, setSets]);
+  }, [sets, setsLoading, storeSets]);
 
-  // 📥 Stocker les cartes
+  // 🃏 Sauvegarde des cartes dans Zustand une seule fois
   useEffect(() => {
     if (!cardsLoading && Object.keys(cardsBySet).length > 0) {
       console.log('🃏 Saving all cards to store...');
-      setAllCardsBySet(cardsBySet);
+      storeCards(cardsBySet);
     }
-  }, [cardsLoading, cardsBySet, setAllCardsBySet]);
+  }, [cardsBySet, cardsLoading, storeCards]);
 
   return null;
 }
