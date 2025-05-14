@@ -133,11 +133,14 @@ const getListedCards = async (req, res) => {
 
 const getAllListedCards = async (req, res) => {
   try {
+    const userId = req.user._id;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 30;
     const skip = (page - 1) * limit;
 
-    const listedCards = await ListedCard.find()
+    const listedCards = await ListedCard.find({
+      user: { $ne: userId }, // ⛔ exclure les cartes de l'utilisateur connecté
+    })
       .skip(skip)
       .limit(limit)
       .populate({
@@ -154,7 +157,9 @@ const getAllListedCards = async (req, res) => {
         },
       });
 
-    const total = await ListedCard.countDocuments();
+    const total = await ListedCard.countDocuments({
+      user: { $ne: userId },
+    });
 
     res.status(200).json({
       data: listedCards,
