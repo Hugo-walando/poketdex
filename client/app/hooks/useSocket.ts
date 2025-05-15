@@ -22,6 +22,7 @@ export default function useSocket() {
   const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
   const markAsSent = useTradeRequestStore((s) => s.markAsSent);
   const setTradeActive = useTradeRequestStore((s) => s.setTradeActive);
+  const updateUser = useUserStore((s) => s.updateUser);
 
   useEffect(() => {
     if (!userId) return;
@@ -106,6 +107,23 @@ export default function useSocket() {
         console.log('♻️ Trade réactivée :', tradeId);
         setTradeActive(tradeId); // une méthode zustand qui met is_active à true
       });
+      socket.on('user-profile-updated', (updatedUser) => {
+        console.log('🔄 Profil mis à jour via WebSocket :', updatedUser);
+
+        // Optionnel : afficher une confirmation toast si c’est le user lui-même
+        if (updatedUser.userId === userId) {
+          toast.success('✅ Ton profil a été mis à jour !');
+        }
+
+        // Met à jour Zustand
+        updateUser({
+          id: updatedUser.userId,
+          username: updatedUser.username,
+          friend_code: updatedUser.friend_code,
+          profile_picture: updatedUser.profile_picture,
+          trade_count: updatedUser.trade_count,
+        });
+      });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
@@ -125,6 +143,7 @@ export default function useSocket() {
     updateTradeStatus,
     markAsSent,
     setTradeActive,
+    updateUser,
   ]);
 
   return { socket: socketRef.current, connected };
