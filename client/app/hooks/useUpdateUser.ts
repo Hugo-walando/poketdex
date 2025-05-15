@@ -18,6 +18,7 @@ const useUpdateUser = () => {
   const updateUser = async (userData: {
     username: string;
     friend_code: string;
+    profile_picture: string;
   }) => {
     if (!user?.accessToken) {
       setError('Utilisateur non authentifié');

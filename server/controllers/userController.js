@@ -92,6 +92,12 @@ const updateUser = async (req, res) => {
       const formatted = clean.replace(/(.{4})/g, '$1-').replace(/-$/, ''); // ajoute les tirets
       updates.friend_code = formatted;
     }
+    if (
+      updates.profile_picture &&
+      !updates.profile_picture.startsWith('/avatars/')
+    ) {
+      return res.status(400).json({ message: 'Image invalide.' });
+    }
     // Étape 3 : faire la mise à jour
     const updatedUser = await User.findByIdAndUpdate(currentUser._id, updates, {
       new: true,

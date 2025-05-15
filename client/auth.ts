@@ -39,6 +39,7 @@ export const authConfig = {
         const data = res.data;
         token.username = data.username;
         token.friend_code = data.friend_code;
+        token.profile_picture = data.profile_picture;
 
         // ✅ Flag pour éviter de refaire l'appel
       } catch (err) {
@@ -55,6 +56,7 @@ export const authConfig = {
       session.user.username = token.username as string;
       session.user.friend_code = token.friend_code as string;
       session.accessToken = token.accessToken as string;
+      session.user.profile_picture = token.profile_picture as string;
 
       // MongoDBAdapter gère automatiquement la création ou la mise à jour de l'utilisateur,
       // donc il n'est pas nécessaire d'ajouter une logique manuelle pour créer ou mettre à jour l'utilisateur

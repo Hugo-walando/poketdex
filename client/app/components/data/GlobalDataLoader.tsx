@@ -44,6 +44,7 @@ export default function GlobalDataLoader() {
         username: session.user.username ?? '',
         friend_code: session.user.friend_code ?? '',
         accessToken: session.accessToken ?? '',
+        profile_picture: session.user.profile_picture ?? '',
       });
 
       console.log('🧍 User loaded into Zustand:', session.user);

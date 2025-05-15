@@ -14,7 +14,7 @@ export default function UserDetail({ user }: UserDetailProps) {
     <div className=' rounded-b-xl w-full bg-white shadow-base md:rounded-xl p-4 md:flex md:flex-col gap-4'>
       <div className='flex lg:flex-col lg:justify-center items-center gap-2'>
         <Image
-          src={user.profile_picture || '/testimgs/avatars/Av1.png'}
+          src={user.profile_picture || '/avatars/Av1.png'}
           alt={user.username}
           width={0}
           height={0}

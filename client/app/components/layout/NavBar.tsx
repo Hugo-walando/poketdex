@@ -8,6 +8,8 @@ import CardIcon from '../svgs/CardIcon';
 import TradeIcon from '../svgs/TradeIcon';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
+import Image from 'next/image';
+import { User } from 'lucide-react';
 
 // const userAvatarUrl = '/assets/avatar.png'; // Exemple
 
@@ -77,7 +79,16 @@ export default function Navbar() {
 
         {isAuthenticated ? (
           <Link href='/profile'>
-            <div className='w-10 h-10 rounded-full bg-primarygreen'></div>
+            {user?.profile_picture && (
+              <Image
+                src={user.profile_picture}
+                width={0}
+                height={0}
+                sizes='100vw'
+                alt='Avatar'
+                className='rounded-full h-10 w-10'
+              />
+            )}
           </Link>
         ) : (
           <Link href='/login' className='text-dark-base font-medium'>
@@ -102,11 +113,20 @@ export default function Navbar() {
         ))}
         {isAuthenticated ? (
           <Link href='/profile'>
-            <div className='w-10 h-10 rounded-full bg-primarygreen'></div>
+            {user?.profile_picture && (
+              <Image
+                src={user.profile_picture}
+                width={0}
+                height={0}
+                sizes='100vw'
+                alt='Avatar'
+                className='rounded-full h-10 w-10'
+              />
+            )}
           </Link>
         ) : (
-          <Link href='/login' className='text-dark-base font-medium'>
-            S’authentifier
+          <Link href='/login'>
+            <User className='w-6 h-6 text-dark-base' />
           </Link>
         )}
       </nav>
