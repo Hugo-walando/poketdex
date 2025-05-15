@@ -20,16 +20,13 @@ export default function SetFilterDropdown({
   onToggleSet,
   sets,
 }: SetFilterDropdownProps) {
-  console.log('SetFilterDropdown', selectedSets, sets);
   const hasSelected = selectedSets.length > 0;
   const { openFilter, setOpenFilter } = useFilter();
   const isMobile = useIsMobile();
 
   const isOpen = openFilter === 'set';
 
-  useEffect(() => {
-    console.log('Re-rendering SetFilterDropdown');
-  });
+  useEffect(() => {});
 
   return (
     <DropdownMenu.Root

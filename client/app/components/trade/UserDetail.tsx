@@ -9,7 +9,6 @@ interface UserDetailProps {
 }
 
 export default function UserDetail({ user }: UserDetailProps) {
-  console.log('UserDetail', user);
   return (
     <div className=' rounded-b-xl w-full bg-white shadow-base md:rounded-xl p-4 md:flex md:flex-col gap-4'>
       <div className='flex lg:flex-col lg:justify-center items-center gap-2'>

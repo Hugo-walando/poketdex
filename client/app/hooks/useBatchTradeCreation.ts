@@ -16,7 +16,6 @@ const useBatchTradeCreation = () => {
     matchIds: string[],
   ): Promise<TradeRequest[] | null> => {
     if (!user?.accessToken) {
-      console.error('❌ Utilisateur non authentifié.');
       setError('Non authentifié.');
       toast.error('Vous devez être connecté.');
       return null;

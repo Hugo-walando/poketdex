@@ -33,7 +33,6 @@ const useFetchSets = () => {
         );
 
         setSets(response.data);
-        toast.success('Sets chargés avec succès');
       } catch (err) {
         const message =
           axios.isAxiosError(err) && err.response?.data?.message

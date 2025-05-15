@@ -69,52 +69,41 @@ export default function CardPage() {
   const listedCardIds = listedCards.map((item) => item.card._id);
   const wishlistCardIds = wishlistCards.map((item) => item.card._id);
 
-  console.log('listedCards --------', listedCards);
   const toggleListedCard = async (cardId: string) => {
-    console.log('🟢 toggleListedCard appelé avec :', { cardId });
-
     if (listedCards.some((c) => c.card._id === cardId)) {
       await removeListedCard(cardId);
       removeListedCardFromStore(cardId);
       removeMatchesByCard(cardId);
-      console.log('🗑️ Carte retirée des doublons');
     } else if (wishlistCards.some((c) => c.card._id === cardId)) {
       await removeWishlistCard(cardId); // ❗️pareil ici
       removeWishlistCardFromStore(cardId);
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
-        console.log('➕ Ajout au store de :', added);
       }
     } else {
       const added = await addListedCard(cardId);
       if (added) {
         addListedCardToStore(added);
-        console.log('➕ Ajout au store de :', added);
       }
     }
   };
   const toggleWishlistCard = async (cardId: string) => {
-    console.log('🟢 toggleWishlistCard appelé avec :', { cardId });
-
     if (wishlistCards.some((c) => c.card._id === cardId)) {
       await removeWishlistCard(cardId);
       removeWishlistCardFromStore(cardId);
       removeMatchesByCard(cardId);
-      console.log('🗑️ Carte retirée des doublons');
     } else if (listedCards.some((c) => c.card._id === cardId)) {
       await removeListedCard(cardId); // ❗️pareil ici
       removeListedCardFromStore(cardId);
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);
-        console.log('➕ Ajout au store de :', added);
       }
     } else {
       const added = await addWishlistCard(cardId);
       if (added) {
         addWishlistCardToStore(added);
-        console.log('➕ Ajout au store de :', added);
       }
     }
   };
@@ -287,7 +276,7 @@ export default function CardPage() {
                             className='flex items-center gap-1 bg-gray-100 px-2 py-2 rounded-md'
                           >
                             <Image
-                              src={`/testimgs/rarities/${rarity}.png`}
+                              src={`/rarities/${rarity}.png`}
                               alt={`Rareté ${rarity}`}
                               width={0}
                               height={0}
@@ -313,7 +302,7 @@ export default function CardPage() {
                             className='flex items-center gap-1 bg-gray-100 px-2 py-2 rounded-md'
                           >
                             <Image
-                              src={`/testimgs/rarities/${rarity}.png`}
+                              src={`/rarities/${rarity}.png`}
                               alt={`Rareté ${rarity}`}
                               width={0}
                               height={0}
@@ -353,7 +342,7 @@ export default function CardPage() {
                                   className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
                                 >
                                   <Image
-                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    src={`/rarities/${rarity}.png`}
                                     alt={`Rareté ${rarity}`}
                                     width={0}
                                     height={0}
@@ -382,7 +371,7 @@ export default function CardPage() {
                                   className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
                                 >
                                   <Image
-                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    src={`/rarities/${rarity}.png`}
                                     alt={`Rareté ${rarity}`}
                                     width={0}
                                     height={0}

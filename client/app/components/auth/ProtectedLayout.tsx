@@ -24,10 +24,8 @@ export default function ProtectedLayout({
     if (!user) return;
 
     if (isProfileIncomplete(user)) {
-      console.log('🔴 Profil incomplet → ouverture modale globale');
       openModal();
     } else {
-      console.log('🟢 Profil complet');
       closeModal();
     }
   }, [user, user?.username, user?.friend_code, openModal, closeModal]);

@@ -14,14 +14,12 @@ export default function CollectionLoader() {
 
   useEffect(() => {
     if (!loadingListed && listedCards.length > 0) {
-      console.log('📥 Storing listed cards...');
       setListedCards(listedCards);
     }
   }, [loadingListed, listedCards, setListedCards]);
 
   useEffect(() => {
     if (!loadingWishlist && wishlistCards.length > 0) {
-      console.log('📥 Storing wishlist cards...');
       setWishlistCards(wishlistCards);
     }
   }, [loadingWishlist, wishlistCards, setWishlistCards]);

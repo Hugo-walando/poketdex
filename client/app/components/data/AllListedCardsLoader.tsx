@@ -22,7 +22,6 @@ export default function AllListedCardsLoader() {
   useEffect(() => {
     if (!loading) {
       setAllListedCards(listedCards);
-      console.log('Listed cards loaded:', listedCards);
       setPagination({ page, totalPages, setPage });
     }
   }, [

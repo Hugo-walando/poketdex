@@ -41,13 +41,6 @@ const useFetchAllListedCards = () => {
       if (selectedRarities.length)
         params.append('rarities', selectedRarities.join(','));
 
-      console.log('📤 Filtres envoyés :', {
-        page,
-        searchQuery,
-        selectedSets,
-        selectedRarities,
-      });
-
       const response = await axiosClient.get(`/api/listed-cards?${params}`, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,

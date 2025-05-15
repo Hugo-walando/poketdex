@@ -25,9 +25,6 @@ export default function GlobalDataLoader() {
 
   // ✅ Gestion utilisateur
   useEffect(() => {
-    console.log('📦 GlobalDataLoader useEffect triggered');
-    console.log('📦 GlobalDataLoader session:', session);
-
     if (status === 'loading') return;
 
     if (
@@ -47,8 +44,6 @@ export default function GlobalDataLoader() {
         profile_picture: session.user.profile_picture ?? '',
       });
 
-      console.log('🧍 User loaded into Zustand:', session.user);
-
       setUserLoading(false);
     }
 
@@ -62,7 +57,6 @@ export default function GlobalDataLoader() {
   // 📦 Sauvegarde des sets
   useEffect(() => {
     if (!setsLoading && sets.length > 0) {
-      console.log('📦 Saving sets to store...');
       storeSets(sets);
     }
   }, [sets, setsLoading, storeSets]);
@@ -70,7 +64,6 @@ export default function GlobalDataLoader() {
   // 🃏 Sauvegarde des cartes
   useEffect(() => {
     if (!cardsLoading && Object.keys(cardsBySet).length > 0) {
-      console.log('🃏 Saving all cards to store...');
       storeCards(cardsBySet);
     }
   }, [cardsBySet, cardsLoading, storeCards]);

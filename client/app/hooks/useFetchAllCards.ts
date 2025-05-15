@@ -28,7 +28,6 @@ export default function useFetchAllCards() {
         );
 
         setCardsBySet(res.data);
-        toast.success('Cards chargés avec succès');
       } catch (err) {
         console.error('❌ Error fetching all cards:', err);
         toast.error('Erreur lors de la récupération des cartes');
