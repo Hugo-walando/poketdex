@@ -107,23 +107,23 @@ export default function useSocket() {
         console.log('♻️ Trade réactivée :', tradeId);
         setTradeActive(tradeId); // une méthode zustand qui met is_active à true
       });
-      socket.on('user-profile-updated', (updatedUser) => {
-        console.log('🔄 Profil mis à jour via WebSocket :', updatedUser);
+      // socket.on('user-profile-updated', (updatedUser) => {
+      //   console.log('🔄 Profil mis à jour via WebSocket :', updatedUser);
 
-        // Optionnel : afficher une confirmation toast si c’est le user lui-même
-        if (updatedUser.userId === userId) {
-          toast.success('✅ Ton profil a été mis à jour !');
-        }
+      //   // Optionnel : afficher une confirmation toast si c’est le user lui-même
+      //   if (updatedUser.userId === userId) {
+      //     toast.success('✅ Ton profil a été mis à jour !');
+      //   }
 
-        // Met à jour Zustand
-        updateUser({
-          id: updatedUser.userId,
-          username: updatedUser.username,
-          friend_code: updatedUser.friend_code,
-          profile_picture: updatedUser.profile_picture,
-          trade_count: updatedUser.trade_count,
-        });
-      });
+      //   // Met à jour Zustand
+      //   updateUser({
+      //     id: updatedUser.userId,
+      //     username: updatedUser.username,
+      //     friend_code: updatedUser.friend_code,
+      //     profile_picture: updatedUser.profile_picture,
+      //     trade_count: updatedUser.trade_count,
+      //   });
+      // });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);

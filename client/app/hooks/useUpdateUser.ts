@@ -46,10 +46,7 @@ const useUpdateUser = () => {
       await update(); // rafraîchit la session côté front
       setSuccess('✅ Informations mises à jour avec succès');
       toast.success('Informations mises à jour avec succès');
-      updateUserStore({
-        username: response.data.username,
-        friend_code: response.data.friend_code,
-      });
+      updateUserStore(response.data);
       return response.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
