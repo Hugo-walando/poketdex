@@ -276,7 +276,7 @@ export default function CardPage() {
                             className='flex items-center gap-1 bg-gray-100 px-2 py-2 rounded-md'
                           >
                             <Image
-                              src={`/testimgs/rarities/${rarity}.png`}
+                              src={`/rarities/${rarity}.png`}
                               alt={`Rareté ${rarity}`}
                               width={0}
                               height={0}
@@ -302,7 +302,7 @@ export default function CardPage() {
                             className='flex items-center gap-1 bg-gray-100 px-2 py-2 rounded-md'
                           >
                             <Image
-                              src={`/testimgs/rarities/${rarity}.png`}
+                              src={`/rarities/${rarity}.png`}
                               alt={`Rareté ${rarity}`}
                               width={0}
                               height={0}
@@ -342,7 +342,7 @@ export default function CardPage() {
                                   className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
                                 >
                                   <Image
-                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    src={`/rarities/${rarity}.png`}
                                     alt={`Rareté ${rarity}`}
                                     width={0}
                                     height={0}
@@ -371,7 +371,7 @@ export default function CardPage() {
                                   className='flex items-center gap-1 bg-gray-200 px-1 py-2 rounded-md'
                                 >
                                   <Image
-                                    src={`/testimgs/rarities/${rarity}.png`}
+                                    src={`/rarities/${rarity}.png`}
                                     alt={`Rareté ${rarity}`}
                                     width={0}
                                     height={0}
