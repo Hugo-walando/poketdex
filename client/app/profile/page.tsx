@@ -41,10 +41,15 @@ export default function Profile() {
 
     const validData = result.data;
 
-    await updateUser({
+    const updated = await updateUser({
       username: validData.username,
       friend_code: validData.friend_code,
     });
+
+    if (updated) {
+      setUsername(updated.username);
+      setFriendCode(updated.friend_code);
+    }
   };
 
   if (!user) return null;
