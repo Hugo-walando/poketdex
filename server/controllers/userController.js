@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const Account = require('../models/Account'); // le modèle pour la collection "accounts"
-const { getSocketIO, getConnectedUsersMap } = require('../socket');
 
 const getCurrentUser = async (req, res) => {
   try {
@@ -88,20 +87,6 @@ const updateUser = async (req, res) => {
 
     console.log('✅ Utilisateur mis à jour avec succès :', updatedUser);
     res.status(200).json(updatedUser);
-    const io = getSocketIO();
-    const connectedUsers = getConnectedUsersMap();
-
-    const socketId = connectedUsers.get(String(updatedUser._id));
-    if (socketId) {
-      io.to(socketId).emit('user-profile-updated', {
-        userId: updatedUser._id,
-        username: updatedUser.username,
-        friend_code: updatedUser.friend_code,
-        profile_picture: updatedUser.profile_picture,
-        trade_count: updatedUser.trade_count,
-      });
-      console.log(`📡 user-profile-updated envoyé à ${updatedUser._id}`);
-    }
   } catch (err) {
     console.error('[updateUser error]', err);
     res.status(500).json({ message: 'Erreur serveur' });
