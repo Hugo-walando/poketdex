@@ -68,7 +68,6 @@ export default function Profile() {
     const updated = await updateUser({
       username: validData.username,
       friend_code: validData.friend_code,
-      profile_picture: selectedAvatar,
     });
 
     if (updated) {
@@ -80,7 +79,7 @@ export default function Profile() {
 
   return (
     <ProtectedPage>
-      <div className='p-4 max-w-md mx-auto space-y-6'>
+      <div className='p-4 max-w-lg mx-auto space-y-6'>
         {/* 🧑 Avatar & titre */}
         <div className='flex items-center justify-between'>
           <div className='relative'>
@@ -99,7 +98,9 @@ export default function Profile() {
               <Pen className='w-6 h-6 text-grayblue' />
             </button>
           </div>
-          <h2 className='text-dark-lg'>Bienvenue {user.username}</h2>
+          <h2 className='text-dark-base truncate '>
+            Bienvenue {user.username}
+          </h2>
           <LogoutButton />
         </div>
 
@@ -140,7 +141,10 @@ export default function Profile() {
         selectedAvatar={selectedAvatar}
         onClose={() => setShowModal(false)}
         onSelect={(path) => setSelectedAvatar(path)}
-        onSave={handleSave}
+        onSave={async () => {
+          await updateUser({ profile_picture: selectedAvatar });
+          setShowModal(false);
+        }}
       />
     </ProtectedPage>
   );

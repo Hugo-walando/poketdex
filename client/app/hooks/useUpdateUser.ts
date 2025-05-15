@@ -15,11 +15,13 @@ const useUpdateUser = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const updateUser = async (userData: {
-    username: string;
-    friend_code: string;
-    profile_picture: string;
-  }) => {
+  const updateUser = async (
+    userData: Partial<{
+      username: string;
+      friend_code: string;
+      profile_picture: string;
+    }>,
+  ) => {
     if (!user?.accessToken) {
       setError('Utilisateur non authentifié');
       toast.error('Erreur : utilisateur non authentifié');
