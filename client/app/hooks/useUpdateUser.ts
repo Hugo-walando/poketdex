@@ -9,6 +9,7 @@ import { useUserStore } from '../store/useUserStore';
 const useUpdateUser = () => {
   const { update } = useSession();
   const user = useUserStore((state) => state.user);
+  const updateUserStore = useUserStore((s) => s.updateUserStore);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +46,10 @@ const useUpdateUser = () => {
       await update(); // rafraîchit la session côté front
       setSuccess('✅ Informations mises à jour avec succès');
       toast.success('Informations mises à jour avec succès');
+      updateUserStore({
+        username: response.data.username,
+        friend_code: response.data.friend_code,
+      });
       return response.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {

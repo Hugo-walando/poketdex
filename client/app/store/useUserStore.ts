@@ -17,7 +17,7 @@ interface UserState {
   setUser: (user: User) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
-  updateUser: (updated: Partial<User>) => void;
+  updateUserStore: (updated: Partial<User>) => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -26,7 +26,7 @@ export const useUserStore = create<UserState>((set) => ({
   setUser: (user) => set({ user, isLoading: false }),
   clearUser: () => set({ user: null, isLoading: false }),
   setLoading: (loading) => set({ isLoading: loading }),
-  updateUser: (updated) =>
+  updateUserStore: (updated) =>
     set((state) => ({
       user: {
         ...state.user,
