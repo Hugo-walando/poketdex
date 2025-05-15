@@ -7,6 +7,7 @@ import ProtectedPage from '../components/auth/ProtectedPage';
 import { updateUserSchema } from '@/lib/validation/user';
 import { useUserStore } from '../store/useUserStore';
 import Input from '../components/ui/Input';
+import toast from 'react-hot-toast';
 
 export default function Profile() {
   const { updateUser, error, success, loading } = useUpdateUser();
@@ -41,6 +42,21 @@ export default function Profile() {
 
     const validData = result.data;
 
+    console.log('validData username', validData.username);
+    console.log('validData friend_code', validData.friend_code);
+    console.log('user username', user?.username);
+    console.log('user friend_code', user?.friend_code);
+
+    const hasChanges =
+      validData.username !== user?.username ||
+      normalizeFriendCode(validData.friend_code) !==
+        normalizeFriendCode(user?.friend_code ?? '');
+
+    if (!hasChanges) {
+      toast.error('Aucun changement détecté');
+      return;
+    }
+
     const updated = await updateUser({
       username: validData.username,
       friend_code: validData.friend_code,
@@ -51,6 +67,7 @@ export default function Profile() {
       setFriendCode(updated.friend_code);
     }
   };
+  const normalizeFriendCode = (code: string) => code.replace(/\D/g, '');
 
   if (!user) return null;
 

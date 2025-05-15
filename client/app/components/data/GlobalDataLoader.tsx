@@ -8,8 +8,6 @@ import { useSession } from 'next-auth/react';
 import { useUserStore } from '@/app/store/useUserStore';
 
 export default function GlobalDataLoader() {
-  console.log('📦 GlobalDataLoader rendered');
-
   const { data: session, status } = useSession();
 
   const setUser = useUserStore((s) => s.setUser);
@@ -27,23 +25,28 @@ export default function GlobalDataLoader() {
 
   // ✅ Gestion utilisateur
   useEffect(() => {
+    console.log('📦 GlobalDataLoader useEffect triggered');
+    console.log('📦 GlobalDataLoader session:', session);
+
     if (status === 'loading') return;
 
     if (
       status === 'authenticated' &&
       session?.user?.id &&
-      !hasInitialized.current
+      !hasInitialized.current &&
+      !currentUser
     ) {
       hasInitialized.current = true;
-      console.log('🧍 Initial user loaded into Zustand');
 
       setUser({
         id: session.user.id,
         email: session.user.email ?? '',
-        username: session.user.username ?? currentUser?.username ?? '',
-        friend_code: session.user.friend_code ?? currentUser?.friend_code ?? '',
-        accessToken: session.accessToken ?? currentUser?.accessToken ?? '',
+        username: session.user.username ?? '',
+        friend_code: session.user.friend_code ?? '',
+        accessToken: session.accessToken ?? '',
       });
+
+      console.log('🧍 User loaded into Zustand:', session.user);
 
       setUserLoading(false);
     }
