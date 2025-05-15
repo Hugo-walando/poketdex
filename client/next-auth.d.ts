@@ -9,6 +9,7 @@ declare module 'next-auth' {
     profile_picture?: string;
     role?: 'user' | 'admin';
     accessToken?: string;
+    trade_count?: number;
   }
 
   interface Session {

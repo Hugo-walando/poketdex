@@ -29,7 +29,7 @@ export default function MatchGroupItem({
       >
         <div className='flex items-center gap-3'>
           <Image
-            src={group.user.profile_picture || '/testimgs/avatars/Av1.png'}
+            src={group.user.profile_picture || '/avatars/Av1.png'}
             alt='USERNAME'
             width={32}
             height={32}

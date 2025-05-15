@@ -22,6 +22,7 @@ export default function useSocket() {
   const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
   const markAsSent = useTradeRequestStore((s) => s.markAsSent);
   const setTradeActive = useTradeRequestStore((s) => s.setTradeActive);
+  const updateUser = useUserStore((s) => s.updateUserStore);
 
   useEffect(() => {
     if (!userId) return;
@@ -125,6 +126,7 @@ export default function useSocket() {
     updateTradeStatus,
     markAsSent,
     setTradeActive,
+    updateUser,
   ]);
 
   return { socket: socketRef.current, connected };

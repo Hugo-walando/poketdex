@@ -9,15 +9,19 @@ import { useUserStore } from '../store/useUserStore';
 const useUpdateUser = () => {
   const { update } = useSession();
   const user = useUserStore((state) => state.user);
+  const updateUserStore = useUserStore((s) => s.updateUserStore);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const updateUser = async (userData: {
-    username: string;
-    friend_code: string;
-  }) => {
+  const updateUser = async (
+    userData: Partial<{
+      username: string;
+      friend_code: string;
+      profile_picture: string;
+    }>,
+  ) => {
     if (!user?.accessToken) {
       setError('Utilisateur non authentifié');
       toast.error('Erreur : utilisateur non authentifié');
@@ -45,6 +49,7 @@ const useUpdateUser = () => {
       await update(); // rafraîchit la session côté front
       setSuccess('✅ Informations mises à jour avec succès');
       toast.success('Informations mises à jour avec succès');
+      updateUserStore(response.data);
       return response.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {

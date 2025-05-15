@@ -61,7 +61,7 @@ export default function UserSidebar({
             key={user._id}
             id={user._id}
             username={user.username}
-            profilePicture={user.profile_picture || '/testimgs/avatars/Av1.png'}
+            profilePicture={user.profile_picture || '/avatars/Av1.png'}
             isSelected={selectedUserId === user._id}
             onSelect={handleSelectUser}
             showAlertDot={

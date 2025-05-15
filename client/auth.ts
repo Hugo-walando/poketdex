@@ -25,25 +25,25 @@ export const authConfig = {
       }
 
       // 🧠 Récupérer les infos supplémentaires de l'utilisateur via ton backend Express
-      if (!token.username && !token.friend_code && token.accessToken) {
-        try {
-          const res = await axiosClient.get(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
-            {
-              headers: {
-                Authorization: `Bearer ${token.accessToken}`,
-              },
+
+      try {
+        const res = await axiosClient.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.accessToken}`,
             },
-          );
+          },
+        );
 
-          const data = res.data;
-          token.username = data.username;
-          token.friend_code = data.friend_code;
+        const data = res.data;
+        token.username = data.username;
+        token.friend_code = data.friend_code;
+        token.profile_picture = data.profile_picture;
 
-          // ✅ Flag pour éviter de refaire l'appel
-        } catch (err) {
-          console.error('❌ Erreur lors du fetch des infos utilisateur:', err);
-        }
+        // ✅ Flag pour éviter de refaire l'appel
+      } catch (err) {
+        console.error('❌ Erreur lors du fetch des infos utilisateur:', err);
       }
 
       return token;
@@ -56,6 +56,7 @@ export const authConfig = {
       session.user.username = token.username as string;
       session.user.friend_code = token.friend_code as string;
       session.accessToken = token.accessToken as string;
+      session.user.profile_picture = token.profile_picture as string;
 
       // MongoDBAdapter gère automatiquement la création ou la mise à jour de l'utilisateur,
       // donc il n'est pas nécessaire d'ajouter une logique manuelle pour créer ou mettre à jour l'utilisateur

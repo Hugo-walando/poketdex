@@ -108,7 +108,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
 
       <div className='flex items-center justify-center gap-2'>
         <Image
-          src={card.user.profile_picture || '/testimgs/avatars/Av1.png'}
+          src={card.user.profile_picture || '/avatars/Av1.png'}
           alt={card.user.username}
           width={32}
           height={32}

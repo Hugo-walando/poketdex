@@ -121,12 +121,14 @@ export interface TradeRequest {
     username: string;
     profile_picture: string;
     friend_code: string;
+    trade_count: number;
   };
   receiver: {
     _id: string;
     username: string;
     profile_picture: string;
     friend_code: string;
+    trade_count: number;
   };
   card_offered: {
     _id: string;
@@ -159,6 +161,7 @@ export interface TradeGroup {
     username: string;
     profile_picture: string;
     friend_code: string;
+    trade_count: number;
   };
   trades: TradeRequest[];
 }
@@ -169,4 +172,5 @@ export interface AppUser {
   profile_picture: string;
   wishlist_cards?: WishlistCard[];
   friend_code: string;
+  trade_count: number;
 }
