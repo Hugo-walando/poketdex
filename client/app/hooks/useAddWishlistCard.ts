@@ -6,8 +6,6 @@ import { AxiosError } from 'axios';
 import { useUIModalStore } from '../store/useUIModalStore';
 
 const useAddWishlistCard = () => {
-  console.log('🔵 useAddWishlistCard appelé');
-
   const { user } = useUserStore();
 
   const { openCompleteProfileModal } = useUIModalStore();
@@ -24,7 +22,6 @@ const useAddWishlistCard = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('🔵 Envoi de la requête pour ajouter à la wishlist', cardId);
 
       const res = await axiosClient.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/wishlist-cards`,
@@ -43,7 +40,6 @@ const useAddWishlistCard = () => {
       const axiosError = err as AxiosError<{ message: string }>;
 
       console.error('❌ Erreur lors de l’ajout :', err);
-      console.log('🔴 Erreur lors de l’ajout :', axiosError.response?.data);
       setError('Erreur lors de l’ajout à la collection');
       if (axiosError.response?.data?.message?.includes('Profil incomplet')) {
         // 🔥 Afficher ta popup

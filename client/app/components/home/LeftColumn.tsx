@@ -32,8 +32,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
     selectedRarities,
     setSelectedRarities,
   } = useAllListedCardsStore();
-
-  console.log('allListedCards', allListedCards);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
   // Reset Filters
@@ -55,8 +53,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
 
     setSelectedSets(updated);
   };
-
-  console.log('filteredListedCards', allListedCards);
   return (
     <div className='w-full md:w-6/10 mb-10  gap-6 relative'>
       <div className='sticky top-0 z-10 mb-4 pt-10 md:pt-0 bg-gradient-to-t p-4 from-whitebackground/0 via-whitebackground/95 to-whitebackground/100'>

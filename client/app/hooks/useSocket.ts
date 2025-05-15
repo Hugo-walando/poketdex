@@ -38,13 +38,11 @@ export default function useSocket() {
         setConnected(true);
         if (userId) {
           socket.emit('register-user', userId);
-          console.log('🟢 Connecté à Socket.IO et enregistré :', userId);
         }
       });
 
       socket.on('disconnect', () => {
         setConnected(false);
-        console.log('🔴 Déconnecté de Socket.IO');
       });
 
       socket.on('connect_error', (err) => {
@@ -52,23 +50,18 @@ export default function useSocket() {
       });
 
       socket.on('user-connected', (id) => {
-        console.log('✅ User connecté', id);
         addOnlineUser(id);
       });
 
       socket.on('user-disconnected', (id) => {
-        console.log('❌ User déconnecté', id);
         removeOnlineUser(id);
       });
       socket.on('connected-users', (ids: string[]) => {
-        console.log('📥 Utilisateurs actuellement connectés :', ids);
         setAll(ids);
         // Tu peux stocker ça dans un Zustand Store par exemple
       });
 
       socket.on('new-trade-request', (tradeRequest) => {
-        console.log('📩 Nouvelle demande d’échange reçue :', tradeRequest);
-
         // Optionnel : ajoute dans un store (ex: `useTradeRequestStore`)
         addTradeRequest(tradeRequest);
         // Optionnel : affiche une notification/toast
@@ -76,8 +69,6 @@ export default function useSocket() {
       });
 
       socket.on('trade-updated', (data) => {
-        console.log('♻️ TradeRequest mise à jour :', data);
-
         updateTradeStatus(data.tradeId, data.status);
         if (data.status === 'accepted') {
           toast('🎉 Une de vos demandes d`échange a été accepté !');
@@ -89,13 +80,6 @@ export default function useSocket() {
       });
 
       socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
-        console.log(
-          '📦 Mise à jour carte envoyée pour',
-          tradeId,
-          'par',
-          sentByUserId,
-        );
-
         markAsSent(tradeId, sentByUserId);
 
         // ✅ On ne notifie que si c’est l’autre qui a envoyé
@@ -104,13 +88,11 @@ export default function useSocket() {
         }
       });
       socket.on('trade-reactivated', ({ tradeId }) => {
-        console.log('♻️ Trade réactivée :', tradeId);
         setTradeActive(tradeId); // une méthode zustand qui met is_active à true
       });
     } else {
       if (socketRef.current.connected && userId) {
         socketRef.current.emit('register-user', userId);
-        console.log('✅ User enregistré après connexion :', userId);
       }
     }
 

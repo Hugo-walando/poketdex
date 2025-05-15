@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 import { useCallback } from 'react';
 
 export function useTradeRequestActions() {
-  console.log('🔄 Chargement des actions de trade');
   const { user } = useUserStore();
   const { updateTradeStatus, markAsSent } = useTradeRequestStore();
 

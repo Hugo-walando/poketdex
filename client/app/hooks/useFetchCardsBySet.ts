@@ -18,7 +18,6 @@ export default function useFetchCardsBySetsManual() {
 
     try {
       for (const set of sets) {
-        console.log(`Fetching cards for set: ${set.code}`);
         const res = await axiosClient.get<Card[]>(
           `/api/cards/set/${set.code}`,
           {

@@ -21,9 +21,6 @@ const useFetchWishlistForQuickTrade = (
       setError(null);
 
       try {
-        console.log(
-          `📡 Fetch wishlist for user ${userId} and rarity ${rarity}`,
-        );
         const res = await axiosClient.get<WishlistCard[]>(
           `/api/wishlist-cards/user/${userId}?rarity=${rarity}`,
         );

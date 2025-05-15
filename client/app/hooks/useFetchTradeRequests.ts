@@ -23,7 +23,6 @@ const useFetchTradeRequests = () => {
     setError(null);
 
     try {
-      console.log('📡 Fetching trade requests...');
       const res = await axiosClient.get('/api/trade-requests/me', {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
@@ -37,9 +36,6 @@ const useFetchTradeRequests = () => {
 
       const grouped = groupTradeRequestsByUser(res.data, user.id);
       setTradeGroups(grouped);
-
-      console.log('✅ Trade requests récupérés et groupés :', grouped.length);
-      console.log('Trade requests:', grouped);
     } catch (err) {
       console.error('❌ Erreur fetch trades :', err);
       setError('Erreur lors de la récupération des échanges');

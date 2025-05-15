@@ -24,7 +24,6 @@ const useFetchMatches = () => {
       setError(null);
 
       try {
-        console.log('📡 Fetching matches...');
         const res = await axiosClient.get('/api/matches/me', {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,
@@ -40,11 +39,6 @@ const useFetchMatches = () => {
         const groupedMatches = groupMatchesByUser(res.data, user.id);
 
         setMatches(groupedMatches); // 🆕 on stocke directement les MatchGroup
-        console.log(
-          '✅ Matches récupérés et groupés :',
-          groupedMatches.length,
-          'groupes',
-        );
       } catch (err) {
         console.error('❌ Erreur fetch matches :', err);
         setError('Erreur lors de la récupération des matchs');
