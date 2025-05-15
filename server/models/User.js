@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema(
     wishlist_cards: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'WishlistCard' },
     ],
+    trade_count: {
+      type: Number,
+      default: 0,
+    },
     last_seen: { type: Date },
   },
   { timestamps: true },

@@ -2,6 +2,7 @@ const TradeRequest = require('../models/TradeRequest');
 const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
 const { getSocketIO, getConnectedUsersMap } = require('../socket');
+const User = require('../models/User');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -69,8 +70,8 @@ const createQuickTradeRequest = async (req, res) => {
     const populatedTrade = await TradeRequest.findById(newTrade._id)
       .populate('card_offered')
       .populate('card_requested')
-      .populate('sender', 'username profile_picture friend_code')
-      .populate('receiver', 'username profile_picture friend_code');
+      .populate('sender', 'username profile_picture friend_code trade_count')
+      .populate('receiver', 'username profile_picture friend_code trade_count');
 
     const io = getSocketIO();
     const connectedUsers = getConnectedUsersMap();
@@ -172,8 +173,14 @@ const updateTradeRequest = async (req, res) => {
         const populated = await TradeRequest.findById(nextTrade._id)
           .populate('card_offered')
           .populate('card_requested')
-          .populate('sender', 'username profile_picture friend_code')
-          .populate('receiver', 'username profile_picture friend_code');
+          .populate(
+            'sender',
+            'username profile_picture friend_code trade_count',
+          )
+          .populate(
+            'receiver',
+            'username profile_picture friend_code trade_count',
+          );
 
         const io = getSocketIO();
         const connectedUsers = getConnectedUsersMap();
@@ -210,8 +217,8 @@ const getMyTradeRequests = async (req, res) => {
     const tradeRequests = await TradeRequest.find({
       $or: [{ sender: userId }, { receiver: userId }],
     })
-      .populate('sender', 'username profile_picture friend_code')
-      .populate('receiver', 'username profile_picture friend_code')
+      .populate('sender', 'username profile_picture friend_code trade_count')
+      .populate('receiver', 'username profile_picture friend_code trade_count')
       .populate('card_offered')
       .populate('card_requested')
       .sort({ createdAt: -1 });
@@ -234,8 +241,8 @@ const markTradeRequestAsSent = async (req, res) => {
     const userId = req.user._id;
 
     const trade = await TradeRequest.findById(tradeRequestId)
-      .populate('sender', 'username profile_picture friend_code')
-      .populate('receiver', 'username profile_picture friend_code')
+      .populate('sender', 'username profile_picture friend_code trade_count')
+      .populate('receiver', 'username profile_picture friend_code trade_count')
       .populate('card_offered')
       .populate('card_requested');
 
@@ -290,6 +297,17 @@ const markTradeRequestAsSent = async (req, res) => {
     // 🔄 Réactivation possible d’une autre TradeRequest
 
     if (isCompleted) {
+      await User.updateOne(
+        { _id: trade.sender._id },
+        { $inc: { trade_count: 1 } },
+      );
+      await User.updateOne(
+        { _id: trade.receiver._id },
+        { $inc: { trade_count: 1 } },
+      );
+      console.log(
+        `👥 Trade count incrémenté pour ${trade.sender._id} et ${trade.receiver._id}`,
+      );
       const nextTrade = await reactivateNextTradeRequestService(
         trade.sender._id,
         trade.receiver._id,
@@ -299,8 +317,14 @@ const markTradeRequestAsSent = async (req, res) => {
         const populated = await TradeRequest.findById(nextTrade._id)
           .populate('card_offered')
           .populate('card_requested')
-          .populate('sender', 'username profile_picture friend_code')
-          .populate('receiver', 'username profile_picture friend_code');
+          .populate(
+            'sender',
+            'username profile_picture friend_code trade_count',
+          )
+          .populate(
+            'receiver',
+            'username profile_picture friend_code trade_count',
+          );
 
         const receiverSocket = connectedUsers.get(
           String(populated.receiver._id),

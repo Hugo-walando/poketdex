@@ -19,6 +19,7 @@ export function groupTradeRequestsByUser(
           profile_picture:
             otherUser.profile_picture || '/testimgs/avatars/Av1.png',
           friend_code: otherUser.friend_code,
+          trade_count: otherUser.trade_count,
         },
         trades: [],
       };

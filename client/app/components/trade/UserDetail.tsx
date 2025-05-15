@@ -9,6 +9,7 @@ interface UserDetailProps {
 }
 
 export default function UserDetail({ user }: UserDetailProps) {
+  console.log('UserDetail', user);
   return (
     <div className=' rounded-b-xl w-full bg-white shadow-base md:rounded-xl p-4 md:flex md:flex-col gap-4'>
       <div className='flex lg:flex-col lg:justify-center items-center gap-2'>
@@ -28,7 +29,8 @@ export default function UserDetail({ user }: UserDetailProps) {
           </span>
 
           <p className='text-gray-sm'>
-            <span className='text-green-sm '>125</span> échanges réalisés
+            <span className='text-green-sm '>{user.trade_count}</span> échange
+            {user.trade_count > 1 ? 's' : ''} réalisés
           </p>
         </div>
       </div>
