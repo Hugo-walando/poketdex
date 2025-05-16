@@ -8,7 +8,7 @@ export function matchCard(
   if (!searchQuery) return true;
 
   const query = searchQuery.toLowerCase();
-  const nameMatch = card.name.toLowerCase().includes(query);
+  const nameMatch = card.name?.toLowerCase().includes(query);
 
   const officialIdStr = String(card.official_id).padStart(3, '0');
   const idMatch = officialIdStr.includes(query);
