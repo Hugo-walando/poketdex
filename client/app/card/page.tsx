@@ -61,7 +61,7 @@ export default function CardPage() {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
   const [openSetCodes, setOpenSetCodes] = useState<string[]>([]);
-  const [visibleCardCount, setVisibleCardCount] = useState(15);
+  const [visibleCardCount, setVisibleCardCount] = useState(30);
 
   const { addListedCard } = useAddListedCard();
   const { addWishlistCard } = useAddWishlistCard();
@@ -150,8 +150,6 @@ export default function CardPage() {
   };
 
   const filteredCards = useMemo(() => {
-    if (!debouncedSearchQuery) return [];
-
     return Object.entries(cardsBySet)
       .flatMap(([setCode, cards]) => {
         const set = sets.find((s) => s.code === setCode);
@@ -159,7 +157,8 @@ export default function CardPage() {
 
         return cards.filter(
           (card) =>
-            matchCard(card, set, debouncedSearchQuery.toLowerCase()) &&
+            (!debouncedSearchQuery ||
+              matchCard(card, set, debouncedSearchQuery.toLowerCase())) &&
             (selectedSets.length === 0 ||
               selectedSets.includes(card.set_code)) &&
             (selectedRarities.length === 0 ||
@@ -236,7 +235,7 @@ export default function CardPage() {
               </div>
             </div>
           </div>
-          {searchQuery && (
+          {(hasActiveFilters || searchQuery) && (
             <>
               {searchQuery !== debouncedSearchQuery ? (
                 // 🔁 Affiche le shimmer pendant le debounce
@@ -245,6 +244,100 @@ export default function CardPage() {
                 <p className='text-center text-gray-xl'>
                   Aucune carte ne correspond aux filtres.
                 </p>
+              ) : // ✅ Grouper par set_code ici
+              selectedSets.length > 0 ? (
+                selectedSets.map((setCode) => {
+                  const set = sets.find((s) => s.code === setCode);
+                  if (!set) return null;
+
+                  const cardsForSet = filteredCards
+                    .filter((card) => card.set_code === setCode)
+                    .sort((a, b) => a.official_id.localeCompare(b.official_id));
+
+                  if (cardsForSet.length === 0) return null;
+
+                  return (
+                    <div key={setCode} className='mb-10'>
+                      {/* ✅ Logo du set */}
+                      <div className='flex items-center gap-4 mb-4'>
+                        <Image
+                          src={set.img_url}
+                          alt={set.name}
+                          width={50}
+                          height={50}
+                          className='w-[50px] h-auto'
+                        />
+                        <h2 className='text-dark-lg font-semibold'>
+                          {set.name}
+                        </h2>
+                      </div>
+
+                      {/* 🔽 Cartes du set */}
+                      <div className='grid gap-6 grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
+                        {cardsForSet.slice(0, visibleCardCount).map((card) => (
+                          <div
+                            className='flex flex-col items-center gap-2'
+                            key={card._id}
+                          >
+                            <div
+                              key={card.official_id}
+                              className='justify-self-center relative '
+                            >
+                              <div className='absolute top-1 right-1 rounded-full bg-white/90 backdrop-blur-lg px-2 py-1 shadow-base flex flex-col items-center justify-center text-light-sm'>
+                                #{card.official_id}
+                              </div>
+                              {!isCardImageLoaded && (
+                                <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
+                              )}
+                              {card.img_url ? (
+                                <Image
+                                  src={card.img_url}
+                                  alt={card.name || 'Carte'}
+                                  width={0}
+                                  height={0}
+                                  sizes='100vw'
+                                  className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                                  onLoad={() => setCardImageLoaded(true)}
+                                  priority={true}
+                                />
+                              ) : (
+                                <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                                  Image manquante
+                                </div>
+                              )}
+
+                              <CardSelector
+                                cardId={card._id}
+                                isListed={listedCardIds.includes(card._id)}
+                                isWishlisted={wishlistCardIds.includes(
+                                  card._id,
+                                )}
+                                toggleListedCard={() =>
+                                  toggleListedCard(card._id)
+                                }
+                                toggleWishlistCard={() =>
+                                  toggleWishlistCard(card._id)
+                                }
+                              />
+                            </div>
+                            <Image
+                              src={
+                                rarityIcons[
+                                  card.rarity as keyof typeof rarityIcons
+                                ]
+                              }
+                              alt={`Rareté`}
+                              width={0}
+                              height={0}
+                              sizes='100vw'
+                              className='h-8 lg:h-10 w-auto object-contain'
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
                 <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                   {filteredCards.slice(0, visibleCardCount).map((card) => (
@@ -318,6 +411,7 @@ export default function CardPage() {
           )}
 
           {!searchQuery &&
+            !hasActiveFilters &&
             sets.map((set: Set) => {
               const cards = cardsBySet[set.code]
                 ?.filter(
@@ -495,7 +589,7 @@ export default function CardPage() {
                       <div className='grid gap-6 justify-center grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
                         {loadingCards ? (
                           <>
-                            {Array.from({ length: 15 }).map((_, idx) => (
+                            {Array.from({ length: 30 }).map((_, idx) => (
                               <ShimmerCard key={idx} />
                             ))}
                           </>
