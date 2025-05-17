@@ -25,6 +25,7 @@ app.use('/api/listed-cards', require('./routes/listedCardRoutes'));
 app.use('/api/wishlist-cards', require('./routes/wishlistCardRoutes'));
 app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
+app.use('/api/ping', require('./routes/pingRoutes'));
 
 // Test route
 app.get('/', (req, res) => {
