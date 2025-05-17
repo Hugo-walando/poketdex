@@ -16,8 +16,6 @@ function setupSocket(server, allowedOrigin) {
   ioInstance = io;
 
   io.on('connection', (socket) => {
-    console.log('🟢 Nouveau client connecté :', socket.id);
-
     socket.on('register-user', (userId) => {
       if (!userId) return;
 
@@ -53,12 +51,8 @@ function setupSocket(server, allowedOrigin) {
   });
 
   function logConnectedUsers() {
-    for (const [userId, sockId] of connectedUsers.entries()) {
-      console.log(` - ${userId} → ${sockId}`);
-    }
-
     const ids = Array.from(connectedUsers.keys());
-    console.log(`🧍 Utilisateurs connectés (${ids.length}) :`, ids);
+    console.log(`🧍 Utilisateurs connectés (${ids.length})`);
   }
 
   return io;
