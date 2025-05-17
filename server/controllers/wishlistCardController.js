@@ -8,9 +8,6 @@ const User = require('../models/User');
 // POST /api/wishlist-cards
 const addWishlistCard = async (req, res) => {
   try {
-    console.log('🔧 Requête d’ajout à la wishlist');
-    console.log('USer', req.user);
-    console.log('User ID:', req.user._id);
     const userId = req.user._id;
     const { cardId } = req.body;
 
@@ -23,10 +20,6 @@ const addWishlistCard = async (req, res) => {
           'Profil incomplet. Veuillez renseigner votre pseudo et votre code ami.',
       });
     }
-
-    console.log('User ID:', userId);
-    console.log('Card ID:', cardId);
-    console.log('Ajout de la carte à la wishlist');
 
     // ⚡ Étape 1 : vérifier si la carte est déjà dans ListedCard
     const listedCard = await ListedCard.findOne({ user: userId, card: cardId });
@@ -70,7 +63,7 @@ const addWishlistCard = async (req, res) => {
         .status(409)
         .json({ message: 'Carte déjà présente dans la wishlist.' });
     }
-    console.error('Erreur lors de l’ajout à la wishlist :', err);
+    logError('Erreur lors du addWishlistCard', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -100,8 +93,6 @@ const removeWishlistCard = async (req, res) => {
         .json({ message: 'Carte non trouvée dans la wishlist.' });
     }
 
-    console.log('✅ Carte wishlist supprimée');
-
     const deletedMatches = await Match.deleteMany({
       $or: [
         { user_1: userId, card_offered_by_user_2: cardId },
@@ -109,13 +100,9 @@ const removeWishlistCard = async (req, res) => {
       ],
     });
 
-    console.log(
-      `🗑️ ${deletedMatches.deletedCount} match(s) supprimé(s) car liés à cette carte de wishlist`,
-    );
-
     res.status(204).end();
   } catch (err) {
-    console.error('Erreur lors de la suppression de la wishlist :', err);
+    logError('Erreur lors du removeWishlistCard', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -136,10 +123,7 @@ const getWishlistCards = async (req, res) => {
 
     res.status(200).json(wishlistCards);
   } catch (err) {
-    console.error(
-      'Erreur lors de la récupération des cartes souhaitées :',
-      err,
-    );
+    logError('Erreur lors du getWishlistCards', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -153,10 +137,6 @@ const getWishlistCardsByUserAndRarity = async (req, res) => {
     if (!userId || !rarity) {
       return res.status(400).json({ message: 'User ID et rareté requis.' });
     }
-
-    console.log(
-      `🔎 Recherche de wishlist pour user ${userId} avec rareté ${rarity}`,
-    );
 
     const wishlistCards = await WishlistCard.find({
       user: userId,
@@ -176,10 +156,7 @@ const getWishlistCardsByUserAndRarity = async (req, res) => {
 
     res.status(200).json(filtered);
   } catch (err) {
-    console.error(
-      'Erreur lors de la récupération wishlist par user et rareté :',
-      err,
-    );
+    logError('Erreur lors du getWishlistCardsByUserAndRarity', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };

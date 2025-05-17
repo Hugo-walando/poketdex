@@ -1,3 +1,4 @@
+const { logError } = require('../logger');
 const Match = require('../models/Match');
 
 const createMatch = async (req, res) => {
@@ -23,7 +24,7 @@ const createMatch = async (req, res) => {
 
     res.status(201).json(match);
   } catch (error) {
-    console.error('Erreur création match :', error);
+    logError('Erreur lors du createMatch', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -38,7 +39,7 @@ const getMatchesForCurrentUser = async (req, res) => {
 
     res.status(200).json(matches);
   } catch (error) {
-    console.error('Erreur lors de la récupération des matchs:', error);
+    logError('Erreur lors du getMatchesForCurrentUser', err);
     res
       .status(500)
       .json({ message: 'Erreur serveur lors de la récupération des matchs.' });
@@ -70,7 +71,7 @@ const getSimilarMatches = async (req, res) => {
 
     res.status(200).json(matches);
   } catch (error) {
-    console.error('Erreur lors de la recherche de matchs similaires :', error);
+    logError('Erreur lors du getSimilarMatches', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };

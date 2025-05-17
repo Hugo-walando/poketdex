@@ -3,6 +3,7 @@ const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
 const { getSocketIO, getConnectedUsersMap } = require('../socket');
 const User = require('../models/User');
+const { logError } = require('../logger');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -86,7 +87,7 @@ const createQuickTradeRequest = async (req, res) => {
 
     res.status(201).json(populatedTrade);
   } catch (error) {
-    console.error('❌ Erreur création quick trade :', error);
+    logError('Erreur lors du createQuickTradeRequest', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -205,7 +206,7 @@ const updateTradeRequest = async (req, res) => {
 
     res.status(200).json(tradeRequest);
   } catch (error) {
-    console.error('Erreur updateTradeRequest:', error);
+    logError('Erreur lors du updatetraderequest', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -225,10 +226,7 @@ const getMyTradeRequests = async (req, res) => {
 
     res.status(200).json(tradeRequests);
   } catch (error) {
-    console.error(
-      '❌ Erreur lors de la récupération des TradeRequests :',
-      error,
-    );
+    logError('Erreur lors du getMyTradeRequests', err);
     res
       .status(500)
       .json({ message: 'Erreur serveur lors de la récupération.' });
@@ -348,7 +346,7 @@ const markTradeRequestAsSent = async (req, res) => {
     // 📡 Notifier les deux utilisateurs
     res.status(200).json(trade);
   } catch (error) {
-    console.error('Erreur markTradeRequestAsSent:', error);
+    logError('Erreur lors du markTradeRequestAsSent', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -423,7 +421,7 @@ const createMultipleTradeRequests = async (req, res) => {
 
     res.status(201).json(trades);
   } catch (err) {
-    console.error('Erreur création multiple TradeRequests :', err);
+    logError('Erreur lors du createMultipleTradeRequests', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };

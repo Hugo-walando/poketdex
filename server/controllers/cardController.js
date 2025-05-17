@@ -1,10 +1,9 @@
+const { logError } = require('../logger');
 const Card = require('../models/Card');
 
 // controllers/cardController.ts
 const getAllCards = async (req, res) => {
   try {
-    console.log('🃏 Fetching all cards (grouped by setCode)');
-
     const cards = await Card.find(); // Récupère toutes les cartes
 
     // Regroupe les cartes par setCode
@@ -17,7 +16,7 @@ const getAllCards = async (req, res) => {
 
     return res.status(200).json(grouped);
   } catch (err) {
-    console.error('❌ Error fetching cards:', err);
+    logError('Erreur lors du getAllCards', err);
     return res
       .status(500)
       .json({ error: 'Erreur lors de la récupération des cartes' });
@@ -27,12 +26,12 @@ const getAllCards = async (req, res) => {
 const getCardsBySet = async (req, res) => {
   const { set_code } = req.params;
   try {
-    console.log('Fetching cards for set');
     const cards = await Card.find({ set_code }).sort({
       official_id: 1,
     });
     res.status(200).json(cards);
   } catch (err) {
+    logError('Erreur lors du getCardsBySet', err);
     res
       .status(500)
       .json({ error: 'Erreur lors de la récupération des cartes' });
@@ -45,6 +44,7 @@ const getCardById = async (req, res) => {
     if (!card) return res.status(404).json({ message: 'Carte non trouvée' });
     res.status(200).json(card);
   } catch (err) {
+    logError('Erreur lors du getCardbyId', err);
     res
       .status(500)
       .json({ error: 'Erreur lors de la récupération de la carte' });
