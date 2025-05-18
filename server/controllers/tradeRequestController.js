@@ -3,15 +3,12 @@ const Match = require('../models/Match');
 const reactivateNextTradeRequestService = require('../services/reactivateNextTradeRequestService');
 const { getSocketIO, getConnectedUsersMap } = require('../socket');
 const User = require('../models/User');
+const { logError } = require('../logger');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
   try {
     const { listedCardId, myCardOfferedId, toUserId } = req.body;
-    console.log('Requête de création d’un quick trade');
-    console.log('ID de la carte listée :', listedCardId);
-    console.log('ID de la carte offerte :', myCardOfferedId);
-    console.log('ID de l’utilisateur à qui envoyer la demande :', toUserId);
     const userId = req.user._id;
     const sender = req.user;
 
@@ -57,8 +54,6 @@ const createQuickTradeRequest = async (req, res) => {
 
     const isActive = !alreadyActive;
 
-    console.log('Card offerte :', myCardOfferedId);
-
     const newTrade = await TradeRequest.create({
       sender: userId,
       receiver: toUserId,
@@ -79,14 +74,11 @@ const createQuickTradeRequest = async (req, res) => {
 
     if (receiverSocketId) {
       io.to(receiverSocketId).emit('new-trade-request', populatedTrade);
-      console.log(`📨 TradeRequest envoyée en direct à ${toUserId}`);
     }
-
-    console.log('TradeRequest créée :', populatedTrade);
 
     res.status(201).json(populatedTrade);
   } catch (error) {
-    console.error('❌ Erreur création quick trade :', error);
+    logError('Erreur lors du createQuickTradeRequest', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -96,20 +88,14 @@ const updateTradeRequest = async (req, res) => {
     const userId = req.user._id; // connecté
     const tradeRequestId = req.params.id;
     const { status } = req.body; // 'accepted' ou 'declined'
-    console.log('Requête de mise à jour de TradeRequest');
-    console.log('ID de l’utilisateur connecté :', userId);
-    console.log('ID de la demande d’échange :', tradeRequestId);
-    console.log('Status dans la requete :', status);
 
     if (!['accepted', 'declined', 'cancelled'].includes(status)) {
-      console.log('Statut invalide.');
       return res.status(400).json({ message: 'Statut invalide.' });
     }
 
     const tradeRequest = await TradeRequest.findById(tradeRequestId);
 
     if (!tradeRequest) {
-      console.log('TradeRequest non trouvée.');
       return res.status(404).json({ message: 'TradeRequest non trouvée.' });
     }
 
@@ -126,13 +112,11 @@ const updateTradeRequest = async (req, res) => {
         String(tradeRequest.receiver) !== String(userId) &&
         String(tradeRequest.sender) !== String(userId)
       ) {
-        console.log('Non autorisé à annuler cette demande.');
         return res.status(403).json({ message: 'Non autorisé.' });
       }
     } else {
       // Acceptation ou Refus : seulement le receiver peut
       if (String(tradeRequest.receiver) !== String(userId)) {
-        console.log('Non autorisé à mettre à jour cette demande.');
         return res.status(403).json({ message: 'Non autorisé.' });
       }
     }
@@ -196,16 +180,12 @@ const updateTradeRequest = async (req, res) => {
           io.to(senderSocket).emit('trade-reactivated', payload);
         if (receiverSocket)
           io.to(receiverSocket).emit('trade-reactivated', payload);
-
-        console.log(
-          '📡 Nouvelle TradeRequest activée envoyée aux utilisateurs',
-        );
       }
     }
 
     res.status(200).json(tradeRequest);
   } catch (error) {
-    console.error('Erreur updateTradeRequest:', error);
+    logError('Erreur lors du updatetraderequest', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -225,10 +205,7 @@ const getMyTradeRequests = async (req, res) => {
 
     res.status(200).json(tradeRequests);
   } catch (error) {
-    console.error(
-      '❌ Erreur lors de la récupération des TradeRequests :',
-      error,
-    );
+    logError('Erreur lors du getMyTradeRequests', err);
     res
       .status(500)
       .json({ message: 'Erreur serveur lors de la récupération.' });
@@ -270,7 +247,6 @@ const markTradeRequestAsSent = async (req, res) => {
       trade.completed = true;
       trade.is_active = false;
       isCompleted = true;
-      console.log('✅ Échange complété :', trade._id);
     }
 
     await trade.save();
@@ -292,8 +268,6 @@ const markTradeRequestAsSent = async (req, res) => {
     if (receiverSocket)
       io.to(receiverSocket).emit('trade-sent-update', eventPayload);
 
-    console.log('📡 trade-sent-update envoyé aux deux utilisateurs');
-
     // 🔄 Réactivation possible d’une autre TradeRequest
 
     if (isCompleted) {
@@ -304,9 +278,6 @@ const markTradeRequestAsSent = async (req, res) => {
       await User.updateOne(
         { _id: trade.receiver._id },
         { $inc: { trade_count: 1 } },
-      );
-      console.log(
-        `👥 Trade count incrémenté pour ${trade.sender._id} et ${trade.receiver._id}`,
       );
       const nextTrade = await reactivateNextTradeRequestService(
         trade.sender._id,
@@ -348,7 +319,7 @@ const markTradeRequestAsSent = async (req, res) => {
     // 📡 Notifier les deux utilisateurs
     res.status(200).json(trade);
   } catch (error) {
-    console.error('Erreur markTradeRequestAsSent:', error);
+    logError('Erreur lors du markTradeRequestAsSent', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -423,7 +394,7 @@ const createMultipleTradeRequests = async (req, res) => {
 
     res.status(201).json(trades);
   } catch (err) {
-    console.error('Erreur création multiple TradeRequests :', err);
+    logError('Erreur lors du createMultipleTradeRequests', err);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };

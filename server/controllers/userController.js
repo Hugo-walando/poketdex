@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Account = require('../models/Account'); // le modèle pour la collection "accounts"
+const { logError } = require('../logger');
 
 const getCurrentUser = async (req, res) => {
   try {
@@ -23,8 +24,8 @@ const getCurrentUser = async (req, res) => {
     }
 
     res.json(user);
-  } catch (error) {
-    console.error('Erreur /me :', error);
+  } catch (err) {
+    logError('Erreur lors du getCurrentUser', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
@@ -39,8 +40,8 @@ const getUserById = async (req, res) => {
     }
 
     res.json(user);
-  } catch (error) {
-    console.error('Erreur récupération utilisateur par ID :', error);
+  } catch (err) {
+    logError('Erreur lors du getUserById', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
@@ -50,8 +51,6 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   const updates = req.body;
 
-  console.log('🔧 Requête de mise à jour utilisateur');
-
   try {
     // Étape 1 : retrouver le compte "Google" lié au token
     const account = await Account.findOne({
@@ -60,17 +59,19 @@ const updateUser = async (req, res) => {
     });
 
     if (!account) {
-      console.warn('❌ Aucun compte Google lié à cet utilisateur');
+      logError(`Aucun compte Google lié (googleSub: ${req.googleSub})`);
       return res
         .status(401)
-        .json({ message: 'Utilisateur non reconnu (pas de compte lié)' });
+        .json({ message: '❌ Aucun compte Google lié à cet utilisateur' });
     }
 
     // Étape 2 : retrouver l'utilisateur principal via userId (dans la collection "users")
     const currentUser = await User.findById(account.userId);
 
     if (!currentUser) {
-      console.warn("❌ Utilisateur introuvable via l'userId de l'account");
+      logError(
+        `Utilisateur introuvable via l'userId de l'account (userId: ${account.userId})`,
+      );
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
@@ -103,11 +104,9 @@ const updateUser = async (req, res) => {
       new: true,
       runValidators: true,
     });
-
-    console.log('✅ Utilisateur mis à jour avec succès :', updatedUser);
     res.status(200).json(updatedUser);
   } catch (err) {
-    console.error('[updateUser error]', err);
+    logError('Erreur lors du updateUser', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };

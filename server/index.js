@@ -10,6 +10,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
 
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    console.info(`[REQ] ${req.method} ${req.originalUrl}`);
+    next();
+  });
+}
+
 // Middlewares
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json());
