@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Account = require('../models/Account');
 const User = require('../models/User');
+const { logError } = require('../logger');
 
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -48,8 +49,9 @@ async function authenticateToken(req, res, next) {
 
     next();
   } catch (err) {
-    console.error(
-      '❌ Erreur lors de la vérification du token ou de la récupération de l’utilisateur',
+    logError(
+      'Erreur lors de la vérification du token ou de la récupération de l’utilisateur',
+      err,
     );
     return res
       .status(401)
