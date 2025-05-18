@@ -12,9 +12,6 @@ const addWishlistCard = async (req, res) => {
     const { cardId } = req.body;
 
     if (!req.user.username || !req.user.friend_code) {
-      console.log(
-        'Profil incomplet. Veuillez renseigner votre pseudo et votre code ami.',
-      );
       return res.status(400).json({
         message:
           'Profil incomplet. Veuillez renseigner votre pseudo et votre code ami.',
@@ -25,7 +22,6 @@ const addWishlistCard = async (req, res) => {
     const listedCard = await ListedCard.findOne({ user: userId, card: cardId });
 
     if (listedCard) {
-      console.log('🧹 Carte présente dans Listed → suppression');
       await ListedCard.findOneAndDelete({ user: userId, card: cardId });
     }
 
@@ -50,7 +46,6 @@ const addWishlistCard = async (req, res) => {
     await User.findByIdAndUpdate(userId, {
       $push: { wishlist_cards: wishlist._id },
     });
-    console.log('✅ Wishlist ajoutée au profil utilisateur');
     // 🧠 Lancer la recherche de match
     await findAndCreateMatch(userId, cardId, 'wishlist');
 
@@ -71,7 +66,6 @@ const addWishlistCard = async (req, res) => {
 // DELETE /api/wishlist-cards/:cardId
 const removeWishlistCard = async (req, res) => {
   try {
-    console.log('🔧 Requête de suppression de carte wishlist');
     const userId = req.user._id;
     const cardId = req.params.cardId;
 
@@ -84,7 +78,6 @@ const removeWishlistCard = async (req, res) => {
       await User.findByIdAndUpdate(userId, {
         $pull: { wishlist_cards: deleted._id },
       });
-      console.log('✅ Wishlist retirée du profil utilisateur');
     }
 
     if (!deleted) {

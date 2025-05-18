@@ -51,8 +51,6 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   const updates = req.body;
 
-  console.log('🔧 Requête de mise à jour utilisateur');
-
   try {
     // Étape 1 : retrouver le compte "Google" lié au token
     const account = await Account.findOne({
@@ -106,8 +104,6 @@ const updateUser = async (req, res) => {
       new: true,
       runValidators: true,
     });
-
-    console.log('✅ Utilisateur mis à jour avec succès :', updatedUser);
     res.status(200).json(updatedUser);
   } catch (err) {
     logError('Erreur lors du updateUser', err);
