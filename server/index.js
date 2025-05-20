@@ -33,6 +33,7 @@ app.use('/api/wishlist-cards', require('./routes/wishlistCardRoutes'));
 app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 app.use('/api/ping', require('./routes/pingRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Test route
 app.get('/', (req, res) => {

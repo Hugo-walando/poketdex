@@ -92,6 +92,7 @@ export const authConfig = {
         token.username = data.username;
         token.friend_code = data.friend_code;
         token.profile_picture = data.profile_picture;
+        token.role = data.role;
       } catch (err) {
         console.error('❌ Erreur lors du fetch utilisateur backend:', err);
       }
@@ -107,6 +108,7 @@ export const authConfig = {
       session.accessToken = token.accessToken as string;
       session.expiresAt = token.expiresAt as number;
       session.user.profile_picture = token.profile_picture as string;
+      session.user.role = token.role as 'user' | 'admin';
       return session;
     },
 
@@ -117,3 +119,4 @@ export const authConfig = {
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+export const getServerAuthSession = auth;
