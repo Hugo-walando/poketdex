@@ -149,6 +149,17 @@ export default function CardPage() {
     }, {});
   };
 
+  const sortSetsByReleaseDate = (
+    sets: Set[],
+    order: 'asc' | 'desc' = 'asc',
+  ): Set[] => {
+    return [...sets].sort((a, b) => {
+      const aDate = new Date(a.release_date).getTime();
+      const bDate = new Date(b.release_date).getTime();
+      return order === 'asc' ? aDate - bDate : bDate - aDate;
+    });
+  };
+
   const filteredCards = useMemo(() => {
     return Object.entries(cardsBySet)
       .flatMap(([setCode, cards]) => {
@@ -412,7 +423,7 @@ export default function CardPage() {
 
           {!searchQuery &&
             !hasActiveFilters &&
-            sets.map((set: Set) => {
+            sortSetsByReleaseDate(sets).map((set: Set) => {
               const cards = cardsBySet[set.code]
                 ?.filter(
                   (card: Card) =>

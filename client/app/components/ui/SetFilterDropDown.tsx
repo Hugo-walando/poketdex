@@ -6,7 +6,6 @@ import BoosterIcon from '../svgs/BoosterIcon';
 import { useFilter } from '@/app/context/FilterContext';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useEffect } from 'react';
 import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface SetFilterDropdownProps {
@@ -26,7 +25,12 @@ export default function SetFilterDropdown({
 
   const isOpen = openFilter === 'set';
 
-  useEffect(() => {});
+  // Trie les sets par date croissante (plus anciens en premier)
+  const sortedSets = [...sets].sort((a, b) => {
+    return (
+      new Date(a.release_date).getTime() - new Date(b.release_date).getTime()
+    );
+  });
 
   return (
     <DropdownMenu.Root
@@ -62,7 +66,7 @@ export default function SetFilterDropdown({
         align='start'
         className='z-50 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
       >
-        {sets.map((set) => {
+        {sortedSets.map((set) => {
           const isSelected = selectedSets.includes(set.code); // ✅ on utilise `set.code` comme identifiant
           return (
             <div key={set.code}>
