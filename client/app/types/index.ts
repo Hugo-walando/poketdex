@@ -16,6 +16,7 @@ export interface Set {
   color: string;
   card_count: number;
   img_url: string;
+  release_date: string;
   created_at?: string;
 }
 
