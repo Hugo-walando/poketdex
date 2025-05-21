@@ -6,6 +6,7 @@ const setSchema = new mongoose.Schema(
     color: { type: String, required: true },
     card_count: { type: Number, required: true },
     img_url: { type: String, required: true },
+    release_date: { type: Date, required: true },
   },
   { timestamps: true },
 );
