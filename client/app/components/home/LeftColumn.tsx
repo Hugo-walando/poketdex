@@ -59,9 +59,10 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         <h1 className='text-dark-base md:text-dark-xl mb-2'>Cartes Listées</h1>
 
         <SearchBar
-          placeholder='Rechercher une carte...'
-          onSearch={(query) => setSearchQuery(query.toLowerCase())}
+          triggerOnSubmitOnly={true}
+          onSearch={(q) => setSearchQuery(q)}
         />
+
         <div className='w-full mt-4 items-center flex justify-between'>
           <div className='flex gap-2 md:gap-4'>
             <FilterDropdownProvider>

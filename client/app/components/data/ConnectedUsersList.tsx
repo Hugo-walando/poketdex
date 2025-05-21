@@ -19,32 +19,27 @@ export default function ConnectedUsersList() {
   }, []);
 
   return (
-    <div className='flex  gap-4 mb-4'>
-      <div>
-        <h2 className='text-lg font-semibold mb-2'>
-          Utilisateurs connectés ({users.length})
-        </h2>
-        {users.length > 0 ? (
-          users.map((user) => (
-            <li key={user.id} className='flex items-center gap-2'>
-              <Image
-                alt={user.username || 'Image'}
-                src={user.profile_picture || '/avatars/Av1.png'}
-                width={24}
-                height={24}
-                sizes='100vw'
-                className='w-6 h-6 rounded-full'
-              />
-              <span>{user.username}</span>
-            </li>
-          ))
-        ) : (
-          <li className='text-gray-500'>Aucun utilisateur connecté</li>
-        )}
-      </div>
-      <div className='text-lg font-semibold mb-2'>
-        Number of completed trades
-      </div>
+    <div className='flex flex-col gap-4 mb-4'>
+      <h2 className='text-lg font-semibold mb-2'>
+        Utilisateurs connectés ({users.length})
+      </h2>
+      {users.length > 0 ? (
+        users.map((user) => (
+          <li key={user.id} className='flex items-center gap-2'>
+            <Image
+              alt={user.username || 'Image'}
+              src={user.profile_picture || '/avatars/Av1.png'}
+              width={24}
+              height={24}
+              sizes='100vw'
+              className='w-6 h-6 rounded-full'
+            />
+            <span>{user.username}</span>
+          </li>
+        ))
+      ) : (
+        <li className='text-gray-500'>Aucun utilisateur connecté</li>
+      )}
     </div>
   );
 }
