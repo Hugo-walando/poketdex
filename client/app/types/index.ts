@@ -174,3 +174,32 @@ export interface AppUser {
   friend_code: string;
   trade_count: number;
 }
+
+export interface TopCardEntry {
+  card_id: string;
+  count: number;
+  name: string;
+  img_url: string;
+  set_code: string;
+  official_id: string;
+}
+
+export interface AdminStatsType {
+  users: {
+    total: number;
+    connected: number;
+    recent: number;
+  };
+  trades: {
+    total: number;
+    completed: number;
+    active: number;
+    cancelled: number;
+  };
+  cards: {
+    listed: number;
+    wishlist: number;
+    topWishlist: TopCardEntry[];
+    topListed: TopCardEntry[];
+  };
+}
