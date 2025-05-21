@@ -32,6 +32,7 @@ export default function AdminStats() {
         <Stat label='❌ Échanges annulés' value={stats.trades.cancelled} />
         <Stat label='🃏 Cartes listées' value={stats.cards.listed} />
         <Stat label='🎯 Cartes en wishlist' value={stats.cards.wishlist} />
+        <Stat label='🤝 Matchs générés' value={stats.matches.total} />
       </div>
 
       {/* Top cartes */}

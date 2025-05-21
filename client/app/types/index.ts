@@ -202,4 +202,7 @@ export interface AdminStatsType {
     topWishlist: TopCardEntry[];
     topListed: TopCardEntry[];
   };
+  matches: {
+    total: number;
+  };
 }

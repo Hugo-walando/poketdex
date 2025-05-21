@@ -6,6 +6,7 @@ const TradeRequest = require('../models/TradeRequest');
 const ListedCard = require('../models/ListedCard');
 const WishlistCard = require('../models/WishlistCard');
 const Card = require('../models/Card');
+const Match = require('../models/Match');
 
 router.get('/connected-users', async (req, res) => {
   try {
@@ -71,6 +72,8 @@ router.get('/stats', async (req, res) => {
       { $sort: { count: -1 } },
       { $limit: 5 },
     ]);
+    // Matches
+    const totalMatches = await Match.countDocuments();
 
     // Puis tu récupères les cartes avec leurs infos
     const wishlistCardIds = topWishlistRaw.map((entry) => entry._id);
@@ -125,6 +128,9 @@ router.get('/stats', async (req, res) => {
         wishlist: wishlistCards,
         topWishlist,
         topListed,
+      },
+      matches: {
+        total: totalMatches,
       },
     });
   } catch (err) {
