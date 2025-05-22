@@ -11,6 +11,8 @@ import LogoutButton from '../components/ui/LogoutButton';
 import Input from '../components/ui/Input';
 import toast from 'react-hot-toast';
 import AvatarSelectorModal from '../components/ui/AvataSelectorModal';
+import Footer from '../components/layout/Footer';
+import FeedbackForm from '../components/ui/FeedBackForm';
 
 const DEFAULT_AVATAR = '/avatars/Av1.png';
 
@@ -134,6 +136,8 @@ export default function Profile() {
           {loading ? 'Sauvegarde...' : 'Sauvegarder'}
         </button>
       </div>
+      <FeedbackForm />
+      <Footer />
 
       {/* 🖼️ Modal de sélection d'avatar */}
       <AvatarSelectorModal
