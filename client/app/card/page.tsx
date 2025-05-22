@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import CardSelector from '@/app/components/ui/CardSelector';
@@ -68,6 +68,10 @@ export default function CardPage() {
 
   const { removeListedCard } = useRemoveListedCard();
   const { removeWishlistCard } = useRemoveWishlistCard();
+
+  const [visibleBySet, setVisibleBySet] = useState<Record<string, number>>({});
+
+  const observerRefs = useRef<Record<string, IntersectionObserver>>({});
 
   // Extraire les ID pour `CardSelector`
   const listedCardIds = listedCards.map((item) => item.card._id);
@@ -178,6 +182,45 @@ export default function CardPage() {
       })
       .sort((a, b) => a.official_id.localeCompare(b.official_id));
   }, [cardsBySet, sets, debouncedSearchQuery, selectedSets, selectedRarities]);
+
+  const getVisibleCount = (setCode: string) =>
+    typeof visibleBySet[setCode] === 'number' ? visibleBySet[setCode] : 20;
+
+  const loadMore = (setCode: string) => {
+    console.log('🔄 Loading more cards for:', setCode);
+    console.log('🔄 Visible', getVisibleCount(setCode));
+    setVisibleBySet((prev) => ({
+      ...prev,
+      [setCode]: getVisibleCount(setCode) + 40,
+    }));
+  };
+
+  const attachObserver = (el: HTMLDivElement | null, setCode: string) => {
+    if (!el) return;
+
+    // Si un observer existe déjà, le déconnecter avant de recréer
+    if (observerRefs.current[setCode]) {
+      observerRefs.current[setCode].disconnect();
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore(setCode);
+        }
+      },
+      { rootMargin: '200px' },
+    );
+
+    observer.observe(el);
+    observerRefs.current[setCode] = observer;
+  };
+
+  useEffect(() => {
+    console.log('Visible card count:', visibleCardCount);
+    console.log('Visible by set:', visibleBySet);
+    console.log('getVisibleCount:', getVisibleCount('A1'));
+  }, [visibleBySet, visibleCardCount, getVisibleCount]);
 
   return (
     <ProtectedPage>
@@ -605,68 +648,74 @@ export default function CardPage() {
                             ))}
                           </>
                         ) : (
-                          cards.map((card: Card) => (
-                            <div
-                              className='flex flex-col items-center gap-2'
-                              key={card._id}
-                            >
+                          cards
+                            .slice(0, getVisibleCount(set.code))
+                            .map((card: Card) => (
                               <div
-                                key={card.official_id}
-                                className='justify-self-center relative '
+                                className='flex flex-col items-center gap-2'
+                                key={card._id}
                               >
-                                <div className='absolute top-1 right-1 rounded-full bg-white/90 backdrop-blur-lg px-2 py-1 shadow-base flex flex-col items-center justify-center text-light-sm'>
-                                  #{card.official_id}
-                                </div>
-                                {!isCardImageLoaded && (
-                                  <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
-                                )}
-                                {card.img_url ? (
-                                  <Image
-                                    src={card.img_url}
-                                    alt={card.name || 'Carte'}
-                                    width={0}
-                                    height={0}
-                                    sizes='100vw'
-                                    className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
-                                    onLoad={() => setCardImageLoaded(true)}
-                                    priority={true}
-                                  />
-                                ) : (
-                                  <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
-                                    Image manquante
+                                <div
+                                  key={card.official_id}
+                                  className='justify-self-center relative '
+                                >
+                                  <div className='absolute top-1 right-1 rounded-full bg-white/90 backdrop-blur-lg px-2 py-1 shadow-base flex flex-col items-center justify-center text-light-sm'>
+                                    #{card.official_id}
                                   </div>
-                                )}
-
-                                <CardSelector
-                                  cardId={card._id}
-                                  isListed={listedCardIds.includes(card._id)}
-                                  isWishlisted={wishlistCardIds.includes(
-                                    card._id,
+                                  {!isCardImageLoaded && (
+                                    <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
                                   )}
-                                  toggleListedCard={() =>
-                                    toggleListedCard(card._id)
+                                  {card.img_url ? (
+                                    <Image
+                                      src={card.img_url}
+                                      alt={card.name || 'Carte'}
+                                      width={0}
+                                      height={0}
+                                      sizes='100vw'
+                                      className='w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto'
+                                      onLoad={() => setCardImageLoaded(true)}
+                                      priority={true}
+                                    />
+                                  ) : (
+                                    <div className='w-[120px] h-[180px] bg-gray-200 rounded shadow-base mx-auto flex items-center justify-center text-sm text-gray-500'>
+                                      Image manquante
+                                    </div>
+                                  )}
+
+                                  <CardSelector
+                                    cardId={card._id}
+                                    isListed={listedCardIds.includes(card._id)}
+                                    isWishlisted={wishlistCardIds.includes(
+                                      card._id,
+                                    )}
+                                    toggleListedCard={() =>
+                                      toggleListedCard(card._id)
+                                    }
+                                    toggleWishlistCard={() =>
+                                      toggleWishlistCard(card._id)
+                                    }
+                                  />
+                                </div>
+                                <Image
+                                  src={
+                                    rarityIcons[
+                                      card.rarity as keyof typeof rarityIcons
+                                    ]
                                   }
-                                  toggleWishlistCard={() =>
-                                    toggleWishlistCard(card._id)
-                                  }
+                                  alt={`Rareté`}
+                                  width={0}
+                                  height={0}
+                                  sizes='100vw'
+                                  className='h-8 lg:h-10 w-auto object-contain'
                                 />
                               </div>
-                              <Image
-                                src={
-                                  rarityIcons[
-                                    card.rarity as keyof typeof rarityIcons
-                                  ]
-                                }
-                                alt={`Rareté`}
-                                width={0}
-                                height={0}
-                                sizes='100vw'
-                                className='h-8 lg:h-10 w-auto object-contain'
-                              />
-                            </div>
-                          ))
+                            ))
                         )}
                       </div>
+                      <div
+                        ref={(el) => attachObserver(el, set.code)}
+                        className='h-10 bg-transparent w-full'
+                      ></div>
                     </>
                   )}
                 </section>
