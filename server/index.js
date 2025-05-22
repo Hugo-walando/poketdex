@@ -34,6 +34,7 @@ app.use('/api/matches', require('./routes/matchRoutes'));
 app.use('/api/trade-requests', require('./routes/tradeRequestRoutes'));
 app.use('/api/ping', require('./routes/pingRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/feedback', require('./routes/feedbackRoutes'));
 
 // Test route
 app.get('/', (req, res) => {

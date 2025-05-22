@@ -7,7 +7,6 @@ import { SessionProvider } from 'next-auth/react';
 import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import ClientProviders from './ClientProviders';
 import { auth } from '@/auth';
-import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
 
 export const metadata: Metadata = {
@@ -38,7 +37,6 @@ export default async function RootLayout({
               <ScrollToTop />
               {children}
             </ClientProviders>
-            <Footer />
           </MaxWidthWrapper>
         </SessionProvider>
       </body>

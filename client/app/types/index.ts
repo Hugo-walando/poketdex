@@ -207,3 +207,12 @@ export interface AdminStatsType {
     total: number;
   };
 }
+
+export interface Feedback {
+  _id: string;
+  type: 'problem' | 'suggestion' | 'other';
+  message: string;
+  email: string;
+  username?: string;
+  createdAt: string;
+}
