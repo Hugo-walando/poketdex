@@ -4,19 +4,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { useOnlineUserStore } from '@/app/store/useUserOnlineStore';
-
-interface User {
-  id: string;
-  username: string;
-  profile_picture: string;
-}
+import { User } from 'next-auth';
 
 export default function ConnectedUsersList() {
   const onlineUserIds = useOnlineUserStore((s) => s.onlineUsers);
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    const fetchConnectedUserDetails = async () => {
+    const fetchUsers = async () => {
       if (onlineUserIds.length === 0) {
         setUsers([]);
         return;
@@ -29,12 +24,12 @@ export default function ConnectedUsersList() {
         );
         setUsers(res.data);
       } catch (err) {
-        console.error('Erreur récupération utilisateurs connectés', err);
+        console.error('Erreur récupération users connectés :', err);
       }
     };
 
-    fetchConnectedUserDetails();
-  }, [onlineUserIds]);
+    fetchUsers();
+  }, [onlineUserIds]); // 🟡 Mise à jour à chaque changement
 
   return (
     <div className='flex flex-col gap-4 mb-4'>
@@ -42,23 +37,21 @@ export default function ConnectedUsersList() {
         Utilisateurs connectés ({users.length})
       </h2>
       {users.length > 0 ? (
-        <ul className='space-y-1'>
-          {users.map((user) => (
-            <li key={user.id} className='flex items-center gap-2'>
-              <Image
-                alt={user.username || 'Image'}
-                src={user.profile_picture || '/avatars/Av1.png'}
-                width={24}
-                height={24}
-                sizes='100vw'
-                className='w-6 h-6 rounded-full'
-              />
-              <span>{user.username}</span>
-            </li>
-          ))}
-        </ul>
+        users.map((user) => (
+          <li key={user.id} className='flex items-center gap-2'>
+            <Image
+              alt={user.username || 'Image'}
+              src={user.profile_picture || '/avatars/Av1.png'}
+              width={24}
+              height={24}
+              sizes='100vw'
+              className='w-6 h-6 rounded-full'
+            />
+            <span>{user.username}</span>
+          </li>
+        ))
       ) : (
-        <p className='text-gray-500'>Aucun utilisateur connecté</p>
+        <li className='text-gray-500'>Aucun utilisateur connecté</li>
       )}
     </div>
   );
