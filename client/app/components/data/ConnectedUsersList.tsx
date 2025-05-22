@@ -1,22 +1,35 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { User } from 'next-auth';
 import Image from 'next/image';
+import { useOnlineUserStore } from '@/app/store/useUserOnlineStore';
+import { User } from 'next-auth';
 
 export default function ConnectedUsersList() {
+  const onlineUserIds = useOnlineUserStore((s) => s.onlineUsers);
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    const fetchConnectedUsers = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/connected-users`,
-      );
-      setUsers(res.data);
+    const fetchUsers = async () => {
+      if (onlineUserIds.length === 0) {
+        setUsers([]);
+        return;
+      }
+
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/admin/connected-users`,
+          { userIds: onlineUserIds },
+        );
+        setUsers(res.data);
+      } catch (err) {
+        console.error('Erreur récupération users connectés :', err);
+      }
     };
 
-    fetchConnectedUsers();
-  }, []);
+    fetchUsers();
+  }, [onlineUserIds]); // 🟡 Mise à jour à chaque changement
 
   return (
     <div className='flex flex-col gap-4 mb-4'>

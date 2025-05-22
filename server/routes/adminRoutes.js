@@ -23,6 +23,30 @@ router.get('/connected-users', async (req, res) => {
   }
 });
 
+router.post('/connected-users', async (req, res) => {
+  try {
+    const { userIds } = req.body;
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const users = await User.find({ _id: { $in: userIds } }).select(
+      '_id username profile_picture',
+    );
+
+    res.status(200).json(
+      users.map((u) => ({
+        id: u._id.toString(),
+        username: u.username,
+        profile_picture: u.profile_picture,
+      })),
+    );
+  } catch (err) {
+    console.error('Erreur récupération users connectés :', err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
 router.get('/completed-trades-count', async (req, res) => {
   try {
     const count = await TradeRequest.countDocuments({ status: 'completed' });
