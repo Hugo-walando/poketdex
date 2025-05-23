@@ -37,6 +37,7 @@ export default async function RootLayout({
             <ClientProviders>
               <ScrollToTop />
               {children}
+              <SpeedInsights />
             </ClientProviders>
           </MaxWidthWrapper>
         </SessionProvider>
