@@ -32,6 +32,7 @@ import { rarityIcons } from '../data/rarities';
 import ShimmerCard from '../components/ui/ShimmerCard';
 import { useDebounce } from 'use-debounce';
 import Loader from '../components/ui/Loader';
+import Footer from '../components/layout/Footer';
 
 export default function CardPage() {
   const { sets, cardsBySet, loadingCards } = useGlobalData();
@@ -722,6 +723,7 @@ export default function CardPage() {
               );
             })}
         </div>
+        <Footer />
       </ProtectedLayout>
     </ProtectedPage>
   );
