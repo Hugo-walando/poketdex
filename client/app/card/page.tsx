@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import CardSelector from '@/app/components/ui/CardSelector';
@@ -188,8 +188,6 @@ export default function CardPage() {
     typeof visibleBySet[setCode] === 'number' ? visibleBySet[setCode] : 20;
 
   const loadMore = (setCode: string) => {
-    console.log('🔄 Loading more cards for:', setCode);
-    console.log('🔄 Visible', getVisibleCount(setCode));
     setVisibleBySet((prev) => ({
       ...prev,
       [setCode]: getVisibleCount(setCode) + 40,
@@ -216,12 +214,6 @@ export default function CardPage() {
     observer.observe(el);
     observerRefs.current[setCode] = observer;
   };
-
-  useEffect(() => {
-    console.log('Visible card count:', visibleCardCount);
-    console.log('Visible by set:', visibleBySet);
-    console.log('getVisibleCount:', getVisibleCount('A1'));
-  }, [visibleBySet, visibleCardCount, getVisibleCount]);
 
   return (
     <ProtectedPage>
