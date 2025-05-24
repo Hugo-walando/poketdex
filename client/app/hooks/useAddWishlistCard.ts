@@ -33,7 +33,7 @@ const useAddWishlistCard = () => {
         },
       );
 
-      toast.success('✅ Carte Ajouté à la wishlist');
+      toast.success('Carte Ajouté à la wishlist');
 
       return res.data;
     } catch (err) {

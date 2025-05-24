@@ -1,7 +1,15 @@
 // app/store/useTradeRequestStore.ts
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { TradeGroup, TradeRequest } from '@/app/types';
+
+type TradeStatus =
+  | 'pending'
+  | 'accepted'
+  | 'declined'
+  | 'cancelled'
+  | 'completed';
 
 interface TradeRequestStore {
   tradeGroups: TradeGroup[];
@@ -9,138 +17,144 @@ interface TradeRequestStore {
   resetTradeGroups: () => void;
   addTradeRequest: (newTrade: TradeRequest) => void;
 
-  updateTradeStatus: (
-    tradeId: string,
-    newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed',
-  ) => void;
+  updateTradeStatus: (tradeId: string, newStatus: TradeStatus) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
   setTradeActive: (tradeId: string) => void;
   hasImportantTradeActivity: (currentUserId: string) => boolean;
   hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
-  seenUsers: string[];
-  markUserTradesAsSeen: (userId: string) => void;
+  seenTradeStatuses: Record<string, TradeStatus>;
+  markTradeStatusAsSeen: (tradeId: string, status: TradeStatus) => void;
 }
 
-export const useTradeRequestStore = create<TradeRequestStore>((set, get) => ({
-  console: 'TradeRequestStore',
-  seenUsers: [],
-  tradeGroups: [],
+export const useTradeRequestStore = create<TradeRequestStore>()(
+  persist(
+    (set, get) => ({
+      seenTradeStatuses: {},
+      tradeGroups: [],
 
-  setTradeGroups: (groups) => set({ tradeGroups: groups }),
+      setTradeGroups: (groups) => set({ tradeGroups: groups }),
 
-  resetTradeGroups: () => set({ tradeGroups: [] }),
-  addTradeRequest: (newTrade) =>
-    set((state) => {
-      const existingGroupIndex = state.tradeGroups.findIndex(
-        (group) =>
-          group.user._id === newTrade.sender._id ||
-          group.user._id === newTrade.receiver._id,
-      );
+      resetTradeGroups: () => set({ tradeGroups: [] }),
 
-      if (existingGroupIndex !== -1) {
-        // Ajouter au groupe existant
-        const updatedGroups = [...state.tradeGroups];
-        updatedGroups[existingGroupIndex].trades.unshift(newTrade);
-        return { tradeGroups: updatedGroups };
-      } else {
-        // Créer un nouveau groupe
-        const newGroup = {
-          user: newTrade.sender, // ou receiver, à adapter selon le cas
-          trades: [newTrade],
-        };
-        return { tradeGroups: [newGroup, ...state.tradeGroups] };
-      }
-    }),
+      addTradeRequest: (newTrade) =>
+        set((state) => {
+          const existingGroupIndex = state.tradeGroups.findIndex(
+            (group) =>
+              group.user._id === newTrade.sender._id ||
+              group.user._id === newTrade.receiver._id,
+          );
 
-  updateTradeStatus: (tradeId, newStatus) =>
-    set((state) => ({
-      tradeGroups: state.tradeGroups.map((group) => ({
-        ...group,
-        trades: group.trades.map((trade) =>
-          trade._id === tradeId
-            ? {
-                ...trade,
-                status: newStatus,
-                is_active: newStatus === 'pending' || newStatus === 'accepted',
-              }
-            : trade,
-        ),
-      })),
-    })),
-  setTradeActive: (tradeId) =>
-    set((state) => ({
-      tradeGroups: state.tradeGroups.map((group) => ({
-        ...group,
-        trades: group.trades.map((trade) =>
-          trade._id === tradeId ? { ...trade, is_active: true } : trade,
-        ),
-      })),
-    })),
-
-  markAsSent: (tradeId, currentUserId) =>
-    set((state) => ({
-      tradeGroups: state.tradeGroups.map((group) => ({
-        ...group,
-        trades: group.trades.map((trade) => {
-          if (trade._id !== tradeId) return trade;
-
-          const isSender = trade.sender._id === currentUserId;
-
-          const updatedTrade = {
-            ...trade,
-            sent_by_sender: isSender ? true : trade.sent_by_sender,
-            sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
-          };
-
-          // 🟢 Si les deux ont envoyé leur carte => on marque completed
-          if (updatedTrade.sent_by_sender && updatedTrade.sent_by_receiver) {
-            updatedTrade.status = 'completed';
-            updatedTrade.is_active = false; // Optionnel, tu peux désactiver l'échange aussi
+          if (existingGroupIndex !== -1) {
+            const updatedGroups = [...state.tradeGroups];
+            updatedGroups[existingGroupIndex].trades.unshift(newTrade);
+            return { tradeGroups: updatedGroups };
+          } else {
+            const newGroup = {
+              user: newTrade.sender,
+              trades: [newTrade],
+            };
+            return { tradeGroups: [newGroup, ...state.tradeGroups] };
           }
-
-          return updatedTrade;
         }),
-      })),
-    })),
-  hasImportantTradeActivity: (currentUserId) => {
-    const { tradeGroups, seenUsers } = get();
 
-    return tradeGroups.some((group) => {
-      if (seenUsers.includes(group.user._id)) return false;
+      updateTradeStatus: (tradeId, newStatus) =>
+        set((state) => ({
+          tradeGroups: state.tradeGroups.map((group) => ({
+            ...group,
+            trades: group.trades.map((trade) =>
+              trade._id === tradeId
+                ? {
+                    ...trade,
+                    status: newStatus,
+                    is_active:
+                      newStatus === 'pending' || newStatus === 'accepted',
+                  }
+                : trade,
+            ),
+          })),
+        })),
 
-      return group.trades.some((t) => {
-        const isReceivedRequest =
-          t.receiver._id === currentUserId && t.status === 'pending';
-        const isAcceptedSent =
-          t.sender._id === currentUserId && t.status === 'accepted';
-        const hasReceivedCard =
-          t.receiver._id === currentUserId && t.sent_by_sender;
-        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
-      });
-    });
-  },
+      setTradeActive: (tradeId) =>
+        set((state) => ({
+          tradeGroups: state.tradeGroups.map((group) => ({
+            ...group,
+            trades: group.trades.map((trade) =>
+              trade._id === tradeId ? { ...trade, is_active: true } : trade,
+            ),
+          })),
+        })),
 
-  hasImportantTradeWithUser: (userId: string, currentUserId: string) => {
-    const { tradeGroups, seenUsers } = get();
-    if (seenUsers.includes(userId)) return false;
+      markAsSent: (tradeId, currentUserId) =>
+        set((state) => ({
+          tradeGroups: state.tradeGroups.map((group) => ({
+            ...group,
+            trades: group.trades.map((trade) => {
+              if (trade._id !== tradeId) return trade;
 
-    return tradeGroups.some((group) => {
-      if (group.user._id !== userId) return false;
+              const isSender = trade.sender._id === currentUserId;
 
-      return group.trades.some((t) => {
-        const isReceivedRequest =
-          t.receiver._id === currentUserId && t.status === 'pending';
-        const isAcceptedSent =
-          t.sender._id === currentUserId && t.status === 'accepted';
-        const hasReceivedCard =
-          t.receiver._id === currentUserId && t.sent_by_sender;
-        return isReceivedRequest || isAcceptedSent || hasReceivedCard;
-      });
-    });
-  },
+              const updatedTrade = {
+                ...trade,
+                sent_by_sender: isSender ? true : trade.sent_by_sender,
+                sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
+              };
 
-  markUserTradesAsSeen: (userId) =>
-    set((state) => ({
-      seenUsers: [...state.seenUsers, userId],
-    })),
-}));
+              if (
+                updatedTrade.sent_by_sender &&
+                updatedTrade.sent_by_receiver
+              ) {
+                updatedTrade.status = 'completed';
+                updatedTrade.is_active = false;
+              }
+
+              return updatedTrade;
+            }),
+          })),
+        })),
+
+      hasImportantTradeActivity: (currentUserId) => {
+        const { tradeGroups, seenTradeStatuses } = get();
+
+        return tradeGroups.some((group) =>
+          group.trades.some((t) => {
+            const isRelevant =
+              (t.receiver._id === currentUserId && t.status === 'pending') ||
+              (t.sender._id === currentUserId && t.status === 'accepted') ||
+              (t.receiver._id === currentUserId && t.sent_by_sender);
+
+            return isRelevant && seenTradeStatuses[t._id] !== t.status;
+          }),
+        );
+      },
+
+      hasImportantTradeWithUser: (userId, currentUserId) => {
+        const { tradeGroups, seenTradeStatuses } = get();
+
+        return tradeGroups.some((group) => {
+          if (group.user._id !== userId) return false;
+
+          return group.trades.some((t) => {
+            const isRelevant =
+              (t.receiver._id === currentUserId && t.status === 'pending') ||
+              (t.sender._id === currentUserId && t.status === 'accepted') ||
+              (t.receiver._id === currentUserId && t.sent_by_sender);
+
+            return isRelevant && seenTradeStatuses[t._id] !== t.status;
+          });
+        });
+      },
+
+      markTradeStatusAsSeen: (tradeId, status) =>
+        set((state) => ({
+          seenTradeStatuses: {
+            ...state.seenTradeStatuses,
+            [tradeId]: status,
+          },
+        })),
+    }),
+    {
+      name: 'trade-requests-store',
+      partialize: (state) => ({ seenTradeStatuses: state.seenTradeStatuses }),
+    },
+  ),
+);
