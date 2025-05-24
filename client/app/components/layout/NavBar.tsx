@@ -86,7 +86,10 @@ export default function Navbar() {
                 height={0}
                 sizes='100vw'
                 alt='Avatar'
-                className='rounded-full h-10 w-10'
+                className={cn(
+                  'rounded-full h-10 w-10',
+                  pathname === '/profile' && 'border-2 border-primarygreen',
+                )}
               />
             )}
           </Link>
@@ -120,7 +123,10 @@ export default function Navbar() {
                 height={0}
                 sizes='100vw'
                 alt='Avatar'
-                className='rounded-full h-10 w-10'
+                className={cn(
+                  'rounded-full h-10 w-10',
+                  pathname === '/profile' && 'border-2 border-primarygreen',
+                )}
               />
             )}
           </Link>
