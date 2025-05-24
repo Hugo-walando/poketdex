@@ -8,6 +8,7 @@ import MaxWidthWrapper from './components/layout/MaxWidthWrapper';
 import ClientProviders from './ClientProviders';
 import { auth } from '@/auth';
 import ScrollToTop from './components/layout/ScrollToTop';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'PoketDex',
@@ -36,6 +37,7 @@ export default async function RootLayout({
             <ClientProviders>
               <ScrollToTop />
               {children}
+              <SpeedInsights />
             </ClientProviders>
           </MaxWidthWrapper>
         </SessionProvider>
