@@ -7,6 +7,7 @@ const setSchema = new mongoose.Schema(
     card_count: { type: Number, required: true },
     img_url: { type: String, required: true },
     release_date: { type: Date, required: true },
+    is_tradeable: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
