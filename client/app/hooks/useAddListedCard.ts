@@ -33,7 +33,7 @@ const useAddListedCard = () => {
       );
 
       // ✅ Ajouter au store local
-      toast.success('✅ Carte Listée');
+      toast.success('Carte Listée');
 
       return res.data;
     } catch (err) {

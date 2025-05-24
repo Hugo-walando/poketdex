@@ -4,28 +4,32 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TradeGroup, TradeRequest } from '@/app/types';
 
+type TradeStatus =
+  | 'pending'
+  | 'accepted'
+  | 'declined'
+  | 'cancelled'
+  | 'completed';
+
 interface TradeRequestStore {
   tradeGroups: TradeGroup[];
   setTradeGroups: (groups: TradeGroup[]) => void;
   resetTradeGroups: () => void;
   addTradeRequest: (newTrade: TradeRequest) => void;
 
-  updateTradeStatus: (
-    tradeId: string,
-    newStatus: 'pending' | 'accepted' | 'declined' | 'cancelled' | 'completed',
-  ) => void;
+  updateTradeStatus: (tradeId: string, newStatus: TradeStatus) => void;
   markAsSent: (tradeId: string, currentUserId: string) => void;
   setTradeActive: (tradeId: string) => void;
   hasImportantTradeActivity: (currentUserId: string) => boolean;
   hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
-  seenUsers: string[];
-  markUserTradesAsSeen: (userId: string) => void;
+  seenTradeStatuses: Record<string, TradeStatus>;
+  markTradeStatusAsSeen: (tradeId: string, status: TradeStatus) => void;
 }
 
 export const useTradeRequestStore = create<TradeRequestStore>()(
   persist(
     (set, get) => ({
-      seenUsers: [],
+      seenTradeStatuses: {},
       tradeGroups: [],
 
       setTradeGroups: (groups) => set({ tradeGroups: groups }),
@@ -109,50 +113,48 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
         })),
 
       hasImportantTradeActivity: (currentUserId) => {
-        const { tradeGroups, seenUsers } = get();
+        const { tradeGroups, seenTradeStatuses } = get();
 
-        return tradeGroups.some((group) => {
-          if (seenUsers.includes(group.user._id)) return false;
+        return tradeGroups.some((group) =>
+          group.trades.some((t) => {
+            const isRelevant =
+              (t.receiver._id === currentUserId && t.status === 'pending') ||
+              (t.sender._id === currentUserId && t.status === 'accepted') ||
+              (t.receiver._id === currentUserId && t.sent_by_sender);
 
-          return group.trades.some((t) => {
-            const isReceivedRequest =
-              t.receiver._id === currentUserId && t.status === 'pending';
-            const isAcceptedSent =
-              t.sender._id === currentUserId && t.status === 'accepted';
-            const hasReceivedCard =
-              t.receiver._id === currentUserId && t.sent_by_sender;
-            return isReceivedRequest || isAcceptedSent || hasReceivedCard;
-          });
-        });
+            return isRelevant && seenTradeStatuses[t._id] !== t.status;
+          }),
+        );
       },
 
-      hasImportantTradeWithUser: (userId: string, currentUserId: string) => {
-        const { tradeGroups, seenUsers } = get();
-        if (seenUsers.includes(userId)) return false;
+      hasImportantTradeWithUser: (userId, currentUserId) => {
+        const { tradeGroups, seenTradeStatuses } = get();
 
         return tradeGroups.some((group) => {
           if (group.user._id !== userId) return false;
 
           return group.trades.some((t) => {
-            const isReceivedRequest =
-              t.receiver._id === currentUserId && t.status === 'pending';
-            const isAcceptedSent =
-              t.sender._id === currentUserId && t.status === 'accepted';
-            const hasReceivedCard =
-              t.receiver._id === currentUserId && t.sent_by_sender;
-            return isReceivedRequest || isAcceptedSent || hasReceivedCard;
+            const isRelevant =
+              (t.receiver._id === currentUserId && t.status === 'pending') ||
+              (t.sender._id === currentUserId && t.status === 'accepted') ||
+              (t.receiver._id === currentUserId && t.sent_by_sender);
+
+            return isRelevant && seenTradeStatuses[t._id] !== t.status;
           });
         });
       },
 
-      markUserTradesAsSeen: (userId) =>
+      markTradeStatusAsSeen: (tradeId, status) =>
         set((state) => ({
-          seenUsers: [...new Set([...state.seenUsers, userId])],
+          seenTradeStatuses: {
+            ...state.seenTradeStatuses,
+            [tradeId]: status,
+          },
         })),
     }),
     {
       name: 'trade-requests-store',
-      partialize: (state) => ({ seenUsers: state.seenUsers }),
+      partialize: (state) => ({ seenTradeStatuses: state.seenTradeStatuses }),
     },
   ),
 );
