@@ -13,6 +13,28 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 export const metadata: Metadata = {
   title: 'PoketDex',
   description: 'Echangez vos cartes Pokémon TCG Pocket !',
+  icons: {
+    icon: '/favicon.ico', // fallback standard
+    shortcut: '/favicon.ico', // pour les anciens navigateurs
+    apple: '/apple-touch-icon.png', // iOS
+    other: [
+      {
+        rel: 'icon',
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
+      {
+        rel: 'icon',
+        sizes: '192x192',
+        url: '/android-chrome-192x192.png',
+      },
+      {
+        rel: 'icon',
+        sizes: '512x512',
+        url: '/android-chrome-512x512.png',
+      },
+    ],
+  },
 };
 
 const poppins = Poppins({
