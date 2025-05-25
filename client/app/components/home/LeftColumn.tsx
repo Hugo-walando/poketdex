@@ -125,7 +125,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
         )}
       </div>
       {allListedCards.length > 0 && (
-        <div className='flex justify-center gap-2 mt-6'>
+        <div className='flex justify-center gap-2 mt-6 pb-20'>
           <button
             onClick={() => setPage(Math.max(page - 1, 1))}
             disabled={page === 1}
