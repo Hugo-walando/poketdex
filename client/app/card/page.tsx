@@ -321,7 +321,7 @@ export default function CardPage() {
 
                       {/* 🔽 Cartes du set */}
                       <div className='grid gap-6 grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(130px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] xl:grid-cols-8'>
-                        {cardsForSet.slice(0, visibleCardCount).map((card) => (
+                        {cardsForSet.map((card) => (
                           <div
                             className='flex flex-col items-center gap-2'
                             key={card._id}
