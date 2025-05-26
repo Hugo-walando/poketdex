@@ -30,8 +30,14 @@ const matchSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
-matchSchema.index({ user_1: 1 });
-matchSchema.index({ user_2: 1 });
+matchSchema.index(
+  {
+    user_1: 1,
+    user_2: 1,
+    card_offered_by_user_1: 1,
+    card_offered_by_user_2: 1,
+  },
+  { unique: true },
+);
 
 module.exports = mongoose.model('Match', matchSchema);
