@@ -4,7 +4,11 @@ function defineNextConfig(config) {
 
 export default defineNextConfig({
   images: {
-    domains: ['ptcgp-wiki.metainnovation.site', 'placehold.co'],
+    domains: [
+      'ptcgp-wiki.metainnovation.site',
+      'placehold.co',
+      'res.cloudinary.com',
+    ],
   },
   // webpack(config) {
   //   config.module.rules.push({
