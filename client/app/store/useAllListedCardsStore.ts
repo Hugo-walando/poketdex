@@ -1,4 +1,3 @@
-// /store/useAllListedCardsStore.ts
 import { create } from 'zustand';
 import { ListedCard } from '@/app/types';
 

@@ -1,4 +1,3 @@
-// stores/useUserStore.ts
 import { User } from 'next-auth';
 import { create } from 'zustand';
 

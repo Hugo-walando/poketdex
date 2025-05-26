@@ -1,4 +1,3 @@
-// hooks/useSocket.ts
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUserStore } from '../store/useUserStore';
@@ -58,13 +57,11 @@ export default function useSocket() {
       });
       socket.on('connected-users', (ids: string[]) => {
         setAll(ids);
-        // Tu peux stocker ça dans un Zustand Store par exemple
       });
 
       socket.on('new-trade-request', (tradeRequest) => {
-        // Optionnel : ajoute dans un store (ex: `useTradeRequestStore`)
         addTradeRequest(tradeRequest);
-        // Optionnel : affiche une notification/toast
+
         toast('📩 Nouvelle demande d’échange reçue');
       });
 
@@ -82,13 +79,12 @@ export default function useSocket() {
       socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
         markAsSent(tradeId, sentByUserId);
 
-        // ✅ On ne notifie que si c’est l’autre qui a envoyé
         if (sentByUserId !== userId) {
           toast('📦 Tu as reçu une carte !');
         }
       });
       socket.on('trade-reactivated', ({ tradeId }) => {
-        setTradeActive(tradeId); // une méthode zustand qui met is_active à true
+        setTradeActive(tradeId);
       });
     } else {
       if (socketRef.current.connected && userId) {

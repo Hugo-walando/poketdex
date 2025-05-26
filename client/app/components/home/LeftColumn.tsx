@@ -34,7 +34,6 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
   } = useAllListedCardsStore();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
-  // Reset Filters
   const hasActiveFilters =
     searchQuery.length > 0 ||
     selectedSets.length > 0 ||

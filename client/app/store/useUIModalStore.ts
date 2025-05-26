@@ -1,4 +1,3 @@
-// app/store/useUIModalStore.ts
 import { create } from 'zustand';
 
 interface UIModalStore {

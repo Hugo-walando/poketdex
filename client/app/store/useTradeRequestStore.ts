@@ -1,5 +1,3 @@
-// app/store/useTradeRequestStore.ts
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TradeGroup, TradeRequest } from '@/app/types';

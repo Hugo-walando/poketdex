@@ -56,8 +56,6 @@ export function useTradeRequestActions() {
           markAsSent(tradeRequestId, user.id);
         }
         toast.success('Carte marquée comme envoyée ✅');
-        // Ici tu fais le fetch manuellement si besoin
-        // -> pas besoin de lier `useFetchTradeRequests` au moment de charger le hook
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
         const backendMessage =

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CheckCircle, Circle } from 'lucide-react';
 import TradeIcon from '../svgs/TradeIcon';
 import { rarityIcons } from '@/app/data/rarities';
-import { cn } from '@/app/utils/cn'; // si tu as un utilitaire cn()
+import { cn } from '@/app/utils/cn';
 
 interface Props {
   match: MatchTrade;

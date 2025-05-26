@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 } from 'lucide-react'; // ou tout autre icône spinner
+import { Loader2 } from 'lucide-react';
 import React from 'react';
 
 export default function Loader() {

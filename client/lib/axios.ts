@@ -13,7 +13,7 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401) {
       toast.error('Votre session a expiré. Déconnexion...');
       console.warn('⛔ Token invalide ou expiré, déconnexion...');
-      signOut({ callbackUrl: '/login' }); // Redirige vers page de login
+      signOut({ callbackUrl: '/login' });
     }
     return Promise.reject(error);
   },

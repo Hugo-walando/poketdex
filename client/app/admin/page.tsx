@@ -1,4 +1,3 @@
-// app/admin/page.tsx
 import { getServerAuthSession } from '@/auth';
 import { redirect } from 'next/navigation';
 import ConnectedUsersList from '../components/data/ConnectedUsersList';

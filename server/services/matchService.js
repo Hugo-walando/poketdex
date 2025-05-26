@@ -42,11 +42,16 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
         currentUserWishlist.map((w) => w.card.toString()),
       );
 
+      const groupedByUser = new Map();
+      for (const card of otherUserListedCards) {
+        const uid = card.user.toString();
+        if (!groupedByUser.has(uid)) groupedByUser.set(uid, []);
+        groupedByUser.get(uid).push(card);
+      }
+
       for (const wishlistEntry of matchedWishlists) {
         const otherUserId = wishlistEntry.user._id.toString();
-        const theirCards = otherUserListedCards.filter(
-          (c) => c.user.toString() === otherUserId,
-        );
+        const theirCards = groupedByUser.get(otherUserId) || [];
 
         for (const theirCard of theirCards) {
           if (!currentWishlistSet.has(theirCard.card._id.toString())) continue;
@@ -112,11 +117,16 @@ async function findAndCreateMatch(userId, cardId, mode = 'listed') {
         currentUserListedCards.map((c) => c.card._id.toString()),
       );
 
+      const groupedByUser = new Map();
+      for (const card of otherUsersWishlistCards) {
+        const uid = card.user.toString();
+        if (!groupedByUser.has(uid)) groupedByUser.set(uid, []);
+        groupedByUser.get(uid).push(card);
+      }
+
       for (const listedCard of matchingListedCards) {
         const otherUserId = listedCard.user._id.toString();
-        const theirWishes = otherUsersWishlistCards.filter(
-          (w) => w.user.toString() === otherUserId,
-        );
+        const theirWishes = groupedByUser.get(otherUserId) || [];
 
         for (const theirWish of theirWishes) {
           if (!currentListedSet.has(theirWish.card._id.toString())) continue;

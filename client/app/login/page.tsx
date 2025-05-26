@@ -81,7 +81,6 @@ export default function LoginPage() {
           </form>
         )} */}
 
-        {/* Ajout du bouton Google */}
         <div className='mt-4'>
           {error && (
             <p className='text-red-500 text-center'>

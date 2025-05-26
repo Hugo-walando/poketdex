@@ -1,4 +1,3 @@
-// stores/useGlobalData.ts
 import { create } from 'zustand';
 import { Card, Set } from '../types';
 

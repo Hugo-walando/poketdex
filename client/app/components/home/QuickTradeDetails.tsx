@@ -41,7 +41,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
     });
     if (result) {
       router.push(`/trades?user=${card.user._id}`);
-    } // 🧭 redirige vers la page des échanges
+    }
   };
 
   useEffect(() => {

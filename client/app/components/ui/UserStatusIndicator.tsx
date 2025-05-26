@@ -1,5 +1,3 @@
-// components/ui/UserStatusIndicator.tsx
-
 import { useOnlineUserStore } from '@/app/store/useUserOnlineStore';
 
 interface Props {

@@ -1,4 +1,3 @@
-// hooks/useFetchCardsBySet.ts
 import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { Card, Set } from '@/app/types';
@@ -41,6 +40,6 @@ export default function useFetchCardsBySetsManual() {
   return {
     cardsBySet,
     loading,
-    triggerFetch, // ✅ Tu contrôles quand ça s’exécute
+    triggerFetch,
   };
 }

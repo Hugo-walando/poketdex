@@ -11,7 +11,7 @@ import useIsMobile from '@/app/hooks/useIsMobile';
 interface SetFilterDropdownProps {
   selectedSets: string[];
   onToggleSet: (setId: string) => void;
-  sets: Set[]; // ✅ sets passés en props depuis la page
+  sets: Set[];
 }
 
 export default function SetFilterDropdown({
@@ -25,7 +25,6 @@ export default function SetFilterDropdown({
 
   const isOpen = openFilter === 'set';
 
-  // Trie les sets par date croissante (plus anciens en premier)
   const sortedSets = [...sets].sort((a, b) => {
     return (
       new Date(a.release_date).getTime() - new Date(b.release_date).getTime()
@@ -67,13 +66,13 @@ export default function SetFilterDropdown({
         className='z-50 w-[300px] bg-white rounded-xl shadow-base p-2 grid grid-cols-2 gap-2'
       >
         {sortedSets.map((set) => {
-          const isSelected = selectedSets.includes(set.code); // ✅ on utilise `set.code` comme identifiant
+          const isSelected = selectedSets.includes(set.code);
           return (
             <div key={set.code}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleSet(set.code); // ✅ passe `set.code`
+                  onToggleSet(set.code);
                 }}
                 className={`w-full p-1 rounded-xl shadow-base flex items-center justify-center transition hover:cursor-pointer ${
                   isSelected ? 'bg-darkgray inset-shadow-field' : 'bg-white'

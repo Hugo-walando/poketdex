@@ -10,8 +10,8 @@ interface CollectionState {
   addWishlistCardToStore: (card: WishlistCard) => void;
   removeListedCardFromStore: (cardId: string) => void;
   removeWishlistCardFromStore: (cardId: string) => void;
-  removeListedCardByOfficialId: (officialId: string) => void; // 👈 ajouté
-  removeWishlistCardByOfficialId: (officialId: string) => void; // 👈 ajouté
+  removeListedCardByOfficialId: (officialId: string) => void;
+  removeWishlistCardByOfficialId: (officialId: string) => void;
   resetCollections: () => void;
 }
 
@@ -37,7 +37,6 @@ export const useCollectionStore = create<CollectionState>((set) => ({
       ),
     })),
 
-  // 👇 Ajouté pour pouvoir retirer par official_id
   removeListedCardByOfficialId: (officialId) =>
     set((state) => ({
       listedCards: state.listedCards.filter(

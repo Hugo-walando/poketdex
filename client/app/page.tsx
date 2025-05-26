@@ -17,7 +17,7 @@ export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
   const [viewMode, setViewMode] = useState<'default' | 'matchs'>('default');
   const isMobile = useIsMobile();
-  const { loading } = useFetchMatches(); // ici une seule fois
+  const { loading } = useFetchMatches();
 
   useEffect(() => {
     if (isMobile && (selectedCard || viewMode === 'matchs')) {
@@ -36,7 +36,6 @@ export default function Home() {
       <ProtectedLayout>
         <AllListedCardsLoader />
 
-        {/* Mobile : bouton pour changer de mode */}
         {isMobile && viewMode === 'default' && (
           <button
             onClick={() => setViewMode('matchs')}
@@ -48,12 +47,10 @@ export default function Home() {
         )}
 
         <div className='flex gap-6'>
-          {/* 🟢 LeftColumn visible dans tous les cas */}
           {viewMode === 'default' && (
             <LeftColumn onCardClick={setSelectedCard} />
           )}
 
-          {/* 🟦 RightColumn (matchs ou détails) sur desktop */}
           {!isMobile && (
             <RightColumn
               selectedCard={selectedCard}
@@ -63,7 +60,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* 📱 Mobile : détails plein écran */}
         {isMobile && selectedCard && (
           <div className='fixed inset-0 bg-white z-50 p-4 overflow-y-auto'>
             <QuickTradeDetails
@@ -73,7 +69,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* 📱 Mobile : matchs en plein écran */}
         {isMobile && viewMode === 'matchs' && (
           <div className='fixed inset-0 z-50 overflow-y-auto'>
             <button

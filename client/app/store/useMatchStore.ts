@@ -1,5 +1,3 @@
-// app/store/useMatchStore.ts
-
 import { create } from 'zustand';
 import { MatchGroup } from '@/app/types';
 

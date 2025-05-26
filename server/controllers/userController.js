@@ -89,10 +89,22 @@ const updateUser = async (req, res) => {
       }
     }
     if (updates.friend_code) {
-      const clean = updates.friend_code.replace(/\D/g, ''); // supprime tout sauf chiffres
-      const formatted = clean.replace(/(.{4})/g, '$1-').replace(/-$/, ''); // ajoute les tirets
+      const clean = updates.friend_code.replace(/\D/g, '');
+      const formatted = clean.replace(/(.{4})/g, '$1-').replace(/-$/, '');
       updates.friend_code = formatted;
+
+      const existingFriendCode = await User.findOne({
+        friend_code: formatted,
+        _id: { $ne: currentUser._id }, // exclure soi-même
+      });
+
+      if (existingFriendCode) {
+        return res.status(409).json({
+          message: 'Ce code ami est déjà utilisé par un autre joueur.',
+        });
+      }
     }
+
     if (
       updates.profile_picture &&
       !updates.profile_picture.startsWith('/avatars/')
