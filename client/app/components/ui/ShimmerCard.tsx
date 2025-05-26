@@ -1,4 +1,3 @@
-// components/loaders/ShimmerCard.tsx
 export default function ShimmerCard() {
   return (
     <div className='w-full h-[160px] md:h-[200px] bg-gray-200 rounded-xl animate-pulse relative overflow-hidden'>

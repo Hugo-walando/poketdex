@@ -1,6 +1,4 @@
-// app/utils/groupTradeRequests.ts
 import { TradeRequest, TradeGroup } from '@/app/types';
-
 export function groupTradeRequestsByUser(
   trades: TradeRequest[],
   currentUserId: string,

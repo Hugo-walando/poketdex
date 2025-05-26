@@ -62,7 +62,6 @@ export default function MatchGroupItem({
             <span>Vous envoyez</span>
           </div>
 
-          {/* Match rows */}
           <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 items-center'>
             {group.trades.map((match) => (
               <MatchItem
@@ -70,7 +69,7 @@ export default function MatchGroupItem({
                 match={match}
                 isSelected={selectedMatchIds.includes(match._id)}
                 onSelect={onToggleMatchSelection}
-                sets={sets} // 🆕 passe la liste des Sets ici
+                sets={sets}
               />
             ))}
           </div>

@@ -1,4 +1,3 @@
-// hooks/useFetchSets.ts
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import axiosClient from '@/lib/axios';

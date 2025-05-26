@@ -55,7 +55,7 @@ const useCreateQuickTrade = () => {
         axiosError.response?.data?.message ||
         'Erreur lors de la création de la demande.';
       if (backendMessage.includes('compléter votre profil')) {
-        openCompleteProfileModal(); // ⬅️ à toi de gérer ce composant
+        openCompleteProfileModal();
       }
       setError(backendMessage);
       toast.error(backendMessage);

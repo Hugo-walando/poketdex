@@ -1,4 +1,3 @@
-// /hooks/useFetchAllListedCards.ts
 import { useEffect, useCallback } from 'react';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';

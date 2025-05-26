@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useSession } from 'next-auth/react'; // Assurez-vous d'utiliser Auth.js pour la gestion de session
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
 import { useUserStore } from '../store/useUserStore';
 
-// Hook pour mettre à jour l'utilisateur
 const useUpdateUser = () => {
   const { update } = useSession();
   const user = useUserStore((state) => state.user);
@@ -46,7 +45,7 @@ const useUpdateUser = () => {
         },
       );
 
-      await update(); // rafraîchit la session côté front
+      await update();
       setSuccess('✅ Informations mises à jour avec succès');
       toast.success('Informations mises à jour avec succès');
       updateUserStore(response.data);

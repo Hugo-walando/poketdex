@@ -23,7 +23,6 @@ export default function GlobalDataLoader() {
 
   const hasInitialized = useRef(false);
 
-  // ✅ Gestion utilisateur
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -54,14 +53,12 @@ export default function GlobalDataLoader() {
     }
   }, [status, session, setUser, clearUser, setUserLoading, currentUser]);
 
-  // 📦 Sauvegarde des sets
   useEffect(() => {
     if (!setsLoading && sets.length > 0) {
       storeSets(sets);
     }
   }, [sets, setsLoading, storeSets]);
 
-  // 🃏 Sauvegarde des cartes
   useEffect(() => {
     if (!cardsLoading && Object.keys(cardsBySet).length > 0) {
       storeCards(cardsBySet);

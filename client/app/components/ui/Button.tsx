@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/app/utils/cn'; // Optionnel : une fonction utilitaire pour gérer les classes conditionnelles
+import { cn } from '@/app/utils/cn';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';

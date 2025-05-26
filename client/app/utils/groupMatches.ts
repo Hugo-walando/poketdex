@@ -7,7 +7,6 @@ export function groupMatchesByUser(
   const groups: Record<string, MatchGroup> = {};
 
   for (const match of matches) {
-    // 👇 Trouver l'adversaire du match
     const isCurrentUser1 = match.user_1._id === currentUserId;
     const opponent = isCurrentUser1 ? match.user_2 : match.user_1;
 

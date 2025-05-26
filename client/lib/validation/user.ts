@@ -18,5 +18,4 @@ export const updateUserSchema = z.object({
     }),
 });
 
-// Tu peux aussi créer une version partielle si certains champs sont optionnels
 export const partialUserSchema = updateUserSchema.partial();

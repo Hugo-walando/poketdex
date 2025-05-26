@@ -29,7 +29,6 @@ export default function Profile() {
     friend_code?: string[];
   }>({});
 
-  // 🔄 Initialisation des champs
   useEffect(() => {
     if (user) {
       setUsername(user.username || '');
@@ -73,7 +72,7 @@ export default function Profile() {
     });
 
     if (updated) {
-      setShowModal(false); // ✅ Fermer modale
+      setShowModal(false);
     }
   }, [username, friendCode, selectedAvatar, user, updateUser]);
 

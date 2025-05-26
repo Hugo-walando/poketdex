@@ -10,7 +10,6 @@ interface TradeListSectionProps {
   onBack: () => void;
 }
 
-// Méthode locale pour trier les trades (actives en haut, triées par date ensuite)
 const sortTradesByActiveStatus = (trades: TradeRequest[]) => {
   return [...trades].sort((a, b) => {
     if (a.is_active && !b.is_active) return -1;

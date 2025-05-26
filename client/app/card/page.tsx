@@ -58,7 +58,7 @@ export default function CardPage() {
   const isMobile = useIsMobile();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 300); // 300ms d'attente
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
   const [openSetCodes, setOpenSetCodes] = useState<string[]>([]);
@@ -74,7 +74,6 @@ export default function CardPage() {
 
   const observerRefs = useRef<Record<string, IntersectionObserver>>({});
 
-  // Extraire les ID pour `CardSelector`
   const listedCardIds = listedCards.map((item) => item.card._id);
   const wishlistCardIds = wishlistCards.map((item) => item.card._id);
 
@@ -84,7 +83,7 @@ export default function CardPage() {
       removeListedCardFromStore(cardId);
       removeMatchesByCard(cardId);
     } else if (wishlistCards.some((c) => c.card._id === cardId)) {
-      await removeWishlistCard(cardId); // ❗️pareil ici
+      await removeWishlistCard(cardId);
       removeWishlistCardFromStore(cardId);
       const added = await addListedCard(cardId);
       if (added) {
@@ -103,7 +102,7 @@ export default function CardPage() {
       removeWishlistCardFromStore(cardId);
       removeMatchesByCard(cardId);
     } else if (listedCards.some((c) => c.card._id === cardId)) {
-      await removeListedCard(cardId); // ❗️pareil ici
+      await removeListedCard(cardId);
       removeListedCardFromStore(cardId);
       const added = await addWishlistCard(cardId);
       if (added) {
@@ -197,7 +196,6 @@ export default function CardPage() {
   const attachObserver = (el: HTMLDivElement | null, setCode: string) => {
     if (!el) return;
 
-    // Si un observer existe déjà, le déconnecter avant de recréer
     if (observerRefs.current[setCode]) {
       observerRefs.current[setCode].disconnect();
     }
@@ -285,14 +283,12 @@ export default function CardPage() {
           {(hasActiveFilters || searchQuery) && (
             <>
               {searchQuery !== debouncedSearchQuery ? (
-                // 🔁 Affiche le shimmer pendant le debounce
                 <Loader />
               ) : filteredCards.length === 0 ? (
                 <p className='text-center text-gray-xl'>
                   Aucune carte ne correspond aux filtres.
                 </p>
-              ) : // ✅ Grouper par set_code ici
-              selectedSets.length > 0 ? (
+              ) : selectedSets.length > 0 ? (
                 selectedSets.map((setCode) => {
                   const set = sets.find((s) => s.code === setCode);
                   if (!set) return null;

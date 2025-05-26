@@ -6,7 +6,7 @@ import { cn } from '@/app/utils/cn';
 interface CloseButtonProps {
   onClick: () => void;
   className?: string;
-  size?: number; // Permet de changer la taille si besoin
+  size?: number;
 }
 
 export default function CloseButton({

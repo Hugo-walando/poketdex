@@ -1,4 +1,3 @@
-// utils/generateToken.ts
 import jwt from 'jsonwebtoken';
 import { User } from 'next-auth';
 
@@ -9,7 +8,7 @@ export const generateAccessToken = (user: User) => {
     role: user.role || 'user', // Le rôle de l'utilisateur (si nécessaire)
   };
 
-  const secret = process.env.AUTH_SECRET; // La clé secrète pour signer ton JWT
+  const secret = process.env.AUTH_SECRET; // La clé secrète
   if (!secret) {
     throw new Error('AUTH_SECRET is not defined in the environment variables');
   }

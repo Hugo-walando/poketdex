@@ -15,9 +15,9 @@ const useRemoveMatchesByCard = () => {
             trade.requested_card._id !== cardId,
         ),
       }))
-      .filter((group) => group.trades.length > 0); // ⚡ supprime les groupes vides
+      .filter((group) => group.trades.length > 0);
 
-    setMatches(updatedGroups); // 🔥
+    setMatches(updatedGroups);
   };
 
   return { removeMatchesByCard };

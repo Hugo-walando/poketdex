@@ -9,7 +9,7 @@ const HomeIcon = ({ className = '', color }: HomeIconProps) => {
       viewBox='0 0 161 177'
       xmlns='http://www.w3.org/2000/svg'
       className={className}
-      fill={color || 'currentColor'} // Utilise currentColor pour support Tailwind
+      fill={color || 'currentColor'}
     >
       <path
         fillRule='evenodd'

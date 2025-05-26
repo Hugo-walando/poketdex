@@ -29,7 +29,7 @@ export default function ConnectedUsersList() {
     };
 
     fetchUsers();
-  }, [onlineUserIds]); // 🟡 Mise à jour à chaque changement
+  }, [onlineUserIds]);
 
   return (
     <div className='flex flex-col gap-4 mb-4'>

@@ -14,7 +14,7 @@ const useFetchWishlistForQuickTrade = (
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!userId || rarity === null) return; // 👈 On ne lance pas tant qu'on n'a pas tout
+    if (!userId || rarity === null) return;
 
     const fetchWishlist = async () => {
       setLoading(true);

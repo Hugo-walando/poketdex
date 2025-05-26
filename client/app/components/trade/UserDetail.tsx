@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { AppUser } from '@/app/types'; // Ton type utilisateur
+import { AppUser } from '@/app/types';
 import FriendCode from './FriendCode';
 
 interface UserDetailProps {

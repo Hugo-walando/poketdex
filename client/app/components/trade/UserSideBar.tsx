@@ -26,10 +26,9 @@ export default function UserSidebar({
   );
 
   const handleSelectUser = (id: string) => {
-    onSelectUser(id); // Action normale
+    onSelectUser(id);
   };
 
-  // Map pour récupérer la dernière activité pour chaque user
   const usersWithActivity = users.map((user) => {
     const tradesWithUser =
       tradeGroups.find((group) => group.user._id === user._id)?.trades || [];
@@ -40,7 +39,7 @@ export default function UserSidebar({
             ...tradesWithUser.map((t) => new Date(t.updatedAt).getTime()),
           ),
         )
-      : new Date(0); // Si aucune activité, date très ancienne
+      : new Date(0);
 
     return {
       ...user,
@@ -48,7 +47,6 @@ export default function UserSidebar({
     };
   });
 
-  // Trier du plus récent au plus ancien
   const sortedUsers = usersWithActivity.sort(
     (a, b) => b.lastActivity.getTime() - a.lastActivity.getTime(),
   );

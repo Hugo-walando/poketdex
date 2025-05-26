@@ -3,15 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/app/utils/cn';
-import HomeIcon from '../svgs/HomeIcon'; // Adjust the path to the correct location of HomeIcon
+import HomeIcon from '../svgs/HomeIcon';
 import CardIcon from '../svgs/CardIcon';
 import TradeIcon from '../svgs/TradeIcon';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 import Image from 'next/image';
 import { User } from 'lucide-react';
-
-// const userAvatarUrl = '/assets/avatar.png'; // Exemple
 
 export default function Navbar() {
   const user = useUserStore((s) => s.user);

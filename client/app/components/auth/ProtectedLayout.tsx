@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { isProfileIncomplete } from '@/app/utils/isProfileIncomplete';
 import CompleteProfileModal from './CompleteProfileModal';
 import { useUserStore } from '@/app/store/useUserStore';
-import { useUIModalStore } from '@/app/store/useUIModalStore'; // 👈 Import ton UI store
+import { useUIModalStore } from '@/app/store/useUIModalStore';
 
 export default function ProtectedLayout({
   children,
