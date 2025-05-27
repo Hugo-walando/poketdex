@@ -4,6 +4,9 @@ const reactivateNextTradeRequestService = require('../services/reactivateNextTra
 const { getSocketIO, getConnectedUsersMap } = require('../socket');
 const User = require('../models/User');
 const { logError } = require('../logger');
+const WishlistCard = require('../models/WishlistCard');
+const ListedCard = require('../models/ListedCard');
+const { Types } = require('mongoose');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -240,17 +243,136 @@ const markTradeRequestAsSent = async (req, res) => {
       trade.sent_by_receiver = true;
     }
 
-    // Si les deux ont envoyé → échange terminé
     let isCompleted = false;
     if (trade.sent_by_sender && trade.sent_by_receiver) {
       trade.status = 'completed';
       trade.completed = true;
       trade.is_active = false;
       isCompleted = true;
+
+      const senderId = trade.sender._id;
+      const receiverId = trade.receiver._id;
+      const offeredCardId = trade.card_offered._id;
+      const requestedCardId = trade.card_requested._id;
+
+      // ❌ Supprimer la wishlistCard du receiver (car il reçoit la carte qu’il voulait)
+      await WishlistCard.findOneAndDelete({
+        user: receiverId,
+        card: offeredCardId,
+      });
+      console.log(
+        `WishlistCard supprimée pour le receiver ${receiverId} pour la carte ${requestedCardId}`,
+      );
+
+      // ❌ Supprimer la wishlistCard du sender (car il reçoit aussi une carte qu’il voulait)
+      await WishlistCard.findOneAndDelete({
+        user: senderId,
+        card: requestedCardId,
+      });
+
+      console.log(
+        `WishlistCard supprimée pour le sender ${senderId} pour la carte ${offeredCardId}`,
+      );
+
+      // 📦 Décrémenter ou supprimer la listedCard du sender (il a donné offeredCard)
+      const senderListed = await ListedCard.findOne({
+        user: senderId,
+        card: offeredCardId,
+      });
+
+      if (senderListed) {
+        if (senderListed.quantity > 1) {
+          senderListed.quantity -= 1;
+          await senderListed.save();
+        } else {
+          await ListedCard.deleteOne({ _id: senderListed._id });
+        }
+      }
+
+      // 📦 Décrémenter ou supprimer la listedCard du receiver (il a donné requestedCard)
+      const receiverListed = await ListedCard.findOne({
+        user: receiverId,
+        card: requestedCardId,
+      });
+
+      if (receiverListed) {
+        if (receiverListed.quantity > 1) {
+          receiverListed.quantity -= 1;
+          await receiverListed.save();
+        } else {
+          await ListedCard.deleteOne({ _id: receiverListed._id });
+        }
+      }
+
+      // 🔢 Incrémenter le trade_count
+      await User.updateOne({ _id: senderId }, { $inc: { trade_count: 1 } });
+      await User.updateOne({ _id: receiverId }, { $inc: { trade_count: 1 } });
+
+      // 📡 Socket.io → Notifier les deux utilisateurs pour mettre à jour leur store
+      const io = getSocketIO();
+      const connectedUsers = getConnectedUsersMap();
+
+      const payload = {
+        tradeId: trade._id,
+        removedWishlistCardIds: [
+          offeredCardId.toString(),
+          requestedCardId.toString(),
+        ],
+        updatedListedCardIds: [
+          offeredCardId.toString(),
+          requestedCardId.toString(),
+        ],
+      };
+
+      const senderSocket = connectedUsers.get(String(senderId));
+      const receiverSocket = connectedUsers.get(String(receiverId));
+
+      if (senderSocket) io.to(senderSocket).emit('trade-completed', payload);
+      if (receiverSocket)
+        io.to(receiverSocket).emit('trade-completed', payload);
+
+      // 🔁 Réactivation d’une autre trade inactive si existante
+      const nextTrade = await reactivateNextTradeRequestService(
+        senderId,
+        receiverId,
+      );
+
+      if (nextTrade) {
+        const populated = await TradeRequest.findById(nextTrade._id)
+          .populate('card_offered')
+          .populate('card_requested')
+          .populate(
+            'sender',
+            'username profile_picture friend_code trade_count',
+          )
+          .populate(
+            'receiver',
+            'username profile_picture friend_code trade_count',
+          );
+
+        const reactivationPayload = { tradeId: populated._id };
+
+        const nextSenderSocket = connectedUsers.get(
+          String(populated.sender._id),
+        );
+        const nextReceiverSocket = connectedUsers.get(
+          String(populated.receiver._id),
+        );
+
+        if (nextSenderSocket)
+          io.to(nextSenderSocket).emit(
+            'trade-reactivated',
+            reactivationPayload,
+          );
+        if (nextReceiverSocket)
+          io.to(nextReceiverSocket).emit(
+            'trade-reactivated',
+            reactivationPayload,
+          );
+      }
     }
 
     await trade.save();
-    // 📡 Envoi temps réel si non terminé
 
     const io = getSocketIO();
     const connectedUsers = getConnectedUsersMap();
@@ -270,56 +392,10 @@ const markTradeRequestAsSent = async (req, res) => {
 
     // 🔄 Réactivation possible d’une autre TradeRequest
 
-    if (isCompleted) {
-      await User.updateOne(
-        { _id: trade.sender._id },
-        { $inc: { trade_count: 1 } },
-      );
-      await User.updateOne(
-        { _id: trade.receiver._id },
-        { $inc: { trade_count: 1 } },
-      );
-      const nextTrade = await reactivateNextTradeRequestService(
-        trade.sender._id,
-        trade.receiver._id,
-      );
-
-      if (nextTrade) {
-        const populated = await TradeRequest.findById(nextTrade._id)
-          .populate('card_offered')
-          .populate('card_requested')
-          .populate(
-            'sender',
-            'username profile_picture friend_code trade_count',
-          )
-          .populate(
-            'receiver',
-            'username profile_picture friend_code trade_count',
-          );
-
-        const receiverSocket = connectedUsers.get(
-          String(populated.receiver._id),
-        );
-        const senderSocket = connectedUsers.get(String(populated.sender._id));
-
-        if (receiverSocket)
-          io.to(receiverSocket).emit('trade-reactivated', {
-            tradeId: populated._id,
-          });
-
-        if (senderSocket)
-          io.to(senderSocket).emit('trade-reactivated', {
-            tradeId: populated._id,
-          });
-
-        console.log('📡 Trade réactivée envoyée aux utilisateurs');
-      }
-    }
-
     // 📡 Notifier les deux utilisateurs
     res.status(200).json(trade);
   } catch (error) {
-    logError('Erreur lors du markTradeRequestAsSent', err);
+    logError('Erreur lors du markTradeRequestAsSent', error);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };

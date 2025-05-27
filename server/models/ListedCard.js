@@ -12,6 +12,11 @@ const listedCardSchema = new mongoose.Schema(
       ref: 'Card',
       required: true,
     },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
   },
   { timestamps: true },
 );
