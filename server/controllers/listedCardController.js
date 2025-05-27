@@ -247,9 +247,69 @@ const getAllListedCards = async (req, res) => {
   }
 };
 
+const incrementListedCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const cardId = req.params.cardId;
+
+    const updated = await ListedCard.findOneAndUpdate(
+      { user: userId, card: cardId },
+      { $inc: { quantity: 1 } },
+      { new: true },
+    ).populate('card');
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Carte non trouvée.' });
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    logError('Erreur lors de incrementListedCard', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
+const decrementListedCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const cardId = req.params.cardId;
+
+    const existing = await ListedCard.findOne({ user: userId, card: cardId });
+
+    if (!existing) {
+      return res.status(404).json({ message: 'Carte non trouvée.' });
+    }
+
+    if (existing.quantity > 1) {
+      existing.quantity -= 1;
+      await existing.save();
+      return res.status(200).json(existing);
+    } else {
+      await ListedCard.deleteOne({ user: userId, card: cardId });
+
+      // Supprimer les matchs liés à cette carte
+      await Match.deleteMany({
+        $or: [
+          { user_1: userId, card_offered_by_user_1: cardId },
+          { user_2: userId, card_offered_by_user_2: cardId },
+        ],
+      });
+
+      return res
+        .status(200)
+        .json({ message: 'Carte supprimée car quantité = 1' });
+    }
+  } catch (err) {
+    logError('Erreur lors de decrementListedCard', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+};
+
 module.exports = {
   addListedCard,
   removeListedCard,
   getListedCards,
   getAllListedCards,
+  incrementListedCard,
+  decrementListedCard,
 };
