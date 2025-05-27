@@ -131,9 +131,10 @@ export default function CardPage() {
     return (
       searchQuery.length > 0 ||
       selectedSets.length > 0 ||
-      selectedRarities.length > 0
+      selectedRarities.length > 0 ||
+      filter !== 'all'
     );
-  }, [searchQuery, selectedSets, selectedRarities]);
+  }, [searchQuery, selectedSets, selectedRarities, filter]);
 
   const resetAllFilters = () => {
     setSearchQuery('');
