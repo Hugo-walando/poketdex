@@ -4,6 +4,7 @@ import { useUserStore } from '../store/useUserStore';
 import { useOnlineUserStore } from '../store/useUserOnlineStore';
 import toast from 'react-hot-toast';
 import { useTradeRequestStore } from '../store/useTradeRequestStore';
+import { useCollectionStore } from '../store/useCollectionStore';
 
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
@@ -22,6 +23,12 @@ export default function useSocket() {
   const markAsSent = useTradeRequestStore((s) => s.markAsSent);
   const setTradeActive = useTradeRequestStore((s) => s.setTradeActive);
   const updateUser = useUserStore((s) => s.updateUserStore);
+  const removeWishlistCardFromStore = useCollectionStore(
+    (s) => s.removeWishlistCardFromStore,
+  );
+  const decrementListedCardQuantity = useCollectionStore(
+    (s) => s.decrementListedCardQuantity,
+  );
 
   useEffect(() => {
     if (!userId) return;
@@ -67,14 +74,31 @@ export default function useSocket() {
 
       socket.on('trade-updated', (data) => {
         updateTradeStatus(data.tradeId, data.status);
+
         if (data.status === 'accepted') {
-          toast('🎉 Une de vos demandes d`échange a été accepté !');
+          toast('🎉 Une de vos demandes d’échange a été acceptée !');
         } else if (data.status === 'declined') {
-          toast('❌ Une de vos demandes d`échange a été refusé.');
+          toast('❌ Une de vos demandes d’échange a été refusée.');
         } else if (data.status === 'cancelled') {
-          toast('❌ Une de vos demandes d`échange a été annulé.');
+          toast('❌ Une de vos demandes d’échange a été annulée.');
         }
       });
+      socket.on(
+        'trade-completed',
+        ({ removedWishlistCardIds, updatedListedCardIds }) => {
+          // 🔁 Supprimer les wishlist cards concernées
+          removedWishlistCardIds.forEach((cardId: string) => {
+            removeWishlistCardFromStore(cardId);
+          });
+
+          // 🔁 Décrémenter les listed cards concernées
+          updatedListedCardIds.forEach((cardId: string) => {
+            decrementListedCardQuantity(cardId);
+          });
+
+          toast('✅ Échange complété : collection mise à jour');
+        },
+      );
 
       socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
         markAsSent(tradeId, sentByUserId);
@@ -105,6 +129,8 @@ export default function useSocket() {
     markAsSent,
     setTradeActive,
     updateUser,
+    decrementListedCardQuantity,
+    removeWishlistCardFromStore,
   ]);
 
   return { socket: socketRef.current, connected };
