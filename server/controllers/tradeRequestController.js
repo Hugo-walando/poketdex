@@ -6,6 +6,7 @@ const User = require('../models/User');
 const { logError } = require('../logger');
 const WishlistCard = require('../models/WishlistCard');
 const ListedCard = require('../models/ListedCard');
+const { Types } = require('mongoose');
 
 // POST /api/trade-requests/quick
 const createQuickTradeRequest = async (req, res) => {
@@ -257,14 +258,21 @@ const markTradeRequestAsSent = async (req, res) => {
       // ❌ Supprimer la wishlistCard du receiver (car il reçoit la carte qu’il voulait)
       await WishlistCard.findOneAndDelete({
         user: receiverId,
-        card: requestedCardId,
+        card: offeredCardId,
       });
+      console.log(
+        `WishlistCard supprimée pour le receiver ${receiverId} pour la carte ${requestedCardId}`,
+      );
 
       // ❌ Supprimer la wishlistCard du sender (car il reçoit aussi une carte qu’il voulait)
       await WishlistCard.findOneAndDelete({
         user: senderId,
-        card: offeredCardId,
+        card: requestedCardId,
       });
+
+      console.log(
+        `WishlistCard supprimée pour le sender ${senderId} pour la carte ${offeredCardId}`,
+      );
 
       // 📦 Décrémenter ou supprimer la listedCard du sender (il a donné offeredCard)
       const senderListed = await ListedCard.findOne({
@@ -384,25 +392,10 @@ const markTradeRequestAsSent = async (req, res) => {
 
     // 🔄 Réactivation possible d’une autre TradeRequest
 
-    if (isCompleted) {
-      await User.updateOne(
-        { _id: trade.sender._id },
-        { $inc: { trade_count: 1 } },
-      );
-      await User.updateOne(
-        { _id: trade.receiver._id },
-        { $inc: { trade_count: 1 } },
-      );
-      const nextTrade = await reactivateNextTradeRequestService(
-        trade.sender._id,
-        trade.receiver._id,
-      );
-    }
-
     // 📡 Notifier les deux utilisateurs
     res.status(200).json(trade);
   } catch (error) {
-    logError('Erreur lors du markTradeRequestAsSent', err);
+    logError('Erreur lors du markTradeRequestAsSent', error);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
