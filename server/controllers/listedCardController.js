@@ -44,6 +44,7 @@ const addListedCard = async (req, res) => {
     const listed = await ListedCard.create({
       user: userId,
       card: cardId,
+      quantity: 1,
     });
 
     // 🧠 Lancer la recherche de match
