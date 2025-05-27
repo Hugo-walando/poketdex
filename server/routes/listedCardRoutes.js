@@ -18,4 +18,16 @@ router.get('/me', authenticateToken, listedCardController.getListedCards);
 
 router.get('/', authenticateToken, listedCardController.getAllListedCards);
 
+router.patch(
+  '/:cardId/increment',
+  authenticateToken,
+  listedCardController.incrementListedCard,
+);
+
+router.patch(
+  '/:cardId/decrement',
+  authenticateToken,
+  listedCardController.decrementListedCard,
+);
+
 module.exports = router;

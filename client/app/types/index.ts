@@ -24,6 +24,7 @@ export interface ListedCard {
   _id: string;
   user: AppUser;
   card: Card;
+  quantity: number;
   createdAt: string;
   updatedAt: string;
 }

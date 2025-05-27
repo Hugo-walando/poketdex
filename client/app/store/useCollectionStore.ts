@@ -13,9 +13,12 @@ interface CollectionState {
   removeListedCardByOfficialId: (officialId: string) => void;
   removeWishlistCardByOfficialId: (officialId: string) => void;
   resetCollections: () => void;
+  incrementListedCardQuantity: (cardId: string) => void;
+  decrementListedCardQuantity: (cardId: string) => void;
+  getQuantityByCardId: (cardId: string) => number;
 }
 
-export const useCollectionStore = create<CollectionState>((set) => ({
+export const useCollectionStore = create<CollectionState>((set, get) => ({
   listedCards: [],
   wishlistCards: [],
   setListedCards: (cards) => set({ listedCards: cards }),
@@ -49,6 +52,28 @@ export const useCollectionStore = create<CollectionState>((set) => ({
         (item) => item.card.official_id !== officialId,
       ),
     })),
+
+  incrementListedCardQuantity: (cardId) =>
+    set((state) => ({
+      listedCards: state.listedCards.map((item) =>
+        item.card._id === cardId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item,
+      ),
+    })),
+
+  decrementListedCardQuantity: (cardId) =>
+    set((state) => ({
+      listedCards: state.listedCards
+        .map((item) =>
+          item.card._id === cardId
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
+        )
+        .filter((item) => item.quantity > 0),
+    })),
+  getQuantityByCardId: (cardId) =>
+    get().listedCards.find((item) => item.card._id === cardId)?.quantity || 0,
 
   resetCollections: () => set({ listedCards: [], wishlistCards: [] }),
 }));
