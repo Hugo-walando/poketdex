@@ -177,8 +177,14 @@ export default function CardPage() {
     });
   };
 
-  const listedIds = new Set(listedCards.map((c) => c.card._id));
-  const wishlistIds = new Set(wishlistCards.map((c) => c.card._id));
+  const listedIds = useMemo(
+    () => new Set(listedCards.map((c) => c.card._id)),
+    [listedCards],
+  );
+  const wishlistIds = useMemo(
+    () => new Set(wishlistCards.map((c) => c.card._id)),
+    [wishlistCards],
+  );
 
   const filteredCards = useMemo(() => {
     return Object.entries(cardsBySet)
