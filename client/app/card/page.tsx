@@ -37,7 +37,7 @@ import { useListedCardQuantity } from '../hooks/useListedCardQuantity';
 import CardsFilters from '../components/ui/CardsFilters';
 
 export default function CardPage() {
-  const { sets, cardsBySet, loadingCards } = useGlobalData();
+  const { sets, cardsBySet, loadingCards, loadingSets } = useGlobalData();
 
   const listedCards = useCollectionStore((s) => s.listedCards);
   const wishlistCards = useCollectionStore((s) => s.wishlistCards);
@@ -224,6 +224,18 @@ export default function CardPage() {
     wishlistIds,
   ]);
 
+  if (loadingCards || loadingSets) {
+    return (
+      <ProtectedPage>
+        <ProtectedLayout>
+          <div className='w-full max-w-[1400px] mx-auto p-2 md:p-0'>
+            <Loader />
+          </div>
+          <Footer />
+        </ProtectedLayout>
+      </ProtectedPage>
+    );
+  }
   return (
     <ProtectedPage>
       <ProtectedLayout>
@@ -235,30 +247,37 @@ export default function CardPage() {
             />
           </div>
           <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex md:items-start  '>
-            <FilterDropdownProvider>
-              {sets.length > 0 && (
-                <SetFilterDropdown
-                  selectedSets={selectedSets}
-                  onToggleSet={toggleSet}
-                  sets={sets}
-                />
-              )}
-              <RarityFilter
-                selectedRarities={selectedRarities}
-                onToggleRarity={toggleRarity}
-              />
-            </FilterDropdownProvider>
+            {loadingSets ? (
+              <Loader />
+            ) : (
+              <>
+                {/* Filtres */}
+                <FilterDropdownProvider>
+                  {sets.length > 0 && (
+                    <SetFilterDropdown
+                      selectedSets={selectedSets}
+                      onToggleSet={toggleSet}
+                      sets={sets}
+                    />
+                  )}
+                  <RarityFilter
+                    selectedRarities={selectedRarities}
+                    onToggleRarity={toggleRarity}
+                  />
+                </FilterDropdownProvider>
 
-            <CardsFilters
-              listedCount={listedCards.length}
-              wishlistCount={wishlistCards.length}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <ResetFilters
-              onClick={resetAllFilters}
-              disabled={!hasActiveFilters}
-            />
+                <CardsFilters
+                  listedCount={listedCards.length}
+                  wishlistCount={wishlistCards.length}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <ResetFilters
+                  onClick={resetAllFilters}
+                  disabled={!hasActiveFilters}
+                />
+              </>
+            )}
           </div>
         </FiltersWrapper>
 
