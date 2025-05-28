@@ -28,7 +28,6 @@ export function useListedCardQuantity() {
           },
         );
         incrementListedCardQuantity(cardId);
-        toast.success('Carte incrémentée');
         return res.data;
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
@@ -56,12 +55,10 @@ export function useListedCardQuantity() {
 
         if (res.status === 204) {
           removeListedCardFromStore(cardId);
-          toast.success('Carte retirée de la liste');
           return null;
         }
 
         decrementListedCardQuantity(cardId);
-        toast.success('Carte décrémentée');
 
         return res.data;
       } catch (error) {
