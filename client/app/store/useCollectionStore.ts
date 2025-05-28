@@ -4,10 +4,14 @@ import { ListedCard, WishlistCard } from '@/app/types';
 interface CollectionState {
   listedCards: ListedCard[];
   wishlistCards: WishlistCard[];
+  loadingListedCards: boolean;
+  loadingWishlistCards: boolean;
   setListedCards: (cards: ListedCard[]) => void;
   setWishlistCards: (cards: WishlistCard[]) => void;
   addListedCardToStore: (card: ListedCard) => void;
   addWishlistCardToStore: (card: WishlistCard) => void;
+  setLoadingListedCards: (value: boolean) => void;
+  setLoadingWishlistCards: (value: boolean) => void;
   removeListedCardFromStore: (cardId: string) => void;
   removeWishlistCardFromStore: (cardId: string) => void;
   removeListedCardByOfficialId: (officialId: string) => void;
@@ -21,8 +25,13 @@ interface CollectionState {
 export const useCollectionStore = create<CollectionState>((set, get) => ({
   listedCards: [],
   wishlistCards: [],
+  loadingListedCards: true,
+  loadingWishlistCards: true,
   setListedCards: (cards) => set({ listedCards: cards }),
   setWishlistCards: (cards) => set({ wishlistCards: cards }),
+
+  setLoadingListedCards: (value) => set({ loadingListedCards: value }),
+  setLoadingWishlistCards: (value) => set({ loadingWishlistCards: value }),
 
   addListedCardToStore: (card) =>
     set((state) => ({ listedCards: [...state.listedCards, card] })),

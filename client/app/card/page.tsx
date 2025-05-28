@@ -41,6 +41,8 @@ export default function CardPage() {
 
   const listedCards = useCollectionStore((s) => s.listedCards);
   const wishlistCards = useCollectionStore((s) => s.wishlistCards);
+  const loadingListed = useCollectionStore((s) => s.loadingListedCards);
+  const loadingWishlist = useCollectionStore((s) => s.loadingWishlistCards);
   const [isCardImageLoaded, setCardImageLoaded] = useState(false);
 
   const addListedCardToStore = useCollectionStore(
@@ -247,7 +249,7 @@ export default function CardPage() {
             />
           </div>
           <div className='w-full md:w-auto gap-4 mt-4 md:mt-0 sm:justify-start flex md:items-start  '>
-            {loadingSets ? (
+            {loadingSets || loadingCards ? (
               <Loader />
             ) : (
               <>
@@ -497,7 +499,12 @@ export default function CardPage() {
             </>
           )}
 
-          {!searchQuery &&
+          {loadingCards || loadingSets || loadingListed || loadingWishlist ? (
+            <section className='mt-20'>
+              <Loader />
+            </section>
+          ) : (
+            !searchQuery &&
             !hasActiveFilters &&
             sortSetsByReleaseDate(sets).map((set: CardSet) => {
               const cards = cardsBySet[set.code]
@@ -750,7 +757,8 @@ export default function CardPage() {
                   )}
                 </section>
               );
-            })}
+            })
+          )}
         </div>
         <Footer />
       </ProtectedLayout>
