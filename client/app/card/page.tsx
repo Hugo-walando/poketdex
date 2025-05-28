@@ -20,7 +20,7 @@ import useAddWishlistCard from '@/app/hooks/useAddWishlistCard';
 import { FilterDropdownProvider } from '@/app/context/FilterContext';
 import { matchCard } from '@/app/utils/matchCards';
 
-import { Card, Set } from '@/app/types';
+import { Card, Set as CardSet } from '@/app/types';
 import useRemoveWishlistCard from '../hooks/useRemoveWishlistCard';
 import useRemoveListedCard from '../hooks/useRemoveListedCard';
 import useRemoveMatchesByCard from '../hooks/useRemoveMatchesByCard';
@@ -34,6 +34,7 @@ import { useDebounce } from 'use-debounce';
 import Loader from '../components/ui/Loader';
 import Footer from '../components/layout/Footer';
 import { useListedCardQuantity } from '../hooks/useListedCardQuantity';
+import CardsFilters from '../components/ui/CardsFilters';
 
 export default function CardPage() {
   const { sets, cardsBySet, loadingCards } = useGlobalData();
@@ -58,6 +59,7 @@ export default function CardPage() {
   const { removeMatchesByCard } = useRemoveMatchesByCard();
   const isMobile = useIsMobile();
 
+  const [filter, setFilter] = useState<'all' | 'listed' | 'wishlist'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -129,14 +131,16 @@ export default function CardPage() {
     return (
       searchQuery.length > 0 ||
       selectedSets.length > 0 ||
-      selectedRarities.length > 0
+      selectedRarities.length > 0 ||
+      filter !== 'all'
     );
-  }, [searchQuery, selectedSets, selectedRarities]);
+  }, [searchQuery, selectedSets, selectedRarities, filter]);
 
   const resetAllFilters = () => {
     setSearchQuery('');
     setSelectedSets([]);
     setSelectedRarities([]);
+    setFilter('all');
   };
 
   const toggleSet = (setId: string) => {
@@ -163,9 +167,9 @@ export default function CardPage() {
   };
 
   const sortSetsByReleaseDate = (
-    sets: Set[],
+    sets: CardSet[],
     order: 'asc' | 'desc' = 'asc',
-  ): Set[] => {
+  ): CardSet[] => {
     return [...sets].sort((a, b) => {
       const aDate = new Date(a.release_date).getTime();
       const bDate = new Date(b.release_date).getTime();
@@ -173,24 +177,52 @@ export default function CardPage() {
     });
   };
 
+  const listedIds = useMemo(
+    () => new Set(listedCards.map((c) => c.card._id)),
+    [listedCards],
+  );
+  const wishlistIds = useMemo(
+    () => new Set(wishlistCards.map((c) => c.card._id)),
+    [wishlistCards],
+  );
+
   const filteredCards = useMemo(() => {
     return Object.entries(cardsBySet)
       .flatMap(([setCode, cards]) => {
         const set = sets.find((s) => s.code === setCode);
         if (!set) return [];
 
-        return cards.filter(
-          (card) =>
-            (!debouncedSearchQuery ||
-              matchCard(card, set, debouncedSearchQuery.toLowerCase())) &&
-            (selectedSets.length === 0 ||
-              selectedSets.includes(card.set_code)) &&
-            (selectedRarities.length === 0 ||
-              selectedRarities.includes(card.rarity)),
-        );
+        return cards.filter((card) => {
+          const matchesSearch =
+            !debouncedSearchQuery ||
+            matchCard(card, set, debouncedSearchQuery.toLowerCase());
+
+          const matchesSet =
+            selectedSets.length === 0 || selectedSets.includes(card.set_code);
+
+          const matchesRarity =
+            selectedRarities.length === 0 ||
+            selectedRarities.includes(card.rarity);
+
+          const matchesFilter =
+            filter === 'all' ||
+            (filter === 'listed' && listedIds.has(card._id)) ||
+            (filter === 'wishlist' && wishlistIds.has(card._id));
+
+          return matchesSearch && matchesSet && matchesRarity && matchesFilter;
+        });
       })
       .sort((a, b) => a.official_id.localeCompare(b.official_id));
-  }, [cardsBySet, sets, debouncedSearchQuery, selectedSets, selectedRarities]);
+  }, [
+    cardsBySet,
+    sets,
+    debouncedSearchQuery,
+    selectedSets,
+    selectedRarities,
+    filter,
+    listedIds,
+    wishlistIds,
+  ]);
 
   return (
     <ProtectedPage>
@@ -217,6 +249,12 @@ export default function CardPage() {
               />
             </FilterDropdownProvider>
 
+            <CardsFilters
+              listedCount={listedCards.length}
+              wishlistCount={wishlistCards.length}
+              filter={filter}
+              setFilter={setFilter}
+            />
             <ResetFilters
               onClick={resetAllFilters}
               disabled={!hasActiveFilters}
@@ -259,6 +297,7 @@ export default function CardPage() {
               </div>
             </div>
           </div>
+
           {(hasActiveFilters || searchQuery) && (
             <>
               {searchQuery !== debouncedSearchQuery ? (
@@ -441,7 +480,7 @@ export default function CardPage() {
 
           {!searchQuery &&
             !hasActiveFilters &&
-            sortSetsByReleaseDate(sets).map((set: Set) => {
+            sortSetsByReleaseDate(sets).map((set: CardSet) => {
               const cards = cardsBySet[set.code]
                 ?.filter(
                   (card: Card) =>
