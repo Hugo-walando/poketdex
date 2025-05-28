@@ -140,6 +140,7 @@ export default function CardPage() {
     setSearchQuery('');
     setSelectedSets([]);
     setSelectedRarities([]);
+    setFilter('all');
   };
 
   const toggleSet = (setId: string) => {
@@ -176,8 +177,14 @@ export default function CardPage() {
     });
   };
 
-  const listedIds = new Set(listedCards.map((c) => c.card._id));
-  const wishlistIds = new Set(wishlistCards.map((c) => c.card._id));
+  const listedIds = useMemo(
+    () => new Set(listedCards.map((c) => c.card._id)),
+    [listedCards],
+  );
+  const wishlistIds = useMemo(
+    () => new Set(wishlistCards.map((c) => c.card._id)),
+    [wishlistCards],
+  );
 
   const filteredCards = useMemo(() => {
     return Object.entries(cardsBySet)
@@ -242,6 +249,12 @@ export default function CardPage() {
               />
             </FilterDropdownProvider>
 
+            <CardsFilters
+              listedCount={listedCards.length}
+              wishlistCount={wishlistCards.length}
+              filter={filter}
+              setFilter={setFilter}
+            />
             <ResetFilters
               onClick={resetAllFilters}
               disabled={!hasActiveFilters}
@@ -284,12 +297,6 @@ export default function CardPage() {
               </div>
             </div>
           </div>
-          <CardsFilters
-            listedCount={listedCards.length}
-            wishlistCount={wishlistCards.length}
-            filter={filter}
-            setFilter={setFilter}
-          />
 
           {(hasActiveFilters || searchQuery) && (
             <>
