@@ -140,6 +140,7 @@ export default function CardPage() {
     setSearchQuery('');
     setSelectedSets([]);
     setSelectedRarities([]);
+    setFilter('all');
   };
 
   const toggleSet = (setId: string) => {
@@ -242,6 +243,12 @@ export default function CardPage() {
               />
             </FilterDropdownProvider>
 
+            <CardsFilters
+              listedCount={listedCards.length}
+              wishlistCount={wishlistCards.length}
+              filter={filter}
+              setFilter={setFilter}
+            />
             <ResetFilters
               onClick={resetAllFilters}
               disabled={!hasActiveFilters}
@@ -284,12 +291,6 @@ export default function CardPage() {
               </div>
             </div>
           </div>
-          <CardsFilters
-            listedCount={listedCards.length}
-            wishlistCount={wishlistCards.length}
-            filter={filter}
-            setFilter={setFilter}
-          />
 
           {(hasActiveFilters || searchQuery) && (
             <>
