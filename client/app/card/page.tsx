@@ -250,38 +250,40 @@ export default function CardPage() {
               onSearch={(query) => setSearchQuery(query)}
             />
           </div>
-          <div className='  mt-4 md:mt-0  '>
+          <div className=' flex mt-4 md:mt-0 gap-2  '>
             {loadingSets || loadingCards ? (
               <Loader />
             ) : (
-              <div className='flex flex-col sm:flex-row md:flex-col xl:flex-row  gap-2'>
-                <div className='flex gap-2 sm:justify-start md:items-start w-full md:w-auto'>
-                  <FilterDropdownProvider>
-                    {sets.length > 0 && (
-                      <SetFilterDropdown
-                        selectedSets={selectedSets}
-                        onToggleSet={toggleSet}
-                        sets={sets}
+              <>
+                <div className='flex flex-col sm:flex-row md:flex-col xl:flex-row  gap-2'>
+                  <div className='flex gap-2 sm:justify-start md:items-start w-full md:w-auto'>
+                    <FilterDropdownProvider>
+                      {sets.length > 0 && (
+                        <SetFilterDropdown
+                          selectedSets={selectedSets}
+                          onToggleSet={toggleSet}
+                          sets={sets}
+                        />
+                      )}
+                      <RarityFilter
+                        selectedRarities={selectedRarities}
+                        onToggleRarity={toggleRarity}
                       />
-                    )}
-                    <RarityFilter
-                      selectedRarities={selectedRarities}
-                      onToggleRarity={toggleRarity}
-                    />
-                  </FilterDropdownProvider>
-                  <ResetFilters
-                    onClick={resetAllFilters}
-                    disabled={!hasActiveFilters}
+                    </FilterDropdownProvider>
+                  </div>
+
+                  <CardsFilters
+                    listedCount={listedCards.length}
+                    wishlistCount={wishlistCards.length}
+                    filter={filter}
+                    setFilter={setFilter}
                   />
                 </div>
-
-                <CardsFilters
-                  listedCount={listedCards.length}
-                  wishlistCount={wishlistCards.length}
-                  filter={filter}
-                  setFilter={setFilter}
+                <ResetFilters
+                  onClick={resetAllFilters}
+                  disabled={!hasActiveFilters}
                 />
-              </div>
+              </>
             )}
           </div>
         </FiltersWrapper>
