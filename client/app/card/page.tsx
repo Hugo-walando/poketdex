@@ -255,8 +255,8 @@ export default function CardPage() {
               <Loader />
             ) : (
               <>
-                <div className='flex flex-col sm:flex-row md:flex-col xl:flex-row  gap-2'>
-                  <div className='flex gap-2 sm:justify-start md:items-start w-full md:w-auto'>
+                <div className='flex flex-col sm:flex-row md:flex-col xl:flex-row sm:justify-start md:items-start gap-2'>
+                  <div className='flex gap-2  w-full md:w-auto'>
                     <FilterDropdownProvider>
                       {sets.length > 0 && (
                         <SetFilterDropdown

@@ -17,10 +17,10 @@ export default function CardsFilters({
   setFilter,
 }: CardPageFiltersProps) {
   return (
-    <div className='flex gap-4 items-center'>
+    <div className='flex gap-2 items-center'>
       <button
         onClick={() => setFilter(filter === 'listed' ? 'all' : 'listed')}
-        className={`flex items-center gap-1 px-2 py-1 lg:px-3 lg:py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
+        className={`flex items-center gap-1 px-2 py-1 xl:px-3 xl:py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
           filter === 'listed'
             ? 'bg-darkgray inset-shadow-field text-white'
             : 'bg-white text-darkblue'
@@ -33,7 +33,7 @@ export default function CardsFilters({
 
       <button
         onClick={() => setFilter(filter === 'wishlist' ? 'all' : 'wishlist')}
-        className={`flex items-center gap-1 px-2 py-1 lg:px-3 lg:py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
+        className={`flex items-center gap-1 px-2 py-1 xl:px-3 xl:py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
           filter === 'wishlist'
             ? 'bg-darkgray inset-shadow-field text-white '
             : 'bg-white text-darkblue'
