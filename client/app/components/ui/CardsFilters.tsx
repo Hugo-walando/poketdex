@@ -20,7 +20,7 @@ export default function CardsFilters({
     <div className='flex gap-4 items-center'>
       <button
         onClick={() => setFilter(filter === 'listed' ? 'all' : 'listed')}
-        className={`flex items-center gap-1 px-3 py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
+        className={`flex items-center gap-1 px-2 py-1 rounded-xl shadow-base transition hover:cursor-pointer ${
           filter === 'listed'
             ? 'bg-darkgray inset-shadow-field text-white'
             : 'bg-white text-darkblue'
@@ -28,19 +28,19 @@ export default function CardsFilters({
       >
         <TradeIcon className='w-6 h-6 fill-primarygreen shrink-0' />
 
-        <span className='text-sm font-poppins'>{listedCount}</span>
+        <span className='text-sm font-poppins'>{listedCount}00</span>
       </button>
 
       <button
         onClick={() => setFilter(filter === 'wishlist' ? 'all' : 'wishlist')}
-        className={`flex items-center gap-1 px-3 py-2 rounded-xl shadow-base transition hover:cursor-pointer ${
+        className={`flex items-center gap-1 px-2 py-1 rounded-xl shadow-base transition hover:cursor-pointer ${
           filter === 'wishlist'
             ? 'bg-darkgray inset-shadow-field text-white '
             : 'bg-white text-darkblue'
         }`}
       >
         <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent shrink-0' />
-        <span className='text-sm font-poppins'>{wishlistCount}</span>
+        <span className='text-sm font-poppins'>{wishlistCount}00</span>
       </button>
     </div>
   );
