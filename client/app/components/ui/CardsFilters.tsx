@@ -28,7 +28,7 @@ export default function CardsFilters({
       >
         <TradeIcon className='w-6 h-6 fill-primarygreen shrink-0' />
 
-        <span className='text-sm font-poppins'>{listedCount}00</span>
+        <span className='text-sm font-poppins'>{listedCount}</span>
       </button>
 
       <button
@@ -40,7 +40,7 @@ export default function CardsFilters({
         }`}
       >
         <HeartIcon className='w-6 h-6 fill-pink-400 text-transparent shrink-0' />
-        <span className='text-sm font-poppins'>{wishlistCount}00</span>
+        <span className='text-sm font-poppins'>{wishlistCount}</span>
       </button>
     </div>
   );
