@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const { setupSocket, getConnectedUserIds } = require('./socket');
+const { startJobs } = require('./jobs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,7 +24,7 @@ app.use(express.json());
 
 // DB connection
 connectDB();
-
+startJobs();
 // Routes API
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/sets', require('./routes/setRoutes'));
