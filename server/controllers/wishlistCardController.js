@@ -4,6 +4,7 @@ const Card = require('../models/Card');
 const Match = require('../models/Match');
 const { findAndCreateMatch } = require('../services/matchService');
 const User = require('../models/User');
+const { agenda } = require('../jobs');
 
 // POST /api/wishlist-cards
 const addWishlistCard = async (req, res) => {
@@ -47,7 +48,11 @@ const addWishlistCard = async (req, res) => {
       $push: { wishlist_cards: wishlist._id },
     });
     // 🧠 Lancer la recherche de match
-    await findAndCreateMatch(userId, cardId, 'wishlist');
+    await agenda.now('create-match', {
+      userId,
+      cardId,
+      mode: 'wishlist',
+    });
 
     await wishlist.populate('card');
 

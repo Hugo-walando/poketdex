@@ -5,6 +5,7 @@ const Match = require('../models/Match');
 
 const { findAndCreateMatch } = require('../services/matchService');
 const { logError } = require('../logger');
+const { agenda } = require('../jobs');
 
 // POST /api/listed-cards
 const addListedCard = async (req, res) => {
@@ -48,7 +49,11 @@ const addListedCard = async (req, res) => {
     });
 
     // 🧠 Lancer la recherche de match
-    await findAndCreateMatch(userId, cardId, 'listed');
+    await agenda.now('create-match', {
+      userId,
+      cardId,
+      mode: 'listed',
+    });
 
     await listed.populate('card');
 
