@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import ConnectedUsersList from '../components/data/ConnectedUsersList';
 import AdminStats from '../components/data/AdminStats';
 import AdminFeedbackList from '../components/data/AdminFeedbackList';
+import AdminJobsQueue from '../components/data/AdminJobsQueue';
 
 export default async function AdminPage() {
   const session = await getServerAuthSession();
@@ -21,6 +22,7 @@ export default async function AdminPage() {
         <AdminStats />
       </div>
       <AdminFeedbackList />
+      <AdminJobsQueue />
       <div className='h-32'></div>
     </>
   );
