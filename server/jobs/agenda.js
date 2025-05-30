@@ -1,5 +1,5 @@
 const Agenda = require('agenda');
-const { MONGODB_URI } = process.env;
+const { MONGO_URI } = process.env;
 
 const agenda = new Agenda({
   db: {
