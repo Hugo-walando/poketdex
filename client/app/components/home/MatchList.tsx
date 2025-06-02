@@ -67,7 +67,7 @@ export default function MatchList({ loading }: MatchListProps) {
   return (
     <div className='flex flex-col h-full '>
       <div className='flex-1 overflow-y-auto pb-40  md:pb-0 px-2 md:p-2'>
-        <h2 className='text-dark text-base md:text-xl font-semibold mt-10 md:mt-0 md:text-center pb-2 md:pb-0 md:py-2 text-end '>
+        <h2 className='text-dark text-base md:text-xl font-semibold mt-10 md:mt-0 md:text-center pb-2 md:pb-0 md:py-2 text-end sticky'>
           Match{totalMatchCount > 1 ? 's' : ''}{' '}
           <span className='md:text-lg text-sm text-gray'>
             ({totalMatchCount})
