@@ -5,6 +5,8 @@ import { cn } from '@/app/utils/cn';
 import Image from 'next/image';
 import UserStatusIndicator from '../ui/UserStatusIndicator';
 import { useState } from 'react';
+import { useCollectionStore } from '@/app/store/useCollectionStore';
+import { HeartIcon } from 'lucide-react';
 
 interface ListedCardProps {
   data: ListedCard;
@@ -19,6 +21,13 @@ export default function ListedCardItem({
 }: ListedCardProps) {
   const user = data.user;
   const [isImageLoaded, setImageLoaded] = useState(false);
+  const wishlistCards = useCollectionStore((s) => s.wishlistCards);
+
+  const isInWishlist = wishlistCards.some(
+    (w) =>
+      w.card.official_id === data.card.official_id &&
+      w.card.set_code === data.card.set_code,
+  );
 
   return (
     <div
@@ -29,6 +38,11 @@ export default function ListedCardItem({
     >
       {!isImageLoaded && (
         <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
+      )}
+      {isInWishlist && (
+        <div className='rounded-full absolute top-1 right-1 w-8 h-8 bg-pink-400 flex items-center justify-center'>
+          <HeartIcon className='w-6 h-6 text-white ' />
+        </div>
       )}
       <Image
         src={data.card.img_url}
