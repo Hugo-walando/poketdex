@@ -65,16 +65,16 @@ export default function MatchList({ loading }: MatchListProps) {
   }
 
   return (
-    <div className='flex flex-col h-full'>
-      <div className='flex-1 overflow-y-auto px-2 md:p-2'>
-        <h2 className='text-dark-xl font-semibold text-center py-2'>
+    <div className='flex flex-col h-full '>
+      <div className='flex-1 overflow-y-auto pb-40  md:pb-0 px-2 md:p-2'>
+        <h2 className='text-dark text-base md:text-xl font-semibold mt-10 md:mt-0 md:text-center pb-2 md:pb-0 md:py-2 text-end '>
           Match{totalMatchCount > 1 ? 's' : ''}{' '}
-          <span className='text-gray-lg font-normal'>
-            ({totalMatchCount} disponible{totalMatchCount > 1 ? 's' : ''})
+          <span className='md:text-lg text-sm text-gray'>
+            ({totalMatchCount})
           </span>
         </h2>
 
-        <div className='flex flex-col gap-2 pt-2 pb-6'>
+        <div className='flex flex-col gap-2  pb-6'>
           {matchGroups.map((group) => (
             <MatchGroupItem
               key={group.user._id}
@@ -88,7 +88,7 @@ export default function MatchList({ loading }: MatchListProps) {
       </div>
 
       {/* Footer button */}
-      <div className='p-4 md:bg-white rounded-xl md:shadow-base'>
+      <div className='p-4 md:bg-white rounded-xl md:shadow-base fixed bottom-20 w-full  md:static '>
         <button
           onClick={handleSendRequests}
           disabled={selectedMatchIds.length === 0 || sending}
