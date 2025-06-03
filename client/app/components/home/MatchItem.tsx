@@ -6,6 +6,7 @@ import { CheckCircle, Circle } from 'lucide-react';
 import TradeIcon from '../svgs/TradeIcon';
 import { rarityIcons } from '@/app/data/rarities';
 import { cn } from '@/app/utils/cn';
+import { useCollectionStore } from '@/app/store/useCollectionStore';
 
 interface Props {
   match: MatchTrade;
@@ -26,6 +27,16 @@ export default function MatchItem({
   const offeredCardSet = sets.find(
     (s) => s.code === match.offered_card.set_code,
   );
+
+  const { listedCards } = useCollectionStore();
+
+  const userOffered = match.offered_card;
+  const listedCard = listedCards.find(
+    (lc) =>
+      lc.card.official_id === userOffered.official_id &&
+      lc.card.set_code === userOffered.set_code,
+  );
+  const quantity = listedCard?.quantity ?? 0;
 
   return (
     <div
@@ -111,6 +122,9 @@ export default function MatchItem({
           sizes='100vw'
           className='h-22 w-auto'
         />
+        <div className='absolute top-10 right-5 bg-darkblue/90 rounded-full px-2 text-sm  flex items-center text-white'>
+          {quantity}
+        </div>
       </div>
     </div>
   );
