@@ -6,7 +6,7 @@ import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 import { useUserStore } from '@/app/store/useUserStore';
 import { groupTradeRequestsByUser } from '@/app/utils/groupTradeRequests';
 
-const useFetchTradeRequests = () => {
+const useFetchTradeRequests = (enabled: boolean = true) => {
   const { user } = useUserStore();
   const setTradeGroups = useTradeRequestStore((state) => state.setTradeGroups);
 
@@ -45,8 +45,8 @@ const useFetchTradeRequests = () => {
   }, [user, setTradeGroups]);
 
   useEffect(() => {
-    fetchTrades();
-  }, [fetchTrades]);
+    if (enabled) fetchTrades();
+  }, [fetchTrades, enabled]);
 
   return { loading, error, refetch: fetchTrades };
 };
