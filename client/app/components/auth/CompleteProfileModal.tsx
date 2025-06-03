@@ -74,7 +74,7 @@ export default function CompleteProfileModal({
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               error={formErrors.username?.[0]}
-              placeholder='Ton pseudo'
+              placeholder='Ton pseudo sur le jeu'
             />
 
             <Input
