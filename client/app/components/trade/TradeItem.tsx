@@ -46,12 +46,13 @@ export default function TradeItem({ trade }: TradeItemProps) {
   const sentByMe = isSender ? trade.sent_by_sender : trade.sent_by_receiver;
   const sentByOther = isSender ? trade.sent_by_receiver : trade.sent_by_sender;
 
-  const requestedCardSet = sets.find(
-    (s) => s.code === trade.card_requested.set_code,
-  );
-  const offeredCardSet = sets.find(
-    (s) => s.code === trade.card_offered.set_code,
-  );
+  const receivedCardSet = isSender
+    ? sets.find((s) => s.code === trade.card_requested.set_code)
+    : sets.find((s) => s.code === trade.card_offered.set_code);
+
+  const offeredCardSet = isSender
+    ? sets.find((s) => s.code === trade.card_offered.set_code)
+    : sets.find((s) => s.code === trade.card_requested.set_code);
 
   const handleAccept = async () => {
     if (!isReceiver) {
@@ -183,10 +184,10 @@ export default function TradeItem({ trade }: TradeItemProps) {
               <span className='text-dark-sm lg:text-dark-base'>
                 #{receivedCard.official_id}
               </span>
-              {requestedCardSet && (
+              {receivedCardSet && (
                 <Image
-                  src={requestedCardSet.img_url}
-                  alt={requestedCardSet.name}
+                  src={receivedCardSet.img_url}
+                  alt={receivedCardSet.name}
                   width={0}
                   height={0}
                   sizes='100vw'
