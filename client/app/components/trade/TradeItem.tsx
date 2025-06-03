@@ -11,6 +11,7 @@ import { useUserStore } from '@/app/store/useUserStore';
 import { Check, CheckCircle, CircleX } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalData } from '@/app/store/useGlobalData';
+import { useCollectionStore } from '@/app/store/useCollectionStore';
 
 interface TradeItemProps {
   trade: TradeRequest;
@@ -46,12 +47,24 @@ export default function TradeItem({ trade }: TradeItemProps) {
   const sentByMe = isSender ? trade.sent_by_sender : trade.sent_by_receiver;
   const sentByOther = isSender ? trade.sent_by_receiver : trade.sent_by_sender;
 
-  const requestedCardSet = sets.find(
-    (s) => s.code === trade.card_requested.set_code,
+  const receivedCardSet = isSender
+    ? sets.find((s) => s.code === trade.card_requested.set_code)
+    : sets.find((s) => s.code === trade.card_offered.set_code);
+
+  const offeredCardSet = isSender
+    ? sets.find((s) => s.code === trade.card_offered.set_code)
+    : sets.find((s) => s.code === trade.card_requested.set_code);
+
+  const sentCard = isSender ? trade.card_offered : trade.card_requested;
+  const { listedCards } = useCollectionStore();
+
+  const myListedCard = listedCards.find(
+    (lc) =>
+      lc.card.official_id === sentCard.official_id &&
+      lc.card.set_code === sentCard.set_code,
   );
-  const offeredCardSet = sets.find(
-    (s) => s.code === trade.card_offered.set_code,
-  );
+
+  const quantity = myListedCard?.quantity ?? 1;
 
   const handleAccept = async () => {
     if (!isReceiver) {
@@ -183,10 +196,10 @@ export default function TradeItem({ trade }: TradeItemProps) {
               <span className='text-dark-sm lg:text-dark-base'>
                 #{receivedCard.official_id}
               </span>
-              {requestedCardSet && (
+              {receivedCardSet && (
                 <Image
-                  src={requestedCardSet.img_url}
-                  alt={requestedCardSet.name}
+                  src={receivedCardSet.img_url}
+                  alt={receivedCardSet.name}
                   width={0}
                   height={0}
                   sizes='100vw'
@@ -218,7 +231,7 @@ export default function TradeItem({ trade }: TradeItemProps) {
             Vous envoyez
           </span>
           <div className='flex items-center gap-1 lg:gap-3'>
-            <div className='flex flex-col gap-2 w-full'>
+            <div className='flex flex-col gap-2 '>
               <span className='text-dark-sm lg:text-dark-base'>
                 #{offeredCard.official_id}
               </span>
@@ -233,14 +246,19 @@ export default function TradeItem({ trade }: TradeItemProps) {
                 />
               )}
             </div>
-            <Image
-              src={offeredCard.img_url}
-              alt={offeredCard.name}
-              width={0}
-              height={0}
-              sizes='100vw'
-              className='h-26 sm:h-32 lg:h-36 w-auto'
-            />
+            <div className='relative inline-block shrink-0'>
+              <Image
+                src={offeredCard.img_url}
+                alt={offeredCard.name}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className='h-26 sm:h-32 lg:h-36 w-auto'
+              />
+              <div className='absolute bottom-[-4] left-[-4] bg-darkblue/90 rounded-lg px-3 py-0.5 text-sm text-white'>
+                {quantity}
+              </div>
+            </div>
           </div>
         </div>
       </div>

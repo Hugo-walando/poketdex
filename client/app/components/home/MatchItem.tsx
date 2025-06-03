@@ -6,6 +6,7 @@ import { CheckCircle, Circle } from 'lucide-react';
 import TradeIcon from '../svgs/TradeIcon';
 import { rarityIcons } from '@/app/data/rarities';
 import { cn } from '@/app/utils/cn';
+import { useCollectionStore } from '@/app/store/useCollectionStore';
 
 interface Props {
   match: MatchTrade;
@@ -26,6 +27,16 @@ export default function MatchItem({
   const offeredCardSet = sets.find(
     (s) => s.code === match.offered_card.set_code,
   );
+
+  const { listedCards } = useCollectionStore();
+
+  const userOffered = match.offered_card;
+  const listedCard = listedCards.find(
+    (lc) =>
+      lc.card.official_id === userOffered.official_id &&
+      lc.card.set_code === userOffered.set_code,
+  );
+  const quantity = listedCard?.quantity ?? 0;
 
   return (
     <div
@@ -103,14 +114,20 @@ export default function MatchItem({
             />
           )}
         </div>
-        <Image
-          src={match.offered_card.img_url}
-          alt={match.offered_card.name}
-          width={0}
-          height={0}
-          sizes='100vw'
-          className='h-22 w-auto'
-        />
+
+        <div className='relative inline-block shrink-0'>
+          <Image
+            src={match.offered_card.img_url}
+            alt={match.offered_card.name}
+            width={0}
+            height={0}
+            sizes='100vw'
+            className='h-22 w-auto'
+          />
+          <div className='absolute bottom-[-4] left-[-4] bg-darkblue/90 rounded-lg px-3 py-0.5 text-sm text-white'>
+            {quantity}
+          </div>
+        </div>
       </div>
     </div>
   );
