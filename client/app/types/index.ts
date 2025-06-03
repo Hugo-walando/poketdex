@@ -95,6 +95,7 @@ export interface MatchTrade {
     img_url: string;
     rarity: number;
     set_code: string;
+    quantity: number;
   };
   requested_card: {
     _id: string;
