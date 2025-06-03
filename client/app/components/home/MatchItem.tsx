@@ -98,7 +98,7 @@ export default function MatchItem({
       </div>
 
       {/* Offered Card */}
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-2 relative'>
         <div className='flex flex-col gap-2 w-full'>
           <span className='text-gray-sm text-right'>
             {match.offered_card.official_id}
@@ -114,16 +114,19 @@ export default function MatchItem({
             />
           )}
         </div>
-        <Image
-          src={match.offered_card.img_url}
-          alt={match.offered_card.name}
-          width={0}
-          height={0}
-          sizes='100vw'
-          className='h-22 w-auto'
-        />
-        <div className='absolute top-10 right-5 bg-darkblue/90 rounded-full px-2 text-sm  flex items-center text-white'>
-          {quantity}
+
+        <div className='w-full relative'>
+          <Image
+            src={match.offered_card.img_url}
+            alt={match.offered_card.name}
+            width={0}
+            height={0}
+            sizes='100vw'
+            className='h-22 w-auto'
+          />
+          <div className='absolute bottom-[-4] left-[-4] bg-darkblue/90 rounded-lg px-3 py-0.5 text-sm text-white'>
+            {quantity}
+          </div>
         </div>
       </div>
     </div>
