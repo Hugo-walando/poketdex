@@ -55,7 +55,7 @@ export default function MatchGroupItem({
       {isOpen && (
         <div className='px-4 pb-4 pt-2 w-full max-w-[500px] mx-auto relative'>
           {/* Header aligné avec la grille */}
-          <div className='sticky top-10  grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 text-center text-gray-sm mb-2 text-nowrap'>
+          <div className='sticky top-10 z-10 grid grid-cols-[minmax(0,1fr)_minmax(0,4fr)_minmax(0,2fr)_minmax(0,4fr)] gap-1 xl:gap-4 text-center text-gray-sm mb-2 text-nowrap'>
             <div></div> {/* Colonne checkbox */}
             <span className='bg-white px-2 py-1 rounded-lg shadow-sm'>
               Vous recevez

@@ -98,7 +98,7 @@ export default function MatchItem({
       </div>
 
       {/* Offered Card */}
-      <div className='flex items-center gap-2 relative'>
+      <div className='flex items-center gap-2'>
         <div className='flex flex-col gap-2 w-full'>
           <span className='text-gray-sm text-right'>
             {match.offered_card.official_id}
@@ -115,7 +115,7 @@ export default function MatchItem({
           )}
         </div>
 
-        <div className='w-full relative'>
+        <div className='relative inline-block shrink-0'>
           <Image
             src={match.offered_card.img_url}
             alt={match.offered_card.name}
