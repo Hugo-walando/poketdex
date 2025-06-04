@@ -342,7 +342,7 @@ export default function CardPage() {
                     .sort((a, b) => a.official_id.localeCompare(b.official_id));
 
                   if (cardsForSet.length === 0) return null;
-                  console.log(set.img_url);
+
                   return (
                     <div key={setCode} className='mb-10'>
                       {/* ✅ Logo du set */}
