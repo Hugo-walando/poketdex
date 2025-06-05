@@ -3,7 +3,6 @@
 import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 import UserItem from './UserItem';
 import { useUserStore } from '@/app/store/useUserStore';
-import { useEffect } from 'react';
 
 interface UserSidebarProps {
   users: { _id: string; username: string; profile_picture: string }[];
@@ -21,10 +20,6 @@ export default function UserSidebar({
   const hasImportantTradeWithUser = useTradeRequestStore(
     (s) => s.hasImportantTradeWithUser,
   );
-  const markTradeStatusAsSeen = useTradeRequestStore(
-    (s) => s.markTradeStatusAsSeen,
-  );
-
   const handleSelectUser = (id: string) => {
     onSelectUser(id);
   };
@@ -50,27 +45,6 @@ export default function UserSidebar({
   const sortedUsers = usersWithActivity.sort(
     (a, b) => b.lastActivity.getTime() - a.lastActivity.getTime(),
   );
-
-  useEffect(() => {
-    if (!selectedUserId || !currentUserId) return;
-
-    const group = tradeGroups.find((g) => g.user._id === selectedUserId);
-    if (!group) return;
-
-    group.trades.forEach((t) => {
-      const shouldMarkSeen =
-        (t.status === 'pending' && t.receiver._id === currentUserId) ||
-        (t.status === 'accepted' && t.sender._id === currentUserId) ||
-        (t.status === 'completed' &&
-          t.receiver._id === currentUserId &&
-          t.sent_by_sender &&
-          t.sent_by_receiver);
-
-      if (shouldMarkSeen) {
-        markTradeStatusAsSeen(t._id, t.status);
-      }
-    });
-  }, [selectedUserId, tradeGroups, currentUserId, markTradeStatusAsSeen]);
 
   return (
     <aside className='w-full md:w-[250px] md:border-r md:border-gray-200 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-rounded '>
