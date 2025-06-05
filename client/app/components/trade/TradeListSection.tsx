@@ -35,7 +35,7 @@ export default function TradeListSection({
           onClick={onBack}
           className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
         />
-        <div className='space-y-4 pb-2 mt-20 md:mt-0'>
+        <div className='space-y-4 pb-2 mt-5 md:mt-0'>
           {sortTradesByActiveStatus(trades).map((trade) => (
             <TradeItem
               key={trade._id}
