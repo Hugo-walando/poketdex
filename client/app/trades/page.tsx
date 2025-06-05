@@ -10,7 +10,6 @@ import ProtectedLayout from '../components/auth/ProtectedLayout';
 import { useTradeRequestStore } from '../store/useTradeRequestStore';
 import useFetchTradeRequests from '../hooks/useFetchTradeRequests';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Loader from '../components/ui/Loader';
 import { useUserStore } from '../store/useUserStore';
 
 export default function TradePage() {
@@ -71,7 +70,6 @@ export default function TradePage() {
         <ProtectedLayout>
           <div className='flex justify-center items-center h-[calc(100vh-152px)]'>
             <p className='text-gray-lg'>Chargement des échanges...</p>
-            <Loader />
           </div>
         </ProtectedLayout>
       </ProtectedPage>
