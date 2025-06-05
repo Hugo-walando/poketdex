@@ -279,13 +279,12 @@ const markTradeRequestAsSent = async (req, res) => {
           await senderListed.save();
         } else {
           await ListedCard.deleteOne({ _id: senderListed._id });
-          const deletedMatches = await Match.deleteMany({
+          await Match.deleteMany({
             $or: [
               { user_1: senderId, card_offered_by_user_1: offeredCardId },
               { user_2: senderId, card_offered_by_user_2: offeredCardId },
             ],
           });
-          console.log('Sender:', deletedMatches);
         }
       }
 
@@ -301,13 +300,12 @@ const markTradeRequestAsSent = async (req, res) => {
           await receiverListed.save();
         } else {
           await ListedCard.deleteOne({ _id: receiverListed._id });
-          const deletedMatches = await Match.deleteMany({
+          await Match.deleteMany({
             $or: [
               { user_1: receiverId, card_offered_by_user_1: requestedCardId },
               { user_2: receiverId, card_offered_by_user_2: requestedCardId },
             ],
           });
-          console.log('Receiver:', deletedMatches);
         }
       }
 
