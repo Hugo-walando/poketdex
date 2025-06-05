@@ -84,7 +84,7 @@ const removeListedCard = async (req, res) => {
         .json({ message: 'Carte non trouvée dans les cartes listées.' });
     }
 
-    const deletedMatches = await Match.deleteMany({
+    await Match.deleteMany({
       $or: [
         { user_1: userId, card_offered_by_user_1: cardId },
         { user_2: userId, card_offered_by_user_2: cardId },
