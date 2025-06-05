@@ -260,19 +260,12 @@ const markTradeRequestAsSent = async (req, res) => {
         user: receiverId,
         card: offeredCardId,
       });
-      console.log(
-        `WishlistCard supprimée pour le receiver ${receiverId} pour la carte ${requestedCardId}`,
-      );
 
       // ❌ Supprimer la wishlistCard du sender (car il reçoit aussi une carte qu’il voulait)
       await WishlistCard.findOneAndDelete({
         user: senderId,
         card: requestedCardId,
       });
-
-      console.log(
-        `WishlistCard supprimée pour le sender ${senderId} pour la carte ${offeredCardId}`,
-      );
 
       // 📦 Décrémenter ou supprimer la listedCard du sender (il a donné offeredCard)
       const senderListed = await ListedCard.findOne({
@@ -286,6 +279,13 @@ const markTradeRequestAsSent = async (req, res) => {
           await senderListed.save();
         } else {
           await ListedCard.deleteOne({ _id: senderListed._id });
+          const deletedMatches = await Match.deleteMany({
+            $or: [
+              { user_1: senderId, card_offered_by_user_1: offeredCardId },
+              { user_2: senderId, card_offered_by_user_2: offeredCardId },
+            ],
+          });
+          console.log('Sender:', deletedMatches);
         }
       }
 
@@ -301,6 +301,13 @@ const markTradeRequestAsSent = async (req, res) => {
           await receiverListed.save();
         } else {
           await ListedCard.deleteOne({ _id: receiverListed._id });
+          const deletedMatches = await Match.deleteMany({
+            $or: [
+              { user_1: receiverId, card_offered_by_user_1: requestedCardId },
+              { user_2: receiverId, card_offered_by_user_2: requestedCardId },
+            ],
+          });
+          console.log('Receiver:', deletedMatches);
         }
       }
 
