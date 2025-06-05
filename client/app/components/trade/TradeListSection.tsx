@@ -27,15 +27,15 @@ export default function TradeListSection({
   return (
     <>
       <h2 className='text-dark-xl mb-4 truncate px-2'>
-        Demandes et Échanges avec {selectedUser.username}{' '}
+        Échanges avec {selectedUser.username}{' '}
         <span className='text-gray-xl'>({trades.length})</span>
       </h2>
-      <section className='flex-1 p-1 xl:px-2 mb-2 '>
+      <section className='flex-1 p-1 xl:px-2 mb-20 '>
         <CloseButton
           onClick={onBack}
           className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
         />
-        <div className='space-y-4 pb-2 mt-20 md:mt-0'>
+        <div className='space-y-4 pb-2 mt-5 md:mt-0'>
           {sortTradesByActiveStatus(trades).map((trade) => (
             <TradeItem
               key={trade._id}
