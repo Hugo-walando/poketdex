@@ -64,57 +64,58 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }
 
   return (
-    <div className='p-4 rounded-xl'>
-      <div className='flex justify-between items-center mb-4'>
+    <div className='md:p-4 rounded-xl'>
+      <div className='flex items-center justify-between mb-4'>
         <h2 className='text-dark-xl'>Détails de la carte</h2>
-        <CloseButton onClick={onClose} />
+        <CloseButton onClick={onClose} className='hidden md:block' />
       </div>
 
-      <div className='w-full gap-3 flex justify-center'>
-        <div className='w-1/2 flex justify-end'>
+      <div className='w-full flex justify-center gap-2'>
+        <div className='flex items-start justify-center gap-2'>
           <Image
-            src={card.card.img_url}
-            alt={card.card.name}
-            width={0}
-            height={0}
-            sizes='100vw'
-            className='h-34 w-auto shadow-base mb-4'
+            src={card.user.profile_picture || '/avatars/Av1.png'}
+            alt={card.user.username}
+            width={32}
+            height={32}
+            className='rounded-full'
           />
+          <span className='text-dark-base '>{card.user.username}</span>
         </div>
-        <div className='w-1/2 flex justify-start'>
-          <div className='text-gray-xl'>
-            {card.card.official_id}
-            {cardSet && (
-              <Image
-                src={cardSet.img_url}
-                alt={cardSet.name}
-                width={0}
-                height={0}
-                sizes='100vw'
-                className='h-8 w-auto'
-              />
-            )}
+        <div className=' gap-3 flex justify-center'>
+          <div className='flex justify-end'>
             <Image
-              src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
-              alt={`Rareté ${card.card.rarity}`}
+              src={card.card.img_url}
+              alt={card.card.name}
               width={0}
               height={0}
               sizes='100vw'
-              className='mt-2 w-auto h-8'
+              className='h-34 w-auto shadow-base mb-4'
             />
           </div>
+          <div className=' flex justify-start'>
+            <div className='text-gray-xl'>
+              {card.card.official_id}
+              {cardSet && (
+                <Image
+                  src={cardSet.img_url}
+                  alt={cardSet.name}
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  className='h-8 w-auto'
+                />
+              )}
+              <Image
+                src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
+                alt={`Rareté ${card.card.rarity}`}
+                width={0}
+                height={0}
+                sizes='100vw'
+                className='mt-2 w-auto h-8'
+              />
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className='flex items-center justify-center gap-2'>
-        <Image
-          src={card.user.profile_picture || '/avatars/Av1.png'}
-          alt={card.user.username}
-          width={32}
-          height={32}
-          className='rounded-full'
-        />
-        <span className='text-dark-base'>{card.user.username}</span>
       </div>
 
       <h3 className='text-dark-xl my-1'>
@@ -122,7 +123,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </h3>
       <div className='relative'>
         {/* Zone scrollable */}
-        <div ref={scrollRef} className='max-h-[20vh] overflow-y-auto pr-1'>
+        <div ref={scrollRef} className='max-h-[26vh] overflow-y-auto pr-1'>
           <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-2 p-2 overflow-hidden'>
             {wishlistCards.map((wish) => (
               <div
@@ -169,6 +170,10 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         )}
         {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
       </button>
+      <CloseButton
+        onClick={onClose}
+        className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
+      />
     </div>
   );
 }
