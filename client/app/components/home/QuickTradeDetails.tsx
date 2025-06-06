@@ -123,7 +123,10 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </h3>
       <div className='relative'>
         {/* Zone scrollable */}
-        <div ref={scrollRef} className='max-h-[26vh] overflow-y-auto pr-1'>
+        <div
+          ref={scrollRef}
+          className='max-h-[26vh] md:max-h-[20vh] overflow-y-auto pr-1'
+        >
           <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-2 p-2 overflow-hidden'>
             {wishlistCards.map((wish) => (
               <div
@@ -172,7 +175,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </button>
       <CloseButton
         onClick={onClose}
-        className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
+        className='scale-150 z-50 md:hidden mt-5 mx-auto absolute left-1/2 -translate-x-1/2'
       />
     </div>
   );
