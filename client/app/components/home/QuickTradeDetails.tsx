@@ -66,56 +66,54 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   return (
     <div className='md:p-4 rounded-xl'>
       <div className='flex items-center justify-between mb-4'>
-        <h2 className='text-dark-xl'>Détails de la carte</h2>
+        <h2 className='text-dark-xl'>Détails de la carte proposée</h2>
         <CloseButton onClick={onClose} className='hidden md:block' />
       </div>
 
-      <div className='w-full flex justify-center gap-2'>
-        <div className='flex items-start justify-center gap-2'>
+      <div className=' gap-3 flex justify-center'>
+        <div className='flex justify-end'>
           <Image
-            src={card.user.profile_picture || '/avatars/Av1.png'}
-            alt={card.user.username}
-            width={32}
-            height={32}
-            className='rounded-full'
+            src={card.card.img_url}
+            alt={card.card.name}
+            width={0}
+            height={0}
+            sizes='100vw'
+            className='h-34 w-auto shadow-base mb-4'
           />
-          <span className='text-dark-base '>{card.user.username}</span>
         </div>
-        <div className=' gap-3 flex justify-center'>
-          <div className='flex justify-end'>
-            <Image
-              src={card.card.img_url}
-              alt={card.card.name}
-              width={0}
-              height={0}
-              sizes='100vw'
-              className='h-34 w-auto shadow-base mb-4'
-            />
-          </div>
-          <div className=' flex justify-start'>
-            <div className='text-gray-xl'>
-              {card.card.official_id}
-              {cardSet && (
-                <Image
-                  src={cardSet.img_url}
-                  alt={cardSet.name}
-                  width={0}
-                  height={0}
-                  sizes='100vw'
-                  className='h-8 w-auto'
-                />
-              )}
+        <div className=' flex justify-start'>
+          <div className='text-gray-xl'>
+            {card.card.official_id}
+            {cardSet && (
               <Image
-                src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
-                alt={`Rareté ${card.card.rarity}`}
+                src={cardSet.img_url}
+                alt={cardSet.name}
                 width={0}
                 height={0}
                 sizes='100vw'
-                className='mt-2 w-auto h-8'
+                className='h-8 w-auto'
               />
-            </div>
+            )}
+            <Image
+              src={rarityIcons[card.card.rarity as keyof typeof rarityIcons]}
+              alt={`Rareté ${card.card.rarity}`}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='mt-2 w-auto h-8'
+            />
           </div>
         </div>
+      </div>
+      <div className='flex items-center justify-center gap-2'>
+        <Image
+          src={card.user.profile_picture || '/avatars/Av1.png'}
+          alt={card.user.username}
+          width={32}
+          height={32}
+          className='rounded-full'
+        />
+        <span className='text-dark-base '>{card.user.username}</span>
       </div>
 
       <h3 className='text-dark-xl my-1'>
@@ -175,7 +173,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </button>
       <CloseButton
         onClick={onClose}
-        className='scale-150 z-50 md:hidden mt-5 mx-auto absolute left-1/2 -translate-x-1/2'
+        className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-30 left-1/2 -translate-x-1/2'
       />
     </div>
   );
