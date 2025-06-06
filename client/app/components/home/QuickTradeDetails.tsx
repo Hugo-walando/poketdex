@@ -125,7 +125,16 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           ref={scrollRef}
           className='max-h-[26vh] md:max-h-[20vh] overflow-y-auto pr-1'
         >
-          <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-2 p-2 overflow-hidden'>
+          <div className='h-4  absolute bottom-0 z-20 w-full bg-gradient-to-b from-white/0  to-white/100'></div>
+          <div className='h-4  absolute top-0 z-20 w-full bg-gradient-to-t from-white/0  to-white/100'></div>
+          <div
+            className={cn(
+              'gap-2 p-2 overflow-hidden',
+              wishlistCards.length <= 3
+                ? 'flex gap-6 justify-center'
+                : 'grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))]',
+            )}
+          >
             {wishlistCards.map((wish) => (
               <div
                 key={wish._id}
