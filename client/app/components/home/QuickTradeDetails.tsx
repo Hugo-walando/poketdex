@@ -2,7 +2,7 @@
 
 import { ListedCard } from '@/app/types';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
@@ -21,9 +21,6 @@ interface Props {
 export default function QuickTradeDetails({ card, onClose }: Props) {
   const sets = useGlobalData((s) => s.sets);
   const cardSet = sets.find((set) => set.code === card.card.set_code);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const [isOverflowing, setIsOverflowing] = useState(false);
 
   const router = useRouter();
 
@@ -48,13 +45,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   useEffect(() => {
     setSelectedCardId(null);
   }, [card]);
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (el) {
-      const hasOverflow = el.scrollHeight > el.clientHeight;
-      setIsOverflowing(hasOverflow);
-    }
-  }, [wishlistCards]);
 
   if (loadingWishlist) {
     return (
@@ -65,7 +55,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }
 
   return (
-    <div ref={scrollRef} className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
+    <div className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
       <div className='flex items-center justify-between mb-4 sticky z-50 top-4 right-4'>
         <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm  mb-4'>
           Détails de la carte proposée
