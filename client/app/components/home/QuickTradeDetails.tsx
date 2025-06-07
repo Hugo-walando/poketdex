@@ -62,6 +62,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </h2>
         <CloseButton onClick={onClose} className='hidden md:block ' />
       </div>
+      <div className='h-28 md:h-4 bg-gradient-to-t from-white/0 to-white/100 fixed md:sticky top-0 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
 
       <div className=' gap-3 flex justify-center'>
         <div className='flex justify-end'>
@@ -161,7 +162,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
         </button>
       </div>
-      <div className='h-28 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
+      <div className='h-28 md:h-4 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
 
       <CloseButton
         onClick={onClose}
