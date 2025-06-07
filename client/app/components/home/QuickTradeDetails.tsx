@@ -113,7 +113,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         {card.user.username} voudrait ces cartes:{' '}
       </h3>
       <div className='relative'>
-        {/* Zone scrollable */}
         <div className='overflow-y-auto pr-1'>
           <div
             className={cn(
@@ -137,15 +136,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
             ))}
           </div>
         </div>
-
-        {/* Flèche de scroll */}
-        {isOverflowing && (
-          <div className='absolute bottom-0 left-0 w-full flex justify-center pointer-events-none'>
-            <div className='animate-bounce text-gray-500 text-lg pb-2'>
-              <ChevronDown />
-            </div>
-          </div>
-        )}
       </div>
 
       <div className='fixed bottom-40 md:sticky md:bottom-2 left-1/2 z-50 -translate-x-1/2 md:translate-x-0 w-full flex flex-col items-center px-6 text-center'>
@@ -172,7 +162,11 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </button>
       </div>
       <div className='h-28 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
-
+      {wishlistCards.length >= 6 && (
+        <div className='fixed bottom-30 left-10 w-full flex justify-center pointer-events-none z-30'>
+          <ChevronDown className='h-12 w-12 text-gray-400 animate-bounce pb-2' />
+        </div>
+      )}
       <CloseButton
         onClick={onClose}
         className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-28 left-1/2 -translate-x-1/2'
