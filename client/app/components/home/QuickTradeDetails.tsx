@@ -67,7 +67,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   return (
     <div className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
       <div className='flex items-center justify-between mb-4 sticky top-4 right-4'>
-        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm'>
+        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm z-50'>
           Détails de la carte proposée
         </h2>
         <CloseButton onClick={onClose} className='hidden md:block ' />
