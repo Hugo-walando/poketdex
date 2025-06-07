@@ -61,7 +61,8 @@ export default function Home() {
         </div>
 
         {isMobile && selectedCard && (
-          <div className='fixed inset-0 bg-white z-50 p-4 overflow-y-auto'>
+          <div className='fixed inset-0 bg-white z-50 p-4 overflow-y-auto '>
+            <div className='h-6 bg-gradient-to-t from-white/0 to-white/100 md:absolute fixed top-0 z-20 md:translate-x-0 w-full'></div>
             <QuickTradeDetails
               card={selectedCard}
               onClose={() => setSelectedCard(null)}

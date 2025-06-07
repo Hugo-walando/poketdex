@@ -22,6 +22,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   const sets = useGlobalData((s) => s.sets);
   const cardSet = sets.find((set) => set.code === card.card.set_code);
   const scrollRef = useRef<HTMLDivElement>(null);
+
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   const router = useRouter();
@@ -64,10 +65,12 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }
 
   return (
-    <div className='md:p-4 rounded-xl'>
-      <div className='flex items-center justify-between mb-4'>
-        <h2 className='text-dark-xl'>Détails de la carte proposée</h2>
-        <CloseButton onClick={onClose} className='hidden md:block' />
+    <div className='md:p-4 rounded-xl mb-56 md:mb-5 relative'>
+      <div className='flex items-center justify-between mb-4 sticky top-4 right-4'>
+        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm'>
+          Détails de la carte proposée
+        </h2>
+        <CloseButton onClick={onClose} className='hidden md:block ' />
       </div>
 
       <div className=' gap-3 flex justify-center'>
@@ -121,12 +124,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </h3>
       <div className='relative'>
         {/* Zone scrollable */}
-        <div
-          ref={scrollRef}
-          className='max-h-[26vh] md:max-h-[20vh] overflow-y-auto pr-1'
-        >
-          <div className='h-4  absolute bottom-0 z-20 w-full bg-gradient-to-b from-white/0  to-white/100'></div>
-          <div className='h-4  absolute top-0 z-20 w-full bg-gradient-to-t from-white/0  to-white/100'></div>
+        <div ref={scrollRef} className='overflow-y-auto pr-1'>
           <div
             className={cn(
               'gap-2 p-2 overflow-hidden',
@@ -159,30 +157,35 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           </div>
         )}
       </div>
-      {!selectedCardId && (
-        <p className='text-light-sm text-center my-2'>
-          Veuillez sélectionner une carte à proposer en échange.
-        </p>
-      )}
 
-      <button
-        onClick={handleSendRequest}
-        disabled={!selectedCardId || loadingTrade}
-        className={cn(
-          'w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
-          selectedCardId && !loadingTrade
-            ? 'bg-primarygreen text-white hover:opacity-90 mt-9 hover:cursor-pointer'
-            : 'bg-gray-300 text-white cursor-not-allowed',
+      <div className='fixed bottom-40 md:sticky md:bottom-2 left-1/2 z-50 -translate-x-1/2 md:translate-x-0 w-full flex flex-col items-center px-6 text-center'>
+        {!selectedCardId && (
+          <p className='text-light-sm text-center bg-white/50 backdrop-blur-sm p-1 rounded-lg'>
+            Veuillez sélectionner une carte à proposer en échange.
+          </p>
         )}
-      >
-        {loadingTrade && (
-          <Loader2 className='animate-spin w-5 h-5 text-white' />
-        )}
-        {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
-      </button>
+
+        <button
+          onClick={handleSendRequest}
+          disabled={!selectedCardId || loadingTrade}
+          className={cn(
+            'w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
+            selectedCardId && !loadingTrade
+              ? 'bg-primarygreen text-white hover:opacity-90 hover:cursor-pointer'
+              : 'bg-gray-300 text-white cursor-not-allowed',
+          )}
+        >
+          {loadingTrade && (
+            <Loader2 className='animate-spin w-5 h-5 text-white' />
+          )}
+          {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
+        </button>
+      </div>
+      <div className='h-6 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
+
       <CloseButton
         onClick={onClose}
-        className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-30 left-1/2 -translate-x-1/2'
+        className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-28 left-1/2 -translate-x-1/2'
       />
     </div>
   );
