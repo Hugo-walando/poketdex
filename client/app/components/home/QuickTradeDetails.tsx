@@ -65,9 +65,9 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }
 
   return (
-    <div className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
-      <div className='flex items-center justify-between mb-4 sticky top-4 right-4'>
-        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm z-50'>
+    <div ref={scrollRef} className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
+      <div className='flex items-center justify-between mb-4 sticky z-50 top-4 right-4'>
+        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm  mb-4'>
           Détails de la carte proposée
         </h2>
         <CloseButton onClick={onClose} className='hidden md:block ' />
@@ -124,7 +124,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
       </h3>
       <div className='relative'>
         {/* Zone scrollable */}
-        <div ref={scrollRef} className='overflow-y-auto pr-1'>
+        <div className='overflow-y-auto pr-1'>
           <div
             className={cn(
               'gap-2 p-2 overflow-hidden',
