@@ -181,7 +181,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
         </button>
       </div>
-      <div className='h-6 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
+      <div className='h-28 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
 
       <CloseButton
         onClick={onClose}
