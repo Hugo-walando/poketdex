@@ -10,7 +10,7 @@ import CloseButton from '../ui/CloseButton';
 import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickTrade';
 import { useRouter } from 'next/navigation';
 import useCreateQuickTrade from '@/app/hooks/useCreateQuickTrade';
-import { ChevronDown, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useGlobalData } from '@/app/store/useGlobalData';
 
 interface Props {
@@ -162,11 +162,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </button>
       </div>
       <div className='h-28 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
-      {wishlistCards.length >= 6 && (
-        <div className='fixed bottom-30 left-10 w-full flex justify-center pointer-events-none z-30'>
-          <ChevronDown className='h-12 w-12 text-gray-400 animate-bounce pb-2' />
-        </div>
-      )}
+
       <CloseButton
         onClick={onClose}
         className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-28 left-1/2 -translate-x-1/2'
