@@ -139,27 +139,25 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
         </div>
       </div>
 
-      <div className='fixed bottom-40 md:sticky md:bottom-2 left-1/2 z-50 -translate-x-1/2 md:translate-x-0 w-full flex flex-col items-center px-6 text-center'>
-        {!selectedCardId && (
-          <p className='text-light-sm text-center bg-white/50 backdrop-blur-sm p-1 rounded-lg'>
-            Veuillez sélectionner une carte à proposer en échange.
-          </p>
-        )}
-
+      <div className='fixed md:sticky bottom-40 md:bottom-2 z-50 left-1/2 -translate-x-1/2 md:translate-x-0 w-full flex flex-col items-center px-6 text-center'>
         <button
           onClick={handleSendRequest}
           disabled={!selectedCardId || loadingTrade}
           className={cn(
-            'w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
+            'w-full py-3 rounded-xl font-semibold transition shadow-base z-50',
             selectedCardId && !loadingTrade
               ? 'bg-primarygreen text-white hover:opacity-90 hover:cursor-pointer'
-              : 'bg-gray-300 text-white cursor-not-allowed',
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed',
           )}
         >
           {loadingTrade && (
             <Loader2 className='animate-spin w-5 h-5 text-white' />
           )}
-          {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
+          {loadingTrade
+            ? 'Envoi en cours...'
+            : selectedCardId
+              ? 'Envoyer la demande d’échange'
+              : 'Veuillez choisir une carte à proposer'}
         </button>
       </div>
       <div className='h-28 md:h-4 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>

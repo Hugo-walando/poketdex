@@ -66,7 +66,7 @@ export default function MatchList({ loading }: MatchListProps) {
 
   return (
     <div className='flex flex-col h-full '>
-      <div className='flex-1 overflow-y-auto pb-40  md:pb-0 px-2 md:p-2'>
+      <div className='flex-1 overflow-y-auto pb-50  md:pb-0 px-2 md:p-2'>
         <h2 className='text-dark text-base md:text-xl font-semibold mt-10 md:mt-0 md:text-center pb-2 md:py-2 text-end sticky'>
           Match{totalMatchCount > 1 ? 's' : ''}{' '}
           <span className='md:text-lg text-sm text-gray'>
@@ -88,7 +88,7 @@ export default function MatchList({ loading }: MatchListProps) {
       </div>
 
       {/* Footer button */}
-      <div className='p-4 md:bg-white rounded-xl md:shadow-base fixed bottom-20 w-full  md:static '>
+      <div className='px-6 md:bg-white rounded-xl md:shadow-base fixed bottom-40 w-full md:static '>
         <button
           onClick={handleSendRequests}
           disabled={selectedMatchIds.length === 0 || sending}
