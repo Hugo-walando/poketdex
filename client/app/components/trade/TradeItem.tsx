@@ -8,7 +8,7 @@ import { cn } from '@/app/utils/cn';
 import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
-import { Check, CheckCircle, Circle, CircleX } from 'lucide-react';
+import { Check, CheckCircle, Circle, CircleX, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useCollectionStore } from '@/app/store/useCollectionStore';
@@ -217,6 +217,20 @@ export default function TradeItem({ trade }: TradeItemProps) {
               )}
             </div>
           </div>
+          {trade.status === 'accepted' && (
+            <div className='flex items-center gap-1 font-poppins font-base text-xs'>
+              {/* {isSender ? 'Receveur' : 'Envoyeur'} :{' '} */}
+              {sentByOther ? (
+                <span className='text-green-600 flex items-center gap-1'>
+                  <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                </span>
+              ) : (
+                <span className='text-gray-500 flex items-center gap-1'>
+                  <X className='w-5 h-5 text-red-500' /> Non envoyée
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Icon et rareté */}
@@ -269,11 +283,25 @@ export default function TradeItem({ trade }: TradeItemProps) {
               </div>
             </div>
           </div>
+          {trade.status === 'accepted' && (
+            <div className='flex items-center gap-1 font-poppins font-base text-xs'>
+              {/* Vous :{' '} */}
+              {sentByMe ? (
+                <span className='text-green-600 flex items-center gap-1'>
+                  <Check className='w-5 h-5 text-primarygreen' /> Envoyée
+                </span>
+              ) : (
+                <span className='text-gray-500 flex items-center gap-1'>
+                  <X className='w-5 h-5 text-red-500' /> Non envoyée
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Actions */}
-      <div className='flex justify-between items-center text-gray-sm mt-2'>
+      <div className='flex justify-between items-start text-gray-sm mt-2'>
         <div className='flex flex-col gap-2'>
           <span>
             {trade.status === 'pending' && 'En attente'}
@@ -304,11 +332,13 @@ export default function TradeItem({ trade }: TradeItemProps) {
           )}
 
           {/* Si accepté → montrer "Marquer comme envoyé" */}
+        </div>
+        <div className='flex flex-col items-end gap-2'>
           {canMarkAsSent && (
             <button
               onClick={handleMarkAsSent}
               disabled={loadingMarkSent}
-              className='flex items-center absolute right-4 gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
+              className='flex items-center  gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
             >
               {sentByMe ? (
                 <CheckCircle className='w-5 h-5 text-primarygreen' />
@@ -319,43 +349,17 @@ export default function TradeItem({ trade }: TradeItemProps) {
             </button>
           )}
 
-          {/* Status carte envoyée */}
-          {trade.status === 'accepted' && (
-            <div className='flex flex-col text-xs gap-1 mt-2'>
-              <div className='flex items-center gap-1'>
-                Vous :{' '}
-                {sentByMe ? (
-                  <span className='text-green-600 flex items-center gap-1'>
-                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
-                  </span>
-                ) : (
-                  <span className='text-gray-500'>❌ Non envoyée</span>
-                )}
-              </div>
-              <div className='flex items-center gap-1'>
-                {isSender ? 'Receveur' : 'Envoyeur'} :{' '}
-                {sentByOther ? (
-                  <span className='text-green-600 flex items-center gap-1'>
-                    <Check className='w-5 h-5 text-primarygreen' /> Envoyée
-                  </span>
-                ) : (
-                  <span className='text-gray-500'>❌ Non envoyée</span>
-                )}
-              </div>
-            </div>
-          )}
+          {(isSender || isReceiver) &&
+            (trade.status === 'pending' || trade.status === 'accepted') && (
+              <button
+                onClick={handleCancel}
+                disabled={loadingAction}
+                className='px-4 py-1 rounded-full bg-redalert w-fit text-white text-sm hover:opacity-90 transition '
+              >
+                {loadingAction ? '...' : 'Annuler'}
+              </button>
+            )}
         </div>
-
-        {(isSender || isReceiver) &&
-          (trade.status === 'pending' || trade.status === 'accepted') && (
-            <button
-              onClick={handleCancel}
-              disabled={loadingAction}
-              className='px-4 py-1 rounded-full bg-redalert text-white text-sm hover:opacity-90 transition absolute right-2 bottom-2'
-            >
-              {loadingAction ? '...' : 'Annuler'}
-            </button>
-          )}
       </div>
     </div>
   );
