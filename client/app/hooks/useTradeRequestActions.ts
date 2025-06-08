@@ -9,7 +9,7 @@ import { useCallback } from 'react';
 
 export function useTradeRequestActions() {
   const { user } = useUserStore();
-  const { updateTradeStatus, toggleMarkAsSent } = useTradeRequestStore();
+  const { updateTradeStatus } = useTradeRequestStore();
 
   const respondToTradeRequest = useCallback(
     async (
@@ -40,7 +40,7 @@ export function useTradeRequestActions() {
     [user, updateTradeStatus],
   );
 
-  const markTradeRequestAsSent = useCallback(
+  const toggleMarkTradeRequestAsSent = useCallback(
     async (tradeRequestId: string) => {
       try {
         await axiosClient.patch(
@@ -53,10 +53,6 @@ export function useTradeRequestActions() {
           },
         );
 
-        if (user?.id) {
-          toggleMarkAsSent(tradeRequestId, user.id);
-        }
-
         toast.success('État d’envoi mis à jour ✅');
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
@@ -67,7 +63,7 @@ export function useTradeRequestActions() {
         throw error;
       }
     },
-    [user, toggleMarkAsSent],
+    [user],
   );
 
   const acceptTradeRequest = (tradeRequestId: string) =>
@@ -81,6 +77,6 @@ export function useTradeRequestActions() {
     acceptTradeRequest,
     declineTradeRequest,
     cancelTradeRequest,
-    markTradeRequestAsSent,
+    toggleMarkTradeRequestAsSent,
   };
 }
