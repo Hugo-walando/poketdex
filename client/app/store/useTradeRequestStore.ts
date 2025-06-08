@@ -16,7 +16,11 @@ interface TradeRequestStore {
   addTradeRequest: (newTrade: TradeRequest) => void;
 
   updateTradeStatus: (tradeId: string, newStatus: TradeStatus) => void;
-  toggleMarkAsSent: (tradeId: string, currentUserId: string) => void;
+  setMarkAsSent: (
+    tradeId: string,
+    currentUserId: string,
+    value: boolean,
+  ) => void;
   setTradeActive: (tradeId: string) => void;
   hasImportantTradeActivity: (currentUserId: string) => boolean;
   hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
@@ -82,7 +86,7 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
           })),
         })),
 
-      toggleMarkAsSent: (tradeId: string, currentUserId: string) =>
+      setMarkAsSent: (tradeId, currentUserId, value) =>
         set((state) => ({
           tradeGroups: state.tradeGroups.map((group) => ({
             ...group,
@@ -90,16 +94,14 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
               if (trade._id !== tradeId) return trade;
 
               const isSender = trade.sender._id === currentUserId;
-
               const updatedTrade = { ...trade };
 
               if (isSender) {
-                updatedTrade.sent_by_sender = !trade.sent_by_sender;
+                updatedTrade.sent_by_sender = value;
               } else {
-                updatedTrade.sent_by_receiver = !trade.sent_by_receiver;
+                updatedTrade.sent_by_receiver = value;
               }
 
-              // Vérifie si les deux ont marqué comme envoyé
               if (
                 updatedTrade.sent_by_sender &&
                 updatedTrade.sent_by_receiver
@@ -107,11 +109,8 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
                 updatedTrade.status = 'completed';
                 updatedTrade.is_active = false;
               } else {
-                // Si un des deux annule, on repasse à "accepted" (ou autre si besoin)
-                if (trade.status === 'completed') {
-                  updatedTrade.status = 'accepted';
-                  updatedTrade.is_active = true;
-                }
+                updatedTrade.status = 'accepted';
+                updatedTrade.is_active = true;
               }
 
               return updatedTrade;
