@@ -33,7 +33,7 @@ export default function TradeListSection({
       <section className='flex-1 p-1 xl:px-2 mb-20 '>
         <CloseButton
           onClick={onBack}
-          className='fixed scale-200 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
+          className='fixed scale-150 bottom-30 z-50 left-1/2 -translate-x-1/2 md:hidden'
         />
         <div className='space-y-4 pb-2 mt-5 md:mt-0'>
           {sortTradesByActiveStatus(trades).map((trade) => (

@@ -24,7 +24,7 @@ export default function MatchGroupItem({
   return (
     <div className='bg-white rounded-xl shadow-base'>
       <div
-        className='flex sticky shadow-sm top-[-5px] md:top-[-10px] bg-white rounded-lg z-10 items-center justify-between px-4 py-2 cursor-pointer'
+        className='flex sticky shadow-sm top-0 md:top-[-10px] bg-white rounded-lg z-10 items-center justify-between px-4 py-2 cursor-pointer'
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className='flex items-center gap-3'>

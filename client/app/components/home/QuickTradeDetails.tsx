@@ -2,7 +2,7 @@
 
 import { ListedCard } from '@/app/types';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import WishlistItem from './WishListItem';
 import { cn } from '@/app/utils/cn';
 import { rarityIcons } from '@/app/data/rarities';
@@ -10,7 +10,7 @@ import CloseButton from '../ui/CloseButton';
 import useFetchWishlistForQuickTrade from '@/app/hooks/useFetchWishlistForQuickTrade';
 import { useRouter } from 'next/navigation';
 import useCreateQuickTrade from '@/app/hooks/useCreateQuickTrade';
-import { ChevronDown, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useGlobalData } from '@/app/store/useGlobalData';
 
 interface Props {
@@ -21,8 +21,6 @@ interface Props {
 export default function QuickTradeDetails({ card, onClose }: Props) {
   const sets = useGlobalData((s) => s.sets);
   const cardSet = sets.find((set) => set.code === card.card.set_code);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
 
   const router = useRouter();
 
@@ -47,13 +45,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   useEffect(() => {
     setSelectedCardId(null);
   }, [card]);
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (el) {
-      const hasOverflow = el.scrollHeight > el.clientHeight;
-      setIsOverflowing(hasOverflow);
-    }
-  }, [wishlistCards]);
 
   if (loadingWishlist) {
     return (
@@ -64,14 +55,17 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
   }
 
   return (
-    <div className='p-4 rounded-xl'>
-      <div className='flex justify-between items-center mb-4'>
-        <h2 className='text-dark-xl'>Détails de la carte</h2>
-        <CloseButton onClick={onClose} />
+    <div className='md:p-4 rounded-xl mb-56 md:mb-0 relative'>
+      <div className='flex items-center justify-between mb-4 sticky z-50 top-4 right-4'>
+        <h2 className='text-dark-xl rounded-full bg-white/50 px-2 py-0.5 backdrop-blur-sm  mb-4'>
+          Détails de la carte proposée
+        </h2>
+        <CloseButton onClick={onClose} className='hidden md:block ' />
       </div>
+      <div className='h-28 md:h-4 bg-gradient-to-t from-white/0 to-white/100 fixed md:sticky top-0 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
 
-      <div className='w-full gap-3 flex justify-center'>
-        <div className='w-1/2 flex justify-end'>
+      <div className=' gap-3 flex justify-center'>
+        <div className='flex justify-end'>
           <Image
             src={card.card.img_url}
             alt={card.card.name}
@@ -81,7 +75,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
             className='h-34 w-auto shadow-base mb-4'
           />
         </div>
-        <div className='w-1/2 flex justify-start'>
+        <div className=' flex justify-start'>
           <div className='text-gray-xl'>
             {card.card.official_id}
             {cardSet && (
@@ -105,7 +99,6 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           </div>
         </div>
       </div>
-
       <div className='flex items-center justify-center gap-2'>
         <Image
           src={card.user.profile_picture || '/avatars/Av1.png'}
@@ -114,16 +107,22 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           height={32}
           className='rounded-full'
         />
-        <span className='text-dark-base'>{card.user.username}</span>
+        <span className='text-dark-base '>{card.user.username}</span>
       </div>
 
       <h3 className='text-dark-xl my-1'>
         {card.user.username} voudrait ces cartes:{' '}
       </h3>
       <div className='relative'>
-        {/* Zone scrollable */}
-        <div ref={scrollRef} className='max-h-[20vh] overflow-y-auto pr-1'>
-          <div className='grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] gap-2 p-2 overflow-hidden'>
+        <div className='overflow-y-auto pr-1'>
+          <div
+            className={cn(
+              'gap-2 p-2 overflow-hidden',
+              wishlistCards.length <= 3
+                ? 'flex gap-6 justify-center'
+                : 'grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))]',
+            )}
+          >
             {wishlistCards.map((wish) => (
               <div
                 key={wish._id}
@@ -138,37 +137,35 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
             ))}
           </div>
         </div>
-
-        {/* Flèche de scroll */}
-        {isOverflowing && (
-          <div className='absolute bottom-0 left-0 w-full flex justify-center pointer-events-none'>
-            <div className='animate-bounce text-gray-500 text-lg pb-2'>
-              <ChevronDown />
-            </div>
-          </div>
-        )}
       </div>
-      {!selectedCardId && (
-        <p className='text-light-sm text-center my-2'>
-          Veuillez sélectionner une carte à proposer en échange.
-        </p>
-      )}
 
-      <button
-        onClick={handleSendRequest}
-        disabled={!selectedCardId || loadingTrade}
-        className={cn(
-          'w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
-          selectedCardId && !loadingTrade
-            ? 'bg-primarygreen text-white hover:opacity-90 mt-9 hover:cursor-pointer'
-            : 'bg-gray-300 text-white cursor-not-allowed',
-        )}
-      >
-        {loadingTrade && (
-          <Loader2 className='animate-spin w-5 h-5 text-white' />
-        )}
-        {loadingTrade ? 'Envoi en cours...' : 'Envoyer la demande d’échange'}
-      </button>
+      <div className='fixed md:sticky bottom-40 md:bottom-2 z-50 left-1/2 -translate-x-1/2 md:translate-x-0 w-full flex flex-col items-center px-6 text-center'>
+        <button
+          onClick={handleSendRequest}
+          disabled={!selectedCardId || loadingTrade}
+          className={cn(
+            'w-full py-3 rounded-xl font-semibold transition shadow-base z-50',
+            selectedCardId && !loadingTrade
+              ? 'bg-primarygreen text-white hover:opacity-90 hover:cursor-pointer'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed',
+          )}
+        >
+          {loadingTrade && (
+            <Loader2 className='animate-spin w-5 h-5 text-white' />
+          )}
+          {loadingTrade
+            ? 'Envoi en cours...'
+            : selectedCardId
+              ? 'Envoyer la demande d’échange'
+              : 'Veuillez choisir une carte à proposer'}
+        </button>
+      </div>
+      <div className='h-28 md:h-4 bg-gradient-to-b from-white/0 to-white/100 fixed md:sticky bottom-22 md:bottom-0 z-20 left-1/2 -translate-x-1/2 md:translate-x-0 w-full'></div>
+
+      <CloseButton
+        onClick={onClose}
+        className='scale-150 z-50 md:hidden mt-5 mx-auto fixed bottom-28 left-1/2 -translate-x-1/2'
+      />
     </div>
   );
 }
