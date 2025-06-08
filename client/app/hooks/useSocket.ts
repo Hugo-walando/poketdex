@@ -20,7 +20,7 @@ export default function useSocket() {
   const setAll = useOnlineUserStore((s) => s.setAll);
   const addTradeRequest = useTradeRequestStore((s) => s.addTradeRequest);
   const updateTradeStatus = useTradeRequestStore((s) => s.updateTradeStatus);
-  const markAsSent = useTradeRequestStore((s) => s.markAsSent);
+  const markAsSent = useTradeRequestStore((s) => s.setMarkAsSent);
   const setTradeActive = useTradeRequestStore((s) => s.setTradeActive);
   const updateUser = useUserStore((s) => s.updateUserStore);
   const removeWishlistCardFromStore = useCollectionStore(
@@ -100,8 +100,11 @@ export default function useSocket() {
         },
       );
 
-      socket.on('trade-sent-update', ({ tradeId, sentByUserId }) => {
-        markAsSent(tradeId, sentByUserId);
+      socket.on('trade-sent-update', ({ tradeId, sentByUserId, value }) => {
+        console.log('[SOCKET] Reçu trade-sent-update', tradeId, sentByUserId);
+        console.log('[SOCKET] Mise à jour store via socket');
+
+        markAsSent(tradeId, sentByUserId, value);
 
         if (sentByUserId !== userId) {
           toast('📦 Tu as reçu une carte !');
