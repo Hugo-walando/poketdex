@@ -317,14 +317,14 @@ export default function TradeItem({ trade }: TradeItemProps) {
               <button
                 onClick={handleAccept}
                 disabled={loadingAction}
-                className='px-4 py-1 rounded-full bg-primarygreen text-white text-sm hover:opacity-90 transition'
+                className='px-4 py-1 rounded-full bg-primarygreen text-white text-sm hover:opacity-90 transition hover:cursor-pointer'
               >
                 {loadingAction ? '...' : 'Accepter'}
               </button>
               <button
                 onClick={handleDecline}
                 disabled={loadingAction}
-                className='px-4 py-1 rounded-full bg-red-500 text-white text-sm hover:opacity-90 transition'
+                className='px-4 py-1 rounded-full bg-red-500 text-white text-sm hover:opacity-90 transition hover:cursor-pointer'
               >
                 {loadingAction ? '...' : 'Refuser'}
               </button>
@@ -354,7 +354,7 @@ export default function TradeItem({ trade }: TradeItemProps) {
               <button
                 onClick={handleCancel}
                 disabled={loadingAction}
-                className='px-4 py-1 rounded-full bg-redalert w-fit text-white text-sm hover:opacity-90 transition '
+                className='px-4 py-1 rounded-full bg-redalert w-fit text-white text-sm hover:opacity-90 transition hover:cursor-pointer'
               >
                 {loadingAction ? '...' : 'Annuler'}
               </button>
