@@ -3,6 +3,7 @@ import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { ListedCard } from '@/app/types';
+import axios from 'axios';
 
 const useFetchListedCards = () => {
   const user = useUserStore((state) => state.user);
@@ -28,11 +29,19 @@ const useFetchListedCards = () => {
         );
         setListedCards(response.data);
       } catch (err) {
-        if (err) {
-          console.error('❌ Error fetching listed cards:', err);
+        if (axios.isAxiosError(err)) {
+          // Ne pas afficher de toast si erreur 401 (déjà gérée globalement)
+          if (err.response?.status === 401) return;
+
+          const message =
+            err.response?.data?.message ||
+            'Erreur lors du chargement des cartes listées';
+          setError(message);
+          toast.error(message);
+        } else {
+          setError('Erreur inconnue');
+          toast.error('Erreur inconnue');
         }
-        setError('Erreur lors du chargement des cartes listées.');
-        toast.error('❌ Impossible de charger les cartes listées.');
       } finally {
         setLoading(false);
       }

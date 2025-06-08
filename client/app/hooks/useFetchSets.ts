@@ -33,12 +33,18 @@ const useFetchSets = () => {
 
         setSets(response.data);
       } catch (err) {
-        const message =
-          axios.isAxiosError(err) && err.response?.data?.message
-            ? err.response.data.message
-            : 'Erreur lors du chargement des sets';
-        setError(message);
-        toast.error(message);
+        if (axios.isAxiosError(err)) {
+          // Ne pas afficher de toast si erreur 401 (déjà gérée globalement)
+          if (err.response?.status === 401) return;
+
+          const message =
+            err.response?.data?.message || 'Erreur lors du chargement des sets';
+          setError(message);
+          toast.error(message);
+        } else {
+          setError('Erreur inconnue');
+          toast.error('Erreur inconnue');
+        }
       } finally {
         setLoading(false);
       }
