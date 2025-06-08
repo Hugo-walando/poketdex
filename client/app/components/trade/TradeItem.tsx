@@ -305,20 +305,18 @@ export default function TradeItem({ trade }: TradeItemProps) {
 
           {/* Si accepté → montrer "Marquer comme envoyé" */}
           {canMarkAsSent && (
-            <div className='flex items-center gap-2 mt-2'>
-              <button
-                onClick={handleMarkAsSent}
-                disabled={loadingMarkSent}
-                className='flex items-center gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
-              >
-                {sentByMe ? (
-                  <CheckCircle className='w-5 h-5 text-primarygreen' />
-                ) : (
-                  <Circle className='w-5 h-5 text-gray-400' />
-                )}
-                J’ai envoyé ma carte
-              </button>
-            </div>
+            <button
+              onClick={handleMarkAsSent}
+              disabled={loadingMarkSent}
+              className='flex items-center absolute right-4 gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
+            >
+              {sentByMe ? (
+                <CheckCircle className='w-5 h-5 text-primarygreen' />
+              ) : (
+                <Circle className='w-5 h-5 text-gray-400' />
+              )}
+              J’ai envoyé ma carte
+            </button>
           )}
 
           {/* Status carte envoyée */}
