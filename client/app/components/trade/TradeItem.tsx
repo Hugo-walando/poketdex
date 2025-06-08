@@ -338,7 +338,7 @@ export default function TradeItem({ trade }: TradeItemProps) {
             <button
               onClick={handleMarkAsSent}
               disabled={loadingMarkSent}
-              className='flex items-center  gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
+              className='flex items-center  gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark hover:cursor-pointer'
             >
               {sentByMe ? (
                 <CheckCircle className='w-5 h-5 text-primarygreen' />
