@@ -29,9 +29,19 @@ export default function useFetchAllCards() {
 
         setCardsBySet(res.data);
       } catch (err) {
-        console.error('❌ Error fetching all cards:', err);
-        toast.error('Erreur lors de la récupération des cartes');
-        setError('Erreur lors de la récupération des cartes');
+        if (axios.isAxiosError(err)) {
+          // Ne pas afficher de toast si erreur 401 (déjà gérée globalement)
+          if (err.response?.status === 401) return;
+
+          const message =
+            err.response?.data?.message ||
+            'Erreur lors du chargement des cards';
+          setError(message);
+          toast.error(message);
+        } else {
+          setError('Erreur inconnue');
+          toast.error('Erreur inconnue');
+        }
       } finally {
         setLoading(false);
       }

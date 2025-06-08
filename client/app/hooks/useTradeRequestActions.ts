@@ -9,7 +9,7 @@ import { useCallback } from 'react';
 
 export function useTradeRequestActions() {
   const { user } = useUserStore();
-  const { updateTradeStatus, markAsSent } = useTradeRequestStore();
+  const { updateTradeStatus } = useTradeRequestStore();
 
   const respondToTradeRequest = useCallback(
     async (
@@ -40,7 +40,7 @@ export function useTradeRequestActions() {
     [user, updateTradeStatus],
   );
 
-  const markTradeRequestAsSent = useCallback(
+  const toggleMarkTradeRequestAsSent = useCallback(
     async (tradeRequestId: string) => {
       try {
         await axiosClient.patch(
@@ -52,20 +52,18 @@ export function useTradeRequestActions() {
             },
           },
         );
-        if (user?.id) {
-          markAsSent(tradeRequestId, user.id);
-        }
-        toast.success('Carte marquée comme envoyée ✅');
+
+        toast.success('État d’envoi mis à jour ✅');
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
         const backendMessage =
           axiosError.response?.data?.message ||
-          'Erreur lors du marquage de la carte comme envoyée';
+          'Erreur lors de la mise à jour de l’état d’envoi';
         toast.error(backendMessage);
         throw error;
       }
     },
-    [user, markAsSent],
+    [user],
   );
 
   const acceptTradeRequest = (tradeRequestId: string) =>
@@ -79,6 +77,6 @@ export function useTradeRequestActions() {
     acceptTradeRequest,
     declineTradeRequest,
     cancelTradeRequest,
-    markTradeRequestAsSent,
+    toggleMarkTradeRequestAsSent,
   };
 }

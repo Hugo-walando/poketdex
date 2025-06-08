@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axiosClient from '@/lib/axios';
 import { WishlistCard } from '@/app/types';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const useFetchWishlistForQuickTrade = (
   userId: string | null,
@@ -27,9 +28,19 @@ const useFetchWishlistForQuickTrade = (
 
         setWishlistCards(res.data);
       } catch (err) {
-        console.error('❌ Erreur récupération wishlist pour QuickTrade:', err);
-        setError('Erreur lors de la récupération de la wishlist.');
-        toast.error('Impossible de charger la wishlist pour cet utilisateur.');
+        if (axios.isAxiosError(err)) {
+          // Ne pas afficher de toast si erreur 401 (déjà gérée globalement)
+          if (err.response?.status === 401) return;
+
+          const message =
+            err.response?.data?.message ||
+            'Erreur lors du chargement des wishlists pour quicktrade';
+          setError(message);
+          toast.error(message);
+        } else {
+          setError('Erreur inconnue');
+          toast.error('Erreur inconnue');
+        }
       } finally {
         setLoading(false);
       }

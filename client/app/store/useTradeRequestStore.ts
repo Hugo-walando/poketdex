@@ -16,7 +16,11 @@ interface TradeRequestStore {
   addTradeRequest: (newTrade: TradeRequest) => void;
 
   updateTradeStatus: (tradeId: string, newStatus: TradeStatus) => void;
-  markAsSent: (tradeId: string, currentUserId: string) => void;
+  setMarkAsSent: (
+    tradeId: string,
+    currentUserId: string,
+    value: boolean,
+  ) => void;
   setTradeActive: (tradeId: string) => void;
   hasImportantTradeActivity: (currentUserId: string) => boolean;
   hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
@@ -82,7 +86,7 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
           })),
         })),
 
-      markAsSent: (tradeId, currentUserId) =>
+      setMarkAsSent: (tradeId, currentUserId, value) =>
         set((state) => ({
           tradeGroups: state.tradeGroups.map((group) => ({
             ...group,
@@ -90,12 +94,13 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
               if (trade._id !== tradeId) return trade;
 
               const isSender = trade.sender._id === currentUserId;
+              const updatedTrade = { ...trade };
 
-              const updatedTrade = {
-                ...trade,
-                sent_by_sender: isSender ? true : trade.sent_by_sender,
-                sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
-              };
+              if (isSender) {
+                updatedTrade.sent_by_sender = value;
+              } else {
+                updatedTrade.sent_by_receiver = value;
+              }
 
               if (
                 updatedTrade.sent_by_sender &&
@@ -103,6 +108,9 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
               ) {
                 updatedTrade.status = 'completed';
                 updatedTrade.is_active = false;
+              } else {
+                updatedTrade.status = 'accepted';
+                updatedTrade.is_active = true;
               }
 
               return updatedTrade;
