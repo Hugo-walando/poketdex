@@ -16,7 +16,7 @@ interface TradeRequestStore {
   addTradeRequest: (newTrade: TradeRequest) => void;
 
   updateTradeStatus: (tradeId: string, newStatus: TradeStatus) => void;
-  markAsSent: (tradeId: string, currentUserId: string) => void;
+  toggleMarkAsSent: (tradeId: string, currentUserId: string) => void;
   setTradeActive: (tradeId: string) => void;
   hasImportantTradeActivity: (currentUserId: string) => boolean;
   hasImportantTradeWithUser: (userId: string, currentUserId: string) => boolean;
@@ -82,7 +82,7 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
           })),
         })),
 
-      markAsSent: (tradeId, currentUserId) =>
+      toggleMarkAsSent: (tradeId: string, currentUserId: string) =>
         set((state) => ({
           tradeGroups: state.tradeGroups.map((group) => ({
             ...group,
@@ -91,18 +91,27 @@ export const useTradeRequestStore = create<TradeRequestStore>()(
 
               const isSender = trade.sender._id === currentUserId;
 
-              const updatedTrade = {
-                ...trade,
-                sent_by_sender: isSender ? true : trade.sent_by_sender,
-                sent_by_receiver: !isSender ? true : trade.sent_by_receiver,
-              };
+              const updatedTrade = { ...trade };
 
+              if (isSender) {
+                updatedTrade.sent_by_sender = !trade.sent_by_sender;
+              } else {
+                updatedTrade.sent_by_receiver = !trade.sent_by_receiver;
+              }
+
+              // Vérifie si les deux ont marqué comme envoyé
               if (
                 updatedTrade.sent_by_sender &&
                 updatedTrade.sent_by_receiver
               ) {
                 updatedTrade.status = 'completed';
                 updatedTrade.is_active = false;
+              } else {
+                // Si un des deux annule, on repasse à "accepted" (ou autre si besoin)
+                if (trade.status === 'completed') {
+                  updatedTrade.status = 'accepted';
+                  updatedTrade.is_active = true;
+                }
               }
 
               return updatedTrade;
