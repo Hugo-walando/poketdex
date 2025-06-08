@@ -8,7 +8,7 @@ import { cn } from '@/app/utils/cn';
 import { useTradeRequestActions } from '@/app/hooks/useTradeRequestActions';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/useUserStore';
-import { Check, CheckCircle, CircleX } from 'lucide-react';
+import { Check, CheckCircle, Circle, CircleX } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGlobalData } from '@/app/store/useGlobalData';
 import { useCollectionStore } from '@/app/store/useCollectionStore';
@@ -23,7 +23,7 @@ export default function TradeItem({ trade }: TradeItemProps) {
   const {
     acceptTradeRequest,
     declineTradeRequest,
-    markTradeRequestAsSent,
+    toggleMarkTradeRequestAsSent,
     cancelTradeRequest,
   } = useTradeRequestActions();
   const [loadingAction, setLoadingAction] = useState(false);
@@ -105,7 +105,7 @@ export default function TradeItem({ trade }: TradeItemProps) {
     }
     try {
       setLoadingMarkSent(true);
-      await markTradeRequestAsSent(trade._id);
+      await toggleMarkTradeRequestAsSent(trade._id);
     } finally {
       setLoadingMarkSent(false);
     }
@@ -129,8 +129,17 @@ export default function TradeItem({ trade }: TradeItemProps) {
       )}
     >
       {/* Badge échange actif */}
-      {trade.is_active && (
-        <span className='text-green-base mb-1'>Échange en cours</span>
+      {trade.is_active ? (
+        <div className='flex justify-between'>
+          <span className='text-green-base mb-1'>Échange en cours</span>
+          <span className='text-grayblue font-poppins text-sm font-semibold mt-1 text-end'>
+            Vous avez {isSender ? 'envoyé' : 'reçu'} cette demande
+          </span>
+        </div>
+      ) : (
+        <span className='text-grayblue font-poppins text-sm font-semibold mt-1 text-end'>
+          Vous avez {isSender ? 'envoyé' : 'reçu'} cette demande
+        </span>
       )}
 
       {isCompleted && (
@@ -296,13 +305,18 @@ export default function TradeItem({ trade }: TradeItemProps) {
 
           {/* Si accepté → montrer "Marquer comme envoyé" */}
           {canMarkAsSent && (
-            <div className='flex gap-2 mt-2'>
+            <div className='flex items-center gap-2 mt-2'>
               <button
                 onClick={handleMarkAsSent}
                 disabled={loadingMarkSent}
-                className='px-4 py-1 rounded-full bg-gray-200 text-dark text-sm hover:bg-gray-300 transition'
+                className='flex items-center gap-2 text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-dark'
               >
-                {loadingMarkSent ? '...' : 'Marquer ma carte comme envoyée'}
+                {sentByMe ? (
+                  <CheckCircle className='w-5 h-5 text-primarygreen' />
+                ) : (
+                  <Circle className='w-5 h-5 text-gray-400' />
+                )}
+                J’ai envoyé ma carte
               </button>
             </div>
           )}
@@ -334,22 +348,16 @@ export default function TradeItem({ trade }: TradeItemProps) {
           )}
         </div>
 
-        {/* Qui est qui */}
-        <div className='flex flex-col items-end gap-1'>
-          <span className='text-xs'>
-            {isSender ? "(Vous êtes l'envoyeur)" : '(Vous êtes le receveur)'}
-          </span>
-          {(isSender || isReceiver) &&
-            (trade.status === 'pending' || trade.status === 'accepted') && (
-              <button
-                onClick={handleCancel}
-                disabled={loadingAction}
-                className='px-4 py-1 rounded-full bg-redalert text-white text-sm hover:opacity-90 transition'
-              >
-                {loadingAction ? '...' : 'Annuler'}
-              </button>
-            )}
-        </div>
+        {(isSender || isReceiver) &&
+          (trade.status === 'pending' || trade.status === 'accepted') && (
+            <button
+              onClick={handleCancel}
+              disabled={loadingAction}
+              className='px-4 py-1 rounded-full bg-redalert text-white text-sm hover:opacity-90 transition absolute right-2 bottom-2'
+            >
+              {loadingAction ? '...' : 'Annuler'}
+            </button>
+          )}
       </div>
     </div>
   );
