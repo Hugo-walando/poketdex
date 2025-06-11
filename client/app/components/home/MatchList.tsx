@@ -88,7 +88,7 @@ export default function MatchList({ loading }: MatchListProps) {
       </div>
 
       {/* Footer button */}
-      <div className='px-6 md:py-3 md:bg-white rounded-xl md:shadow-base fixed bottom-40 w-full md:static '>
+      <div className='px-6 md:py-3 z-50 md:bg-white rounded-xl md:shadow-base fixed bottom-40 w-full md:static '>
         <button
           onClick={handleSendRequests}
           disabled={selectedMatchIds.length === 0 || sending}
