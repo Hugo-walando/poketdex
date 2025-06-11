@@ -5,6 +5,7 @@ import axiosClient from '@/lib/axios';
 import { useMatchStore } from '@/app/store/useMatchStore';
 import { useUserStore } from '@/app/store/useUserStore';
 import { groupMatchesByUser } from '@/app/utils/groupMatches';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useFetchMatches = () => {
   const { user } = useUserStore();
@@ -40,6 +41,10 @@ const useFetchMatches = () => {
       } catch (err) {
         console.error('❌ Erreur fetch matches :', err);
         setError('Erreur lors de la récupération des matchs');
+        logErrorToSentry(err, {
+          feature: 'useFetchMatches',
+          userId: user.id!,
+        });
       } finally {
         setLoading(false);
       }

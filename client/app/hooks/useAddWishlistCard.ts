@@ -4,6 +4,7 @@ import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { useUIModalStore } from '../store/useUIModalStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useAddWishlistCard = () => {
   const { user } = useUserStore();
@@ -44,6 +45,11 @@ const useAddWishlistCard = () => {
       if (axiosError.response?.data?.message?.includes('Profil incomplet')) {
         toast.error('⚠️ Veuillez compléter votre profil pour continuer');
         openCompleteProfileModal();
+      } else {
+        logErrorToSentry(err, {
+          feature: 'useAddWishlistCard',
+          userId: user.id!,
+        });
       }
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axiosClient from '@/lib/axios';
 import { Card, Set } from '@/app/types';
 import { useUserStore } from '../store/useUserStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 export default function useFetchCardsBySetsManual() {
   const user = useUserStore((state) => state.user);
@@ -32,6 +33,10 @@ export default function useFetchCardsBySetsManual() {
       setHasFetched(true);
     } catch (err) {
       console.error('❌ Error fetching cards by set:', err);
+      logErrorToSentry(err, {
+        feature: 'useFetchCardsBySet',
+        userId: user!.id!,
+      });
     } finally {
       setLoading(false);
     }

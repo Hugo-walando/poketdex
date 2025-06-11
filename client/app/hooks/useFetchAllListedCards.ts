@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useAllListedCardsStore } from '@/app/store/useAllListedCardsStore';
 import axios from 'axios';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useFetchAllListedCards = () => {
   const user = useUserStore((state) => state.user);
@@ -62,8 +63,16 @@ const useFetchAllListedCards = () => {
           err.response?.data?.message ||
           'Erreur lors du chargement de toutes les cartes listées';
         toast.error(message);
+        logErrorToSentry(err, {
+          feature: 'useFetchhAllListedCards',
+          userId: user.id!,
+        });
       } else {
         toast.error('Erreur inconnue');
+        logErrorToSentry(err, {
+          feature: 'useFetchAllListedCards',
+          userId: user.id!,
+        });
       }
     } finally {
       setLoading(false);
@@ -77,6 +86,7 @@ const useFetchAllListedCards = () => {
     setLoading,
     setAllListedCards,
     setPagination,
+    user?.id,
     setPage,
   ]);
 

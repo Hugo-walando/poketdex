@@ -3,6 +3,7 @@ import axiosClient from '@/lib/axios';
 import { useUserStore } from '@/app/store/useUserStore';
 import { useCollectionStore } from '@/app/store/useCollectionStore';
 import toast from 'react-hot-toast';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useRemoveListedCard = () => {
   const { user } = useUserStore();
@@ -37,6 +38,10 @@ const useRemoveListedCard = () => {
     } catch (err) {
       console.error('❌ Erreur lors de la suppression :', err);
       setError('Erreur lors de la suppression');
+      logErrorToSentry(err, {
+        feature: 'useRemoveListedCard',
+        userId: user!.id!,
+      });
     } finally {
       setLoading(false);
     }

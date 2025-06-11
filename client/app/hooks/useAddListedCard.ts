@@ -4,6 +4,7 @@ import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { useUIModalStore } from '../store/useUIModalStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useAddListedCard = () => {
   const { user } = useUserStore();
@@ -43,6 +44,11 @@ const useAddListedCard = () => {
       if (axiosError.response?.data?.message?.includes('Profil incomplet')) {
         toast.error('⚠️ Veuillez compléter votre profil pour continuer');
         openCompleteProfileModal();
+      } else {
+        logErrorToSentry(err, {
+          feature: 'useAddListedCard',
+          userId: user.id!,
+        });
       }
     } finally {
       setLoading(false);

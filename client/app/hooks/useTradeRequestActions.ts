@@ -6,6 +6,7 @@ import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { useCallback } from 'react';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 export function useTradeRequestActions() {
   const { user } = useUserStore();
@@ -27,14 +28,17 @@ export function useTradeRequestActions() {
           },
         );
         updateTradeStatus(tradeRequestId, newStatus);
-      } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
+      } catch (err) {
+        const axiosError = err as AxiosError<{ message: string }>;
 
         const backendMessage =
           axiosError.response?.data?.message ||
           "Erreur lors de la mise à jour de l'échange.";
         toast.error(backendMessage);
-        throw error;
+        logErrorToSentry(err, {
+          feature: 'useRespondToTradeRequest',
+          userId: user!.id!,
+        });
       }
     },
     [user, updateTradeStatus],
@@ -54,13 +58,16 @@ export function useTradeRequestActions() {
         );
 
         toast.success('État d’envoi mis à jour ✅');
-      } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
+      } catch (err) {
+        const axiosError = err as AxiosError<{ message: string }>;
         const backendMessage =
           axiosError.response?.data?.message ||
           'Erreur lors de la mise à jour de l’état d’envoi';
         toast.error(backendMessage);
-        throw error;
+        logErrorToSentry(err, {
+          feature: 'useToggleMarkTradeRequestAsSent',
+          userId: user!.id!,
+        });
       }
     },
     [user],

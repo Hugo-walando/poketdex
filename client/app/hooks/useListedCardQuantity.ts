@@ -6,6 +6,7 @@ import { useCollectionStore } from '@/app/store/useCollectionStore';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { useCallback } from 'react';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 export function useListedCardQuantity() {
   const { user } = useUserStore();
@@ -29,12 +30,15 @@ export function useListedCardQuantity() {
         );
         incrementListedCardQuantity(cardId);
         return res.data;
-      } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
+      } catch (err) {
+        const axiosError = err as AxiosError<{ message: string }>;
         toast.error(
           axiosError.response?.data?.message || "Erreur lors de l'ajout.",
         );
-        throw error;
+        logErrorToSentry(err, {
+          feature: 'useListedCardQuantityIncrement',
+          userId: user!.id!,
+        });
       }
     },
     [user, incrementListedCardQuantity],
@@ -61,13 +65,16 @@ export function useListedCardQuantity() {
         decrementListedCardQuantity(cardId);
 
         return res.data;
-      } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
+      } catch (err) {
+        const axiosError = err as AxiosError<{ message: string }>;
         toast.error(
           axiosError.response?.data?.message ||
             'Erreur lors de la diminution de la quantité.',
         );
-        throw error;
+        logErrorToSentry(err, {
+          feature: 'useListedCardQuantityDecrement',
+          userId: user!.id!,
+        });
       }
     },
     [user, decrementListedCardQuantity, removeListedCardFromStore],
