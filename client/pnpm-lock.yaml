@@ -35,9 +35,6 @@ importers:
       axios:
         specifier: ^1.9.0
         version: 1.9.0
-      firebase:
-        specifier: ^11.9.1
-        version: 11.9.1
       import-in-the-middle:
         specifier: ^1.14.0
         version: 1.14.0
