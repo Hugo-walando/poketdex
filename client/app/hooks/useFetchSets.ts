@@ -4,6 +4,7 @@ import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
 import { Set } from '@/app/types/index';
 import { useUserStore } from '../store/useUserStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useFetchSets = () => {
   const user = useUserStore((state) => state.user);
@@ -41,9 +42,17 @@ const useFetchSets = () => {
             err.response?.data?.message || 'Erreur lors du chargement des sets';
           setError(message);
           toast.error(message);
+          logErrorToSentry(err, {
+            feature: 'useFetchSets',
+            userId: user.id!,
+          });
         } else {
           setError('Erreur inconnue');
           toast.error('Erreur inconnue');
+          logErrorToSentry(err, {
+            feature: 'useFetchSets',
+            userId: user.id!,
+          });
         }
       } finally {
         setLoading(false);

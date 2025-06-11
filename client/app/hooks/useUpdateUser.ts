@@ -4,6 +4,7 @@ import axios from 'axios';
 import axiosClient from '@/lib/axios';
 import toast from 'react-hot-toast';
 import { useUserStore } from '../store/useUserStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useUpdateUser = () => {
   const { update } = useSession();
@@ -59,6 +60,10 @@ const useUpdateUser = () => {
       } else {
         setError("Erreur lors de la mise à jour de l'utilisateur");
         toast.error("Erreur lors de la mise à jour de l'utilisateur");
+        logErrorToSentry(err, {
+          feature: 'useUpdateUser',
+          userId: user!.id!,
+        });
       }
       console.error(err);
     } finally {
