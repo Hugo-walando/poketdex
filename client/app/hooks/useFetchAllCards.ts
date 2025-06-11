@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useUserStore } from '../store/useUserStore';
 import toast from 'react-hot-toast';
 import { Card } from '@/app/types';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 export default function useFetchAllCards() {
   const user = useUserStore((state) => state.user);
@@ -36,9 +37,17 @@ export default function useFetchAllCards() {
           const message =
             err.response?.data?.message ||
             'Erreur lors du chargement des cards';
+          logErrorToSentry(err, {
+            feature: 'useAddWishlistCard',
+            userId: user.id!,
+          });
           setError(message);
           toast.error(message);
         } else {
+          logErrorToSentry(err, {
+            feature: 'useAddWishlistCard',
+            userId: user.id!,
+          });
           setError('Erreur inconnue');
           toast.error('Erreur inconnue');
         }

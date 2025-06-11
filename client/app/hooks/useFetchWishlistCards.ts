@@ -4,6 +4,7 @@ import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { WishlistCard } from '@/app/types';
 import axios from 'axios';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useFetchWishlistCards = () => {
   const user = useUserStore((state) => state.user);
@@ -38,9 +39,17 @@ const useFetchWishlistCards = () => {
             'Erreur lors du chargement des cartes wishlists';
           setError(message);
           toast.error(message);
+          logErrorToSentry(err, {
+            feature: 'useFetchWhishlistCards',
+            userId: user.id!,
+          });
         } else {
           setError('Erreur inconnue');
           toast.error('Erreur inconnue');
+          logErrorToSentry(err, {
+            feature: 'useFetchWhishlistCards',
+            userId: user.id!,
+          });
         }
       } finally {
         setLoading(false);
@@ -48,7 +57,7 @@ const useFetchWishlistCards = () => {
     };
 
     fetchWishlistCards();
-  }, [user?.accessToken]);
+  }, [user?.accessToken, user?.id]);
 
   return { wishlistCards, loading, error };
 };
