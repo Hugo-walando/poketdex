@@ -267,17 +267,13 @@ const toggleMarkTradeRequestAsSent = async (req, res) => {
         ],
       });
 
-      const deletedMatchesWishliwist = await Match.deleteMany({
+      await Match.deleteMany({
         $or: [
           // L'utilisateur ne cherche plus la carte proposée
           { user_1: receiverId, card_requested_by_user_1: offeredCardId },
           { user_2: senderId, card_requested_by_user_2: requestedCardId },
         ],
       });
-      console.log(
-        '-----------------------deletedMatchesOnWishlist',
-        deletedMatchesWishliwist,
-      );
 
       const listedToUpdate = [
         { user: senderId, card: offeredCardId },
@@ -292,16 +288,12 @@ const toggleMarkTradeRequestAsSent = async (req, res) => {
             await listed.save();
           } else {
             await ListedCard.deleteOne({ _id: listed._id });
-            const deletedMatchesListed = await Match.deleteMany({
+            await Match.deleteMany({
               $or: [
                 { user_1: user, card_offered_by_user_1: card },
                 { user_2: user, card_offered_by_user_2: card },
               ],
             });
-            console.log(
-              '-----------------------deletedMatchesOnListed',
-              deletedMatchesListed,
-            );
           }
         }
       }
@@ -414,20 +406,22 @@ const createMultipleTradeRequests = async (req, res) => {
     }
 
     const trades = [];
+    const tradesByReceiver = {}; // { receiverId: [trade1, trade2] }
+
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
 
     for (const matchId of matchIds) {
       const match = await Match.findById(matchId).populate(
         'user_1 user_2 card_offered_by_user_1 card_offered_by_user_2',
       );
 
-      if (!match) {
-        return res.status(404).json({ message: 'Match non trouvé.' });
-        continue;
-      }
+      if (!match) continue;
 
       const sender = match.user_1._id.equals(senderId)
         ? match.user_1
         : match.user_2;
+
       const receiver = match.user_1._id.equals(senderId)
         ? match.user_2
         : match.user_1;
@@ -469,7 +463,32 @@ const createMultipleTradeRequests = async (req, res) => {
       });
 
       await Match.deleteOne({ _id: matchId });
-      trades.push(newTrade);
+
+      const populatedTrade = await TradeRequest.findById(newTrade._id)
+        .populate('card_offered')
+        .populate('card_requested')
+        .populate('sender', 'username profile_picture friend_code trade_count')
+        .populate(
+          'receiver',
+          'username profile_picture friend_code trade_count',
+        );
+
+      const receiverId = receiver._id.toString();
+
+      if (!tradesByReceiver[receiverId]) {
+        tradesByReceiver[receiverId] = [];
+      }
+
+      tradesByReceiver[receiverId].push(populatedTrade);
+      trades.push(populatedTrade);
+    }
+
+    // 📡 Emit groupé par utilisateur
+    for (const [receiverId, tradeList] of Object.entries(tradesByReceiver)) {
+      const receiverSocketId = connectedUsers.get(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('multiple-trade-requests', tradeList);
+      }
     }
 
     res.status(201).json(trades);
