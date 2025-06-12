@@ -144,7 +144,7 @@ export default function QuickTradeDetails({ card, onClose }: Props) {
           onClick={handleSendRequest}
           disabled={!selectedCardId || loadingTrade}
           className={cn(
-            'w-full py-3 rounded-xl font-semibold transition shadow-base z-50',
+            'w-full py-3 rounded-xl font-semibold transition shadow-base z-50 flex items-center justify-center gap-2',
             selectedCardId && !loadingTrade
               ? 'bg-primarygreen text-white hover:opacity-90 hover:cursor-pointer'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed',

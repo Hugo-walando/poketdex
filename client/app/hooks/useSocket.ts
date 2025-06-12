@@ -72,6 +72,20 @@ export default function useSocket() {
         toast('📩 Nouvelle demande d’échange reçue');
       });
 
+      socket.on('multiple-trade-requests', (tradeRequests) => {
+        console.log('[SOCKET] Reçu multiple-trade-requests', tradeRequests);
+
+        if (Array.isArray(tradeRequests)) {
+          tradeRequests.forEach((trade) => {
+            addTradeRequest(trade);
+          });
+
+          toast(
+            `📩 ${tradeRequests.length} nouvelles demandes d’échange reçues`,
+          );
+        }
+      });
+
       socket.on('trade-updated', (data) => {
         updateTradeStatus(data.tradeId, data.status);
 
