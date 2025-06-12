@@ -267,6 +267,18 @@ const toggleMarkTradeRequestAsSent = async (req, res) => {
         ],
       });
 
+      const deletedMatchesWishliwist = await Match.deleteMany({
+        $or: [
+          // L'utilisateur ne cherche plus la carte proposée
+          { user_1: receiverId, card_requested_by_user_1: offeredCardId },
+          { user_2: senderId, card_requested_by_user_2: requestedCardId },
+        ],
+      });
+      console.log(
+        '-----------------------deletedMatchesOnWishlist',
+        deletedMatchesWishliwist,
+      );
+
       const listedToUpdate = [
         { user: senderId, card: offeredCardId },
         { user: receiverId, card: requestedCardId },
@@ -280,12 +292,16 @@ const toggleMarkTradeRequestAsSent = async (req, res) => {
             await listed.save();
           } else {
             await ListedCard.deleteOne({ _id: listed._id });
-            await Match.deleteMany({
+            const deletedMatchesListed = await Match.deleteMany({
               $or: [
                 { user_1: user, card_offered_by_user_1: card },
                 { user_2: user, card_offered_by_user_2: card },
               ],
             });
+            console.log(
+              '-----------------------deletedMatchesOnListed',
+              deletedMatchesListed,
+            );
           }
         }
       }
