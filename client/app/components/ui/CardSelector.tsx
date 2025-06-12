@@ -39,7 +39,9 @@ export default function CardSelector({
 
           {/* Quantité */}
           {isListed && (
-            <div className='text-xs font-semibold text-white'>{quantity}</div>
+            <div className='text-xs font-semibold text-white w-[15px] text-center'>
+              {quantity}
+            </div>
           )}
 
           {/* ➕ Bouton incrémenter */}
