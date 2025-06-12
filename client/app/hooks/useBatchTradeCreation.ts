@@ -41,7 +41,7 @@ const useBatchTradeCreation = () => {
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
       logErrorToSentry(err, {
-        feature: 'useAddWishlistCard',
+        feature: 'useBatchTradeCreation',
         userId: user.id!,
       });
       const backendMessage =

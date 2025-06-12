@@ -38,14 +38,14 @@ export default function useFetchAllCards() {
             err.response?.data?.message ||
             'Erreur lors du chargement des cards';
           logErrorToSentry(err, {
-            feature: 'useAddWishlistCard',
+            feature: 'useFetchAllCards',
             userId: user.id!,
           });
           setError(message);
           toast.error(message);
         } else {
           logErrorToSentry(err, {
-            feature: 'useAddWishlistCard',
+            feature: 'useFetchAllCards',
             userId: user.id!,
           });
           setError('Erreur inconnue');
