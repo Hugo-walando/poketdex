@@ -59,7 +59,7 @@ const useCreateQuickTrade = () => {
         openCompleteProfileModal();
       } else {
         logErrorToSentry(err, {
-          feature: 'useAddWishlistCard',
+          feature: 'useCreateQuickTrade',
           userId: user.id!,
         });
       }
