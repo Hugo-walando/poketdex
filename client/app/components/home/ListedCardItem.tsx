@@ -32,33 +32,36 @@ export default function ListedCardItem({
   return (
     <div
       className={cn(
-        'relative cursor-pointer transition-all hover:scale-110 rounded-xl',
+        'relative mx-auto cursor-pointer transition-all hover:scale-110 rounded-xl',
       )}
       onClick={onClick}
     >
       {!isImageLoaded && (
         <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10' />
       )}
-      {isInWishlist && (
-        <div className='rounded-full absolute top-1 right-1 w-8 h-8 bg-pink-400 flex items-center justify-center'>
-          <HeartIcon className='w-6 h-6 text-white ' />
-        </div>
-      )}
-      <Image
-        src={data.card.img_url}
-        alt={data.card.name}
-        width={0}
-        height={0}
-        sizes='100vw'
-        className={cn(
-          'w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base mx-auto',
-          isSelected && 'ring-2 ring-primarygreen rounded-md',
-        )}
-        onLoad={() => setImageLoaded(true)}
-        priority={true}
-      />
 
-      <div className='flex items-center gap-2 mt-2 pl-1'>
+      <div className='relative inline-block shrink-0 '>
+        <Image
+          src={data.card.img_url}
+          alt={data.card.name}
+          width={0}
+          height={0}
+          sizes='100vw'
+          className={cn(
+            'w-[120px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] 2xl:w-[210px] h-auto rounded-md shadow-base ',
+            isSelected && 'ring-2 ring-primarygreen rounded-md',
+          )}
+          onLoad={() => setImageLoaded(true)}
+          priority={true}
+        />
+        {isInWishlist && (
+          <div className='rounded-full absolute top-1 right-1 w-8 h-8 bg-pink-400 flex items-center justify-center'>
+            <HeartIcon className='w-6 h-6 text-white ' />
+          </div>
+        )}
+      </div>
+
+      <div className='flex items-center justify-center gap-2 mt-2 pl-1'>
         <Image
           src={data.user.profile_picture || '/avatars/Av1.png'}
           alt={data.user.username}

@@ -6,6 +6,7 @@ import { useUserStore } from '@/app/store/useUserStore';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { TradeRequest } from '@/app/types';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useBatchTradeCreation = () => {
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,10 @@ const useBatchTradeCreation = () => {
       return response.data as TradeRequest[];
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-
+      logErrorToSentry(err, {
+        feature: 'useBatchTradeCreation',
+        userId: user.id!,
+      });
       const backendMessage =
         axiosError.response?.data?.message ||
         'Erreur lors de la création des échanges.';

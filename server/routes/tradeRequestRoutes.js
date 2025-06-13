@@ -12,7 +12,7 @@ router.patch(
 router.patch(
   '/:id/mark-as-sent',
   authenticateToken,
-  tradeRequestController.markTradeRequestAsSent,
+  tradeRequestController.toggleMarkTradeRequestAsSent,
 );
 
 router.post(

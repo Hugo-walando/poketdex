@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { TradeRequest } from '@/app/types';
 import { useUIModalStore } from '../store/useUIModalStore';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useCreateQuickTrade = () => {
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,11 @@ const useCreateQuickTrade = () => {
         'Erreur lors de la création de la demande.';
       if (backendMessage.includes('compléter votre profil')) {
         openCompleteProfileModal();
+      } else {
+        logErrorToSentry(err, {
+          feature: 'useCreateQuickTrade',
+          userId: user.id!,
+        });
       }
       setError(backendMessage);
       toast.error(backendMessage);

@@ -10,18 +10,43 @@ import ProtectedLayout from '../components/auth/ProtectedLayout';
 import { useTradeRequestStore } from '../store/useTradeRequestStore';
 import useFetchTradeRequests from '../hooks/useFetchTradeRequests';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useUserStore } from '../store/useUserStore';
 
 export default function TradePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const currentUserId = useUserStore((s) => s.user?.id);
+
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const { tradeGroups } = useTradeRequestStore();
+  const markTradeStatusAsSeen = useTradeRequestStore(
+    (s) => s.markTradeStatusAsSeen,
+  );
+
   const { loading } = useFetchTradeRequests();
   const cleanedUrl = useRef(false);
 
   const selectedGroup =
     tradeGroups.find((group) => group.user._id === selectedUserId) || null;
+
+  useEffect(() => {
+    if (!selectedGroup || !currentUserId) return;
+
+    selectedGroup.trades.forEach((t) => {
+      const shouldMarkSeen =
+        (t.status === 'pending' && t.receiver._id === currentUserId) ||
+        (t.status === 'accepted' && t.sender._id === currentUserId) ||
+        (t.status === 'completed' &&
+          t.receiver._id === currentUserId &&
+          t.sent_by_sender &&
+          t.sent_by_receiver);
+
+      if (shouldMarkSeen) {
+        markTradeStatusAsSeen(t._id, t.status);
+      }
+    });
+  }, [selectedGroup, currentUserId, markTradeStatusAsSeen]);
 
   useEffect(() => {
     const preselectedUserId = searchParams.get('user');

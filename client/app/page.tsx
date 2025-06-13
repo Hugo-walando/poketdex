@@ -7,11 +7,12 @@ import { ListedCard } from './types';
 import useIsMobile from './hooks/useIsMobile';
 import QuickTradeDetails from './components/home/QuickTradeDetails';
 import MatchList from './components/home/MatchList';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import ProtectedPage from './components/auth/ProtectedPage';
 import ProtectedLayout from './components/auth/ProtectedLayout';
 import useFetchMatches from './hooks/useFetchMatches';
 import AllListedCardsLoader from './components/data/AllListedCardsLoader';
+import CloseButton from './components/ui/CloseButton';
 
 export default function Home() {
   const [selectedCard, setSelectedCard] = useState<ListedCard | null>(null);
@@ -71,15 +72,10 @@ export default function Home() {
 
         {isMobile && viewMode === 'matchs' && (
           <div className='fixed inset-0 z-50 overflow-y-auto'>
-            <button
-              onClick={() =>
-                setViewMode(viewMode === 'matchs' ? 'default' : 'matchs')
-              }
-              className='absolute top-5 left-0 z-50 bg-white text-gray-base sm:text-gray-lg px-4 py-2 rounded-r-full shadow-lg md:hidden flex items-center'
-            >
-              <ChevronLeft className='w-4 h-4 md:w-6 md:h-6 mr-2' />
-              Retour aux cartes
-            </button>
+            <CloseButton
+              onClick={() => setViewMode('default')}
+              className='absolute scale-150 bottom-28 left-1/2 -translate-x-1/2 z-50 md:hidden'
+            />
             <MatchList loading={loading} />
           </div>
         )}

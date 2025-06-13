@@ -4,7 +4,7 @@ export const updateUserSchema = z.object({
   username: z
     .string()
     .min(3, 'Le pseudo doit contenir au moins 3 caractères')
-    .max(16, 'Le pseudo ne peut pas dépasser 16 caractères')
+    .max(14, 'Le pseudo ne peut pas dépasser 14 caractères')
     .regex(
       /^[a-zA-Z0-9_]+$/,
       'Le pseudo ne peut contenir que lettres, chiffres et underscores',

@@ -215,8 +215,9 @@ const getMyTradeRequests = async (req, res) => {
   }
 };
 
-const markTradeRequestAsSent = async (req, res) => {
+const toggleMarkTradeRequestAsSent = async (req, res) => {
   try {
+    console.log('toggleMarkTradeRequestAsSent');
     const tradeRequestId = req.params.id;
     const userId = req.user._id;
 
@@ -237,78 +238,69 @@ const markTradeRequestAsSent = async (req, res) => {
       return res.status(403).json({ message: 'Non autorisé.' });
     }
 
-    if (String(trade.sender._id) === String(userId)) {
-      trade.sent_by_sender = true;
+    // 🟢 TOGGLE: inverse la valeur actuelle
+    const isSender = String(trade.sender._id) === String(userId);
+
+    if (isSender) {
+      trade.sent_by_sender = !trade.sent_by_sender;
     } else {
-      trade.sent_by_receiver = true;
+      trade.sent_by_receiver = !trade.sent_by_receiver;
     }
 
-    let isCompleted = false;
+    let wasCompleted = trade.status === 'completed';
+
+    // 🟡 Si maintenant les deux ont envoyé → on complète
     if (trade.sent_by_sender && trade.sent_by_receiver) {
       trade.status = 'completed';
       trade.completed = true;
       trade.is_active = false;
-      isCompleted = true;
 
       const senderId = trade.sender._id;
       const receiverId = trade.receiver._id;
       const offeredCardId = trade.card_offered._id;
       const requestedCardId = trade.card_requested._id;
 
-      // ❌ Supprimer la wishlistCard du receiver (car il reçoit la carte qu’il voulait)
-      await WishlistCard.findOneAndDelete({
-        user: receiverId,
-        card: offeredCardId,
-      });
-      console.log(
-        `WishlistCard supprimée pour le receiver ${receiverId} pour la carte ${requestedCardId}`,
-      );
-
-      // ❌ Supprimer la wishlistCard du sender (car il reçoit aussi une carte qu’il voulait)
-      await WishlistCard.findOneAndDelete({
-        user: senderId,
-        card: requestedCardId,
+      await WishlistCard.deleteMany({
+        $or: [
+          { user: receiverId, card: offeredCardId },
+          { user: senderId, card: requestedCardId },
+        ],
       });
 
-      console.log(
-        `WishlistCard supprimée pour le sender ${senderId} pour la carte ${offeredCardId}`,
-      );
-
-      // 📦 Décrémenter ou supprimer la listedCard du sender (il a donné offeredCard)
-      const senderListed = await ListedCard.findOne({
-        user: senderId,
-        card: offeredCardId,
+      await Match.deleteMany({
+        $or: [
+          // L'utilisateur ne cherche plus la carte proposée
+          { user_1: receiverId, card_requested_by_user_1: offeredCardId },
+          { user_2: senderId, card_requested_by_user_2: requestedCardId },
+        ],
       });
 
-      if (senderListed) {
-        if (senderListed.quantity > 1) {
-          senderListed.quantity -= 1;
-          await senderListed.save();
-        } else {
-          await ListedCard.deleteOne({ _id: senderListed._id });
+      const listedToUpdate = [
+        { user: senderId, card: offeredCardId },
+        { user: receiverId, card: requestedCardId },
+      ];
+
+      for (const { user, card } of listedToUpdate) {
+        const listed = await ListedCard.findOne({ user, card });
+        if (listed) {
+          if (listed.quantity > 1) {
+            listed.quantity -= 1;
+            await listed.save();
+          } else {
+            await ListedCard.deleteOne({ _id: listed._id });
+            await Match.deleteMany({
+              $or: [
+                { user_1: user, card_offered_by_user_1: card },
+                { user_2: user, card_offered_by_user_2: card },
+              ],
+            });
+          }
         }
       }
 
-      // 📦 Décrémenter ou supprimer la listedCard du receiver (il a donné requestedCard)
-      const receiverListed = await ListedCard.findOne({
-        user: receiverId,
-        card: requestedCardId,
-      });
-
-      if (receiverListed) {
-        if (receiverListed.quantity > 1) {
-          receiverListed.quantity -= 1;
-          await receiverListed.save();
-        } else {
-          await ListedCard.deleteOne({ _id: receiverListed._id });
-        }
-      }
-
-      // 🔢 Incrémenter le trade_count
       await User.updateOne({ _id: senderId }, { $inc: { trade_count: 1 } });
       await User.updateOne({ _id: receiverId }, { $inc: { trade_count: 1 } });
 
-      // 📡 Socket.io → Notifier les deux utilisateurs pour mettre à jour leur store
       const io = getSocketIO();
       const connectedUsers = getConnectedUsersMap();
 
@@ -331,7 +323,6 @@ const markTradeRequestAsSent = async (req, res) => {
       if (receiverSocket)
         io.to(receiverSocket).emit('trade-completed', payload);
 
-      // 🔁 Réactivation d’une autre trade inactive si existante
       const nextTrade = await reactivateNextTradeRequestService(
         senderId,
         receiverId,
@@ -372,6 +363,13 @@ const markTradeRequestAsSent = async (req, res) => {
       }
     }
 
+    // 🔁 Si un des deux annule → on repasse à "accepted"
+    if ((!trade.sent_by_sender || !trade.sent_by_receiver) && wasCompleted) {
+      trade.status = 'accepted';
+      trade.completed = false;
+      trade.is_active = true;
+    }
+
     await trade.save();
 
     const io = getSocketIO();
@@ -382,7 +380,8 @@ const markTradeRequestAsSent = async (req, res) => {
 
     const eventPayload = {
       tradeId: trade._id,
-      sentByUserId: userId.toString(), // <- ID de celui qui vient d'envoyer
+      sentByUserId: userId.toString(),
+      value: isSender ? trade.sent_by_sender : trade.sent_by_receiver,
     };
 
     if (senderSocket)
@@ -390,12 +389,9 @@ const markTradeRequestAsSent = async (req, res) => {
     if (receiverSocket)
       io.to(receiverSocket).emit('trade-sent-update', eventPayload);
 
-    // 🔄 Réactivation possible d’une autre TradeRequest
-
-    // 📡 Notifier les deux utilisateurs
-    res.status(200).json(trade);
+    return res.status(200).json(trade);
   } catch (error) {
-    logError('Erreur lors du markTradeRequestAsSent', error);
+    logError('Erreur toggleMarkTradeRequestAsSent', error);
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 };
@@ -410,20 +406,22 @@ const createMultipleTradeRequests = async (req, res) => {
     }
 
     const trades = [];
+    const tradesByReceiver = {}; // { receiverId: [trade1, trade2] }
+
+    const io = getSocketIO();
+    const connectedUsers = getConnectedUsersMap();
 
     for (const matchId of matchIds) {
       const match = await Match.findById(matchId).populate(
         'user_1 user_2 card_offered_by_user_1 card_offered_by_user_2',
       );
 
-      if (!match) {
-        return res.status(404).json({ message: 'Match non trouvé.' });
-        continue;
-      }
+      if (!match) continue;
 
       const sender = match.user_1._id.equals(senderId)
         ? match.user_1
         : match.user_2;
+
       const receiver = match.user_1._id.equals(senderId)
         ? match.user_2
         : match.user_1;
@@ -465,7 +463,32 @@ const createMultipleTradeRequests = async (req, res) => {
       });
 
       await Match.deleteOne({ _id: matchId });
-      trades.push(newTrade);
+
+      const populatedTrade = await TradeRequest.findById(newTrade._id)
+        .populate('card_offered')
+        .populate('card_requested')
+        .populate('sender', 'username profile_picture friend_code trade_count')
+        .populate(
+          'receiver',
+          'username profile_picture friend_code trade_count',
+        );
+
+      const receiverId = receiver._id.toString();
+
+      if (!tradesByReceiver[receiverId]) {
+        tradesByReceiver[receiverId] = [];
+      }
+
+      tradesByReceiver[receiverId].push(populatedTrade);
+      trades.push(populatedTrade);
+    }
+
+    // 📡 Emit groupé par utilisateur
+    for (const [receiverId, tradeList] of Object.entries(tradesByReceiver)) {
+      const receiverSocketId = connectedUsers.get(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit('multiple-trade-requests', tradeList);
+      }
     }
 
     res.status(201).json(trades);
@@ -479,6 +502,6 @@ module.exports = {
   createQuickTradeRequest,
   updateTradeRequest,
   getMyTradeRequests,
-  markTradeRequestAsSent,
+  toggleMarkTradeRequestAsSent,
   createMultipleTradeRequests,
 };

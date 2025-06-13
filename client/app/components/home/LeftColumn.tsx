@@ -98,7 +98,7 @@ export default function LeftColumn({ onCardClick }: LeftColumnProps) {
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4'>
+      <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-4'>
         {ListedCardsLoading ? (
           <>
             {Array.from({ length: 15 }).map((_, idx) => (

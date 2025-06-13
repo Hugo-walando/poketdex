@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useUserStore } from '../store/useUserStore';
 import toast from 'react-hot-toast';
 import { Card } from '@/app/types';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 export default function useFetchAllCards() {
   const user = useUserStore((state) => state.user);
@@ -29,9 +30,27 @@ export default function useFetchAllCards() {
 
         setCardsBySet(res.data);
       } catch (err) {
-        console.error('❌ Error fetching all cards:', err);
-        toast.error('Erreur lors de la récupération des cartes');
-        setError('Erreur lors de la récupération des cartes');
+        if (axios.isAxiosError(err)) {
+          // Ne pas afficher de toast si erreur 401 (déjà gérée globalement)
+          if (err.response?.status === 401) return;
+
+          const message =
+            err.response?.data?.message ||
+            'Erreur lors du chargement des cards';
+          logErrorToSentry(err, {
+            feature: 'useFetchAllCards',
+            userId: user.id!,
+          });
+          setError(message);
+          toast.error(message);
+        } else {
+          logErrorToSentry(err, {
+            feature: 'useFetchAllCards',
+            userId: user.id!,
+          });
+          setError('Erreur inconnue');
+          toast.error('Erreur inconnue');
+        }
       } finally {
         setLoading(false);
       }

@@ -5,6 +5,7 @@ import axiosClient from '@/lib/axios';
 import { useTradeRequestStore } from '@/app/store/useTradeRequestStore';
 import { useUserStore } from '@/app/store/useUserStore';
 import { groupTradeRequestsByUser } from '@/app/utils/groupTradeRequests';
+import { logErrorToSentry } from '../utils/logErrorToSentry';
 
 const useFetchTradeRequests = (enabled: boolean = true) => {
   const { user } = useUserStore();
@@ -39,6 +40,10 @@ const useFetchTradeRequests = (enabled: boolean = true) => {
     } catch (err) {
       console.error('❌ Erreur fetch trades :', err);
       setError('Erreur lors de la récupération des échanges');
+      logErrorToSentry(err, {
+        feature: 'useFetchTradeRequests',
+        userId: user.id!,
+      });
     } finally {
       setLoading(false);
     }
