@@ -113,7 +113,7 @@ export const authConfig = {
     },
 
     async redirect({ baseUrl }) {
-      return baseUrl + '/';
+      return baseUrl + '/home';
     },
   },
 } satisfies NextAuthConfig;

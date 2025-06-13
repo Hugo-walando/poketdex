@@ -45,8 +45,8 @@ export default function RarityRain() {
 
     img.src = `/rarities/${rarity}.png`;
     img.style.width = `${size}px`;
-    img.style.filter = `blur(${4 * depth}px)`;
-    img.style.opacity = `${0.6 + (1 - depth) * 0.6}`;
+    img.style.filter = `blur(${6 * depth}px)`;
+    img.style.opacity = `${0.4 + (1 - depth) * 0.6}`;
     img.style.zIndex = '0';
     img.style.transition = `transform ${fallDuration}s linear`;
     img.style.transform = `rotate(${rotation}deg)`;
@@ -64,7 +64,7 @@ export default function RarityRain() {
   useEffect(() => {
     const startSpawning = () => {
       if (!intervalRef.current) {
-        intervalRef.current = setInterval(spawnDrop, 400);
+        intervalRef.current = setInterval(spawnDrop, 700);
       }
     };
 
@@ -102,7 +102,7 @@ export default function RarityRain() {
       wrappers.forEach((el) => {
         const depth = parseFloat(el.dataset.depth || '0.5');
         const scrollFactor = 1 - depth;
-        el.style.transform = `translateY(${scrollY * scrollFactor * 0.3}px)`;
+        el.style.transform = `translateY(${-scrollY * -scrollFactor * 0.3}px)`;
       });
     };
 
