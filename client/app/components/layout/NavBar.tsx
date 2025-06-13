@@ -22,7 +22,7 @@ export default function Navbar() {
 
   const navItems = [
     {
-      href: '/',
+      href: '/home',
       icon: <HomeIcon className={cn('w-6 h-6')} />,
       label: 'Accueil',
     },

@@ -9,7 +9,7 @@ export default async function AdminPage() {
   const session = await getServerAuthSession();
 
   if (!session || session.user.role !== 'admin') {
-    redirect('/');
+    redirect('/home');
   }
 
   return (
