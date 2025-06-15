@@ -6,8 +6,10 @@ import { HeartIcon, Search } from 'lucide-react';
 import RarityRain from './components/ui/RarityRainEffect';
 import CardIcon from './components/svgs/CardIcon';
 import TradeIcon from './components/svgs/TradeIcon';
+import useIsMobile from './hooks/useIsMobile';
 
 export default function LandingPage() {
+  const isMobile = useIsMobile();
   return (
     <div className='z-10 px-6 py-12 md:px-16 lg:px-32'>
       <RarityRain />
@@ -32,7 +34,7 @@ export default function LandingPage() {
         <h2 className='text-dark-2xl mb-4 '>Comment ça marche ?</h2>
 
         <div className='bg-gray-50 mb-4 p-6 rounded-2xl shadow-md z-10 flex flex-col items-center sm:flex-row sm:justify-between'>
-          <div className='max-w-md'>
+          <div className='max-w-md mb-4 sm:mb-0'>
             <div className='flex items-center justify-center rounded-md bg-gray-200 w-10 h-10 mb-2'>
               <CardIcon className=' h-6 w-6 text-primarygreen' />
             </div>
@@ -56,11 +58,11 @@ export default function LandingPage() {
             width={0}
             height={0}
             sizes='100vw'
-            className='w-auto h-60 rounded-lg'
+            className='h-auto w-60 rounded-lg'
           />
         </div>
         <div className='bg-gray-50 mb-4 p-6 rounded-2xl shadow-md z-10 flex flex-col items-center sm:flex-row sm:justify-between'>
-          <div className='max-w-md'>
+          <div className='max-w-md mb-4 sm:mb-0'>
             <div className='flex items-center justify-center rounded-md bg-gray-200 w-10 h-10 mb-2'>
               <Search className='h-6 w-6 text-primarygreen' />
             </div>
@@ -74,18 +76,19 @@ export default function LandingPage() {
               directement, <strong>sans remplir votre collection</strong>.
             </p>
           </div>
+
           <Image
             src='/landing/match.png'
             alt='Trouvez des Matchs'
             width={0}
             height={0}
             sizes='100vw'
-            className='w-auto h-80 rounded-lg'
+            className='w-80 h-auto rounded-lg'
           />
         </div>
 
         <div className='bg-gray-50 mb-4 p-6 rounded-2xl shadow-md z-10 flex flex-col items-center sm:flex-row sm:justify-between'>
-          <div className='max-w-md'>
+          <div className='max-w-md mb-4 sm:mb-0'>
             <div className='flex items-center justify-center rounded-md bg-gray-200 w-10 h-10 mb-2'>
               <TradeIcon className=' h-6 w-6 text-primarygreen' />
             </div>
@@ -95,18 +98,29 @@ export default function LandingPage() {
               le jeu en ajoutant l{"'"}autre joueur en ami.
             </p>
           </div>
-          <Image
-            src='/landing/trade.png'
-            alt='Echanger'
-            width={0}
-            height={0}
-            sizes='100vw'
-            className='w-auto h-60 rounded-lg'
-          />
+          {isMobile ? (
+            <Image
+              src='/landing/trade-m.png'
+              alt='Echanger'
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='w-80 h-auto rounded-lg'
+            />
+          ) : (
+            <Image
+              src='/landing/trade.png'
+              alt='Echanger'
+              width={0}
+              height={0}
+              sizes='100vw'
+              className='w-100 h-auto rounded-lg'
+            />
+          )}
         </div>
       </section>
 
-      <section className='text-center'>
+      <section className='text-center pb-26'>
         <h2 className='text-2xl font-semibold text-darkblue mb-4'>
           Prêt à échanger ?
         </h2>
