@@ -101,12 +101,12 @@ export default function LandingPage() {
             width={0}
             height={0}
             sizes='100vw'
-            className='w-auto h-60 rounded-lg'
+            className='w-100 h-auto rounded-lg'
           />
         </div>
       </section>
 
-      <section className='text-center'>
+      <section className='text-center pb-26'>
         <h2 className='text-2xl font-semibold text-darkblue mb-4'>
           Prêt à échanger ?
         </h2>
